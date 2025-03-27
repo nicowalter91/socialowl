@@ -1,4 +1,67 @@
+body {
+    font-family: sans-serif;
+    display: flex;
+    min-height: 100vh;
+    background-color: #f8f9fa;
+}
 
+.sidebar {
+    width: 240px;
+    background-color: #343a40;
+    color: white;
+    padding: 20px;
+}
+
+.sidebar a {
+    color: white;
+    text-decoration: none;
+    margin: 10px 0;
+    display: block;
+}
+
+.sidebar a:hover {
+    color: #007bff;
+}
+
+.newsfeed {
+    flex-grow: 1;
+    padding: 20px;
+}
+
+.post {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+    padding: 20px;
+}
+
+.post img {
+    max-width: 100%;
+    border-radius: 10px;
+}
+
+.post .post-header {
+    font-size: 1.2em;
+    margin-bottom: 10px;
+}
+
+.post .post-content {
+    font-size: 1em;
+    margin-bottom: 10px;
+}
+
+.post .post-actions {
+    font-size: 0.9em;
+}
+
+.post textarea {
+    resize: none;
+}
+
+.post button {
+    width: 100%;
+}
 
 .login-container {
     display: flex;

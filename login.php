@@ -17,6 +17,10 @@
             $checkPassword = password_verify($password, $passwordHashed);
 
             if($checkPassword === true) {
+
+                session_start();
+                $_SESSION["username"] = $userExists["username"];
+
                 header("Location: home.php");
             } else {
                 $errorMessage = "Falscher Benutzername oder Passwort";
@@ -62,6 +66,11 @@
                 <div class="input-group">
                     <input type="password" class="form-control" id="password" placeholder="Passwort eingeben" name="password" required>
                 </div>
+            </div>
+
+            <div class="mb-3 form-check">
+                <input type="checkbox" class="form-check-input" id="rememberMe">
+                <label class="form-check-label" for="rememberMe">Angemeldet bleiben</label>
             </div>
            
             <button type="submit" class="btn btn-primary w-100" name="submit">Anmelden</button>
