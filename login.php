@@ -66,6 +66,9 @@
                 <div class="input-group">
                     <input type="password" class="form-control" id="password" placeholder="Passwort eingeben" name="password" required>
                 </div>
+                <div class="mt-1">
+                <p><a href="./reset_mail_send.php">Passwort vergessen?</a></p>
+            </div>
             </div>
 
             <div class="mb-3 form-check">
