@@ -21,7 +21,17 @@
                 session_start();
                 $_SESSION["username"] = $userExists["username"];
 
-                header("Location: home.php");
+                if(isset($_POST["remember_me"]) && $_POST["remember_me"] == "1") {
+                    $remember_token = md5(rand());
+
+                    $stmt = $conn -> prepare("UPDATE users SET remember_token=:remember_token WHERE username=:username");
+                    $stmt ->bindParam(":username", $username);
+                    $stmt ->bindParam(":remember_token", $remember_token);
+                    $stmt ->execute();
+                    setcookie("remember_token", $remember_token, time()+(3600*24*365));
+                }
+
+                header("Location: welcome.php");
             } else {
                 $errorMessage = "Falscher Benutzername oder Passwort";
             }
@@ -40,7 +50,6 @@
     <title>Log In</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="/style.css">
 </head>
 <body class="d-flex align-items-center justify-content-center vh-100">
     <div class="login-container p-4 rounded shadow">
@@ -72,8 +81,8 @@
             </div>
 
             <div class="mb-3 form-check">
-                <input type="checkbox" class="form-check-input" id="rememberMe">
-                <label class="form-check-label" for="rememberMe">Angemeldet bleiben</label>
+                <input type="checkbox" class="form-check-input" id="rememberMe" name="remember_me" value="1">
+                <label class="form-check-label" for="rememberMe"  >Angemeldet bleiben</label>
             </div>
            
             <button type="submit" class="btn btn-primary w-100" name="submit">Anmelden</button>

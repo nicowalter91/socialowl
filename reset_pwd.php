@@ -16,6 +16,7 @@
         $email = $_POST["email"];
         $password = $_POST["password"];
         $passwordRepeat = $_POST["passwordRepeat"];
+        
 
         // Überprüfen, ob die Passwörter übereinstimmen
         if ($password !== $passwordRepeat) {
@@ -25,13 +26,13 @@
 
             try {
                 // Passwort in der Datenbank aktualisieren und reset_token auf NULL setzen
-                $result = updatePassword($passwordHash, $email, $reset_token);
+                $result = updatePassword($passwordHash, $email);
 
                 // Überprüfen, ob das Update erfolgreich war
                 if ($result) {
                     $successMessage = "Passwort erfolgreich geändert";
-                    header("Location: login.php"); 
-                    exit();
+                    // header("Location: login.php"); 
+                    // exit();
                 } else {
                     $errorMessage = "Fehler beim Zurücksetzen des Passworts. Möglicherweise existiert der Token nicht oder ist ungültig.";
                 }
@@ -43,14 +44,16 @@
     }
 
     
-    function updatePassword($password, $email, $reset_token){
+    function updatePassword($password, $email){
         global $conn;
-        $stmt = $conn->prepare("UPDATE users SET password=:password, reset_token=NULL WHERE email=:email AND reset_token=:reset_token");
+        $null = NULL; // Setze auf NULL statt einem leeren String
+        $stmt = $conn->prepare("UPDATE users SET password=:password, reset_token=:reset WHERE email=:email");
         $stmt->bindParam(":password", $password);
         $stmt->bindParam(":email", $email);
-        $stmt->bindParam(":reset_token", $reset_token);
+        $stmt->bindParam(":reset", $null, PDO::PARAM_NULL);  // Übergabe von NULL
         return $stmt->execute();
     }
+    
 ?>
 
 
@@ -128,7 +131,9 @@
 
            
             <button type="submit" class="btn btn-primary w-100" name="reset">Speichern</button>
-           
+            <div class="mt-3 text-center">
+                <p>Zurück zum <a href="./login.php">Login</a></p>
+            </div>
         </form>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

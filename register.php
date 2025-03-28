@@ -49,7 +49,9 @@
         $stmt->bindParam(":lastname", $lastname);
         $stmt->bindParam(":password", $password);
         $stmt->execute();
-        header("Location: home.php");
+        session_start();
+        $_SESSION["username"];
+        header("Location: login.php");
     }
 
 ?>
