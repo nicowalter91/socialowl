@@ -253,7 +253,7 @@ button.home .fa-house{
 
 .profile-top{
     height: 30%;
-    background-image: url(./assets/img/Background.jpg);
+    background-image: url(./img/Background.jpg);
     background-size: 100%;
     background-repeat: no-repeat;
     border-radius: 20px 20px 0px 0px;
@@ -273,8 +273,28 @@ button.home .fa-house{
 .stats{
     display: flex;
     justify-content: space-around;
-    margin-top: 30%;
+    margin-top: 10%;
 }
+
+.left-stats{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 8px;
+    width: 50%;
+}
+
+
+.right-stats{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 8px;
+    width: 50%;
+}
+
 
 .profile-link{
     display: flex;
@@ -302,21 +322,38 @@ button.home .fa-house{
 }
 
 .tweet-profile-image{
-    height: 50px;
-    width: 50px;
+    height: 30px;
+    width: 30px;
     border-radius: 50%;
+    
 }
 
 .input-box > input::placeholder{
-    font-size: 18px;
+    font-size: 16px;
     color: #b7c8d2;
+}
+
+.input-box > input {
     padding-left: 16px;
 }
 
-.tweet-buttons{
+.tweet-user {
+    display: flex;
+    align-items: center;
+    margin-left: 32px;
+    margin-top: 16px;
+    
+}
+
+.tweet-box-name{
+    margin-left: 16px;
+}
+
+.tweet-buttons-left{
     display: flex;
     gap: 16px;
-    margin-left: 80px;
+    margin-left: 32px;
+    margin-bottom: 16px;
 }
 
 button.tweet-button{

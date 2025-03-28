@@ -33,8 +33,6 @@
     }
 ?>
 
-C:\Schulung\www\Social_App\welcome.php
-C:\Schulung\www\Social_App\style.css
 
 <!DOCTYPE html>
 <html lang="en">
@@ -101,35 +99,46 @@ C:\Schulung\www\Social_App\style.css
 
       <div class="stats">
         <div class="left-stats">
-          <h3 style="color: white">1,248</h3>
-        <p style="color: #b7c8d2">Following</p>
+          <p style="color: #b7c8d2">Follower</p>
+          <h3 style="color: white">7</h3>
       </div>
       <div class="right-stats">
-        <h3 style="color: white">6,285</h3>
-        <p style="color: #b7c8d2">Followers</p>
+        <p style="color: #b7c8d2">Following</p>
+        <h3 style="color: white">35</h3>
       </div>
     </div>
 
-    <div class="profile-link">
-      <a href="#">My Profile</a>
-    </div>
     
     
     </div>
     <div class="left-down-sidebar">10</div>
-    <div class="searchbar">2</div>
+
+
+
+
+
+
+    
+    <!-- Main Content -->
     <div class="tweet-box">
-      <div class="input-box">
+      <div class="tweet-user">
         <img class="tweet-profile-image" src="./img/profil.png" alt="">
+        <strong class="text-light tweet-box-name">@<?php echo $_SESSION["username"] ?></strong>
+      </div>
+      <div class="input-box">
         <input class="tweet-input-box" type="text" placeholder="What's happening?">
       </div>
-      <div class="tweet-buttons">
-        <button class="tweet-button"><i class="fa-regular fa-image"></i>Photos</button>
-        <button class="tweet-button"><i class="fa-solid fa-circle-play"></i>Video</button>
+      <div class="tweet-buttons-left">
+      <label for="file-upload" class="btn btn-outline-light">+ Bild</label>
+      <input type="file" id="file-upload" style="display: none;" />
+      <label for="file-upload" class="btn btn-outline-light">+ Video</label>
+      <input type="file" id="file-upload" style="display: none;" />
       
+      <button type="button" class="btn btn-primary">Posten</button>
       </div>
       
     </div>
+    <div class="searchbar">2</div>
     <div class="feed">
     
     </div>
