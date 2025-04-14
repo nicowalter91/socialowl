@@ -1,16 +1,15 @@
-/*Allgemeine Einstellungen*/
-*{
+/* Allgemeine Einstellungen */
+* {
     margin: 0px;
     padding: 0px;
 }
 
-body{
+body {
     background-color: #05141c;
 }
 
 /* Navigation */
-.nav{
-    display: flex;
+.nav {
     display: flex;
     justify-content: space-between;
     background-color: #05141c;
@@ -18,7 +17,7 @@ body{
     height: 100px;
 }
 
-.nav-left{
+.nav-left {
     display: flex;
     align-items: center;
     height: 80px;
@@ -26,17 +25,16 @@ body{
     margin: 0px 16px 0px 20px;
 }
 
-.logo{
+.logo {
     width: 40px;
     height: 40px;
-    
 }
 
-.nav input{
+.nav input {
     border: none;
 }
 
-.explore{
+.explore {
     display: flex;
     align-items: center;
     background-color: #1b2730;
@@ -44,33 +42,33 @@ body{
     height: 40px;
     margin-left: 16px;
 }
-.explore i{
+
+.explore i {
     margin-left: 16px;
     color: #b7c8d2;
 }
 
-.explore input{
+.explore input {
     margin-left: 8px;
     border: none;
     background-color: transparent;
-    
 }
 
-.explore input::placeholder{
+.explore input::placeholder {
     color: #b7c8d2;
 }
 
-.nav-right{
+.nav-right {
     display: flex;
     justify-content: end;
     align-items: center;
     height: 80px;
     width: 400px;
     margin: 0px 16px 0px 16px;
-    gap: 16px
+    gap: 16px;
 }
 
-.user{
+.user {
     display: flex;
     align-items: center;
     position: relative;
@@ -83,31 +81,28 @@ body{
     color: white;
 }
 
-.fa-chevron-down{
-    margin: 0px 16p 0px 16px;
+.fa-chevron-down {
+    margin: 0px 16px 0px 16px;
 }
 
-.user p{
+.user p {
     margin: auto;
 }
 
-
-.user-image{
+.user-image {
     height: 30px;
     width: 30px;
     border-radius: 50%;
 }
 
-.user-image-wrap{
+.user-image-wrap {
     height: 50px;
     width: 50px;
     border-radius: 100%;
     border: 2px solid white;
 }
 
-
-
-button.home{
+button.home {
     background-color: white;
     border: 1px solid black;
     height: 40px;
@@ -117,12 +112,12 @@ button.home{
     padding: 5px;
 }
 
-button.home .fa-house{
+button.home .fa-house {
     color: skyblue;
     margin-right: 8px;
 }
 
-.notification-container{
+.notification-container {
     position: relative;
     cursor: pointer;
 }
@@ -133,12 +128,12 @@ button.home .fa-house{
     position: relative;
 }
 
-.fa-bars{
+.fa-bars {
     color: white;
     font-size: 22px;
 }
 
-.fa-bell{
+.fa-bell {
     color: white;
     font-size: 22px;
 }
@@ -176,7 +171,7 @@ button.home .fa-house{
 
 .sub-menu-head > h3 {
     margin-top: 8px;
-    margin-left: 8px ;
+    margin-left: 8px;
 }
 
 .sub-menu {
@@ -186,7 +181,6 @@ button.home .fa-house{
 .sub-menu-head {
     display: flex;
     justify-content: center;
-    
 }
 
 .sub-menu span {
@@ -194,11 +188,7 @@ button.home .fa-house{
     top: 10px;
     right: 10px;
     cursor: pointer;
-  
 }
-
-
-
 
 /* Grid Parent Container */
 .parent {
@@ -208,27 +198,26 @@ button.home .fa-house{
     grid-template-columns: repeat(5, 1fr);
     grid-template-rows: repeat(5, 1fr);
     gap: 8px;
+    height: 100%; /* Wichtige Änderung */
 }
-
 
 /* Profile Card */
 .left-top-sidebar {
     display: flex;
     flex-direction: column;
     margin-left: 10px;
-    background-color: #1b2730 ;
+    background-color: #1b2730;
     border-radius: 20px;
     grid-row: span 2 / span 3;
     grid-column-start: 1;
     grid-row-start: 1;
 }
 
-.profile{
+.profile {
     display: flex;
     flex-direction: column;
     align-items: center;
     margin-top: -10%;
-    
 }
 
 .profile h3 {
@@ -237,46 +226,41 @@ button.home .fa-house{
     font-size: 24px;
 }
 
-
-.profile > p{
+.profile > p {
     color: #b7c8d2;
     font-weight: 100;
 }
 
-
-.profile-image{
+.profile-image {
     height: 80px;
     width: 80px;
     border-radius: 100%;
     border: 2px solid white;
 }
 
-.profile-top{
+.profile-top {
     height: 30%;
     background-image: url(./img/Background.jpg);
     background-size: 100%;
     background-repeat: no-repeat;
     border-radius: 20px 20px 0px 0px;
-    
-    
 }
+
 .left-down-sidebar {
-    background-color: #1b2730 ;
+    background-color: #1b2730;
     grid-row: span 3 / span 3;
     grid-row-start: 4;
     border-radius: 20px;
     margin-left: 10px;
 }
 
-
-
-.stats{
+.stats {
     display: flex;
     justify-content: space-around;
     margin-top: 10%;
 }
 
-.left-stats{
+.left-stats {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -285,8 +269,11 @@ button.home .fa-house{
     width: 50%;
 }
 
+.left-stats > h3 {
+    font-size: 40px;
+}
 
-.right-stats{
+.right-stats {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -295,23 +282,26 @@ button.home .fa-house{
     width: 50%;
 }
 
+.right-stats > h3 {
+    font-size: 40px;
+}
 
-.profile-link{
+.profile-link {
     display: flex;
     justify-content: center;
 }
 
-.profile-link > a{
+.profile-link > a {
     color: skyblue;
     text-decoration: none;
 }
 
-.input-box{
+.input-box {
     display: flex;
     margin: 16px;
 }
 
-.input-box > input{
+.input-box > input {
     width: 95%;
     height: 60px;
     border: none;
@@ -321,14 +311,13 @@ button.home .fa-house{
     margin-left: 16px;
 }
 
-.tweet-profile-image{
+.tweet-profile-image {
     height: 30px;
     width: 30px;
     border-radius: 50%;
-    
 }
 
-.input-box > input::placeholder{
+.input-box > input::placeholder {
     font-size: 16px;
     color: #b7c8d2;
 }
@@ -342,21 +331,20 @@ button.home .fa-house{
     align-items: center;
     margin-left: 32px;
     margin-top: 16px;
-    
 }
 
-.tweet-box-name{
+.tweet-box-name {
     margin-left: 16px;
 }
 
-.tweet-buttons-left{
+.tweet-buttons-left {
     display: flex;
     gap: 16px;
     margin-left: 32px;
     margin-bottom: 16px;
 }
 
-button.tweet-button{
+button.tweet-button {
     background-color: transparent;
     border: 1px solid #b7c8d2;
     height: 40px;
@@ -366,43 +354,36 @@ button.tweet-button{
     padding: 5px;
 }
 
-.fa-image{
+.fa-image {
     color: mediumspringgreen;
     margin-right: 8px;
 }
 
-.fa-circle-play{
+.fa-circle-play {
     color: blue;
     margin-right: 8px;
 }
 
-.fa-threads{
+.fa-threads {
     color: orange;
     margin-right: 8px;
 }
 
-.fa-calendar-days{
+.fa-calendar-days {
     color: yellow;
     margin-right: 8px;
 }
 
-
-
-
-
-
-
-
-
 .searchbar {
-    background-color: #1b2730 ;
+    background-color: #1b2730;
     border-radius: 20px;
     grid-row: span 3 / span 5;
     grid-column-start: 5;
     grid-row-start: 1;
 }
+
 .trends {
-    background-color: #1b2730 ;
+    background-color: #1b2730;
     border-radius: 20px;
     grid-row: span 3 / span 3;
     grid-column-start: 5;
@@ -410,18 +391,27 @@ button.tweet-button{
 }
 
 .tweet-box {
-        background-color: #1b2730 ;
-        border-radius: 20px;
-        grid-column: span 3 / span 3;
-        grid-column-start: 2;
-        grid-row-start: 1;
-    }
+    background-color: #1b2730;
+    border-radius: 20px;
+    grid-column: span 3 / span 3;
+    grid-column-start: 2;
+    grid-row-start: 1;
+}
 
+/* Änderungen für den Feed Container */
 .feed {
-    background-color: #1b2730 ;
+    background-color: #1b2730;
     border-radius: 20px;
     grid-column: span 3 / span 3;
     grid-row: span 5 / span 5;
     grid-column-start: 2;
     grid-row-start: 2;
-    }
+    height: 70vh; /* Feste Höhe für den Feed */
+    overflow-y: auto; /* Erlaubt das Scrollen im Feed */
+}
+
+/* Sicherstellen, dass der Parent-Container die gesamte Höhe einnimmt */
+.parent {
+    display: grid;
+    height: 100%; /* Wichtig für das Layout */
+}
