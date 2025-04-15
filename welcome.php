@@ -64,38 +64,42 @@ if ($data2) {
   <!-- ============================
        Navigation Bar
   ============================ -->
-  <div class="nav fixed-top">
-    <div class="nav-left">
-      <img class="logo" src="./img/Owl_logo.svg" alt="Owl Logo">
-      <div class="container-fluid">
-        <form class="d-flex" role="search">
-          <input class="form-control me-2" style="border-radius: 48px" type="search" placeholder="# Search">
-        </form>
-      </div>
+  <div class="nav fixed-top d-flex justify-content-between align-items-center px-3">
+  <!-- Linke Seite: Logo + Titel -->
+  <div class="d-flex align-items-center gap-2" style="min-width: 200px;">
+    <img class="logo" src="./img/Owl_logo.svg" alt="Owl Logo">
+    <h3 class="text-light mb-0">Social Owl</h3>
+  </div>
+
+  <!-- Mitte: Suchfeld -->
+  <div class="flex-grow-1 mx-4">
+    <form class="d-flex justify-content-center" role="search">
+      <input class="form-control" style="border-radius: 48px; max-width: 400px;" type="search" placeholder="# Search">
+    </form>
+  </div>
+
+  <!-- Rechte Seite: Notifications + Dropdown -->
+  <div class="d-flex align-items-center gap-3">
+    <div class="notification-container position-relative">
+      <span class="icon"><i class="fa-solid fa-bell text-white"></i></span>
+      <span class="notification-badge">3</span>
     </div>
 
-    <div class="nav-right">
-      <div class="notification-container">
-        <span class="icon"><i class="fa-solid fa-bell"></i></span>
-        <span class="notification-badge">3</span>
-      </div>
-
-      <div class="dropdown">
-        <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-          <img src="./img/profil.png" alt="" width="32" height="32" class="rounded-circle me-2">
-          <strong class="text-light"><?php echo $_SESSION["username"] ?></strong>
-        </a>
-        <ul class="dropdown-menu dropdown-menu-end">
-          <li><a class="dropdown-item" href="#"><i class="bi bi-person-circle me-2"></i>Profil</a></li>
-          <li><a class="dropdown-item" href="settings.html"><i class="bi bi-gear me-2"></i>Einstellungen</a></li>
-          <li>
-            <hr class="dropdown-divider">
-          </li>
-          <li><a class="dropdown-item text-danger" href="./logout.php"><i class="bi bi-box-arrow-right me-2"></i>Abmelden</a></li>
-        </ul>
-      </div>
+    <div class="dropdown">
+      <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+        <img src="./img/profil.png" alt="Profilbild" width="32" height="32" class="rounded-circle me-2">
+        <strong class="text-light"><?php echo $_SESSION["username"] ?></strong>
+      </a>
+      <ul class="dropdown-menu dropdown-menu-end">
+        <li><a class="dropdown-item" href="#"><i class="bi bi-person-circle me-2"></i>Profil</a></li>
+        <li><a class="dropdown-item" href="settings.html"><i class="bi bi-gear me-2"></i>Einstellungen</a></li>
+        <li><hr class="dropdown-divider"></li>
+        <li><a class="dropdown-item text-danger" href="./logout.php"><i class="bi bi-box-arrow-right me-2"></i>Abmelden</a></li>
+      </ul>
     </div>
   </div>
+</div>
+
 
   <!-- ============================
        Hauptbereich (Grid Layout)
@@ -125,15 +129,17 @@ if ($data2) {
     </div>
 
     <!-- Beitrag erstellen -->
-    <div class="tweet-box p-3">
+    <div class="tweet-box p-3 d-flex flex-column" style="min-height: 200px;">
       <div class="d-flex align-items-start mb-3">
         <img class="tweet-profile-image me-3" src="./img/profil.png" alt="">
-        <div class="flex-grow-1">
-          <textarea class="form-control tweet-input-box bg-dark text-light border-0 rounded-4 px-3 py-2" rows="3" placeholder="Was passiert gerade?"></textarea>
+        <div class="flex-grow-1 d-flex flex-column">
+          <textarea class="form-control tweet-input-box text-light border-0 rounded-4 px-3 py-2 flex-grow-1"
+            rows="4" placeholder="Was passiert gerade?" style="min-height: 120px;"></textarea>
         </div>
       </div>
 
-      <div class="d-flex justify-content-between align-items-center mt-2 flex-wrap gap-2">
+      <!-- Buttons immer unten -->
+      <div class="mt-auto d-flex justify-content-between align-items-center flex-wrap gap-2 pt-3 border-top border-secondary">
         <div class="d-flex gap-2 flex-wrap">
           <label for="file-upload-image" class="btn btn-sm btn-outline-secondary">
             <i class="fa-solid fa-image me-1"></i> Bild
@@ -154,8 +160,7 @@ if ($data2) {
       </div>
     </div>
 
-    <!-- Rechte Seitenleiste -->
-    <div class="searchbar"></div>
+
 
     <!-- Feedbereich (Beiträge) -->
     <div class="feed">
@@ -217,6 +222,61 @@ if ($data2) {
 
       </div>
     </div>
+
+    <!-- Rechte Seitenleiste -->
+    <div class="searchbar p-3 d-flex flex-column gap-4">
+
+  <!-- Wem folgen -->
+  <div class="suggestions">
+    <h6 class="text-light mb-3">Wem folgen?</h6>
+
+    <div class="d-flex align-items-center justify-content-between mb-3">
+      <div class="d-flex align-items-center">
+        <img src="./img/profil.png" class="rounded-circle me-2" width="40" height="40" alt="User 1">
+        <div>
+          <strong class="text-light">@max_dev</strong>
+          <p class="mb-0 text-light small">Webentwickler 🚀</p>
+        </div>
+      </div>
+      <button class="btn btn-sm btn-outline-light">Folgen</button>
+    </div>
+
+    <div class="d-flex align-items-center justify-content-between mb-3">
+      <div class="d-flex align-items-center">
+        <img src="./img/profil.png" class="rounded-circle me-2" width="40" height="40" alt="User 2">
+        <div>
+          <strong class="text-light">@frontend_queen</strong>
+          <p class="mb-0 text-light small">React 💅 CSS 🎨</p>
+        </div>
+      </div>
+      <button class="btn btn-sm btn-outline-light">Folgen</button>
+    </div>
+  </div>
+
+  <!-- Trends -->
+  <div class="trends mt-4">
+    <h6 class="text-light mb-3">Trends für dich</h6>
+    <div class="mb-2">
+      <p class="mb-0 text-light small">Tech · Trending</p>
+      <strong class="text-light">#PHP8</strong><br>
+      <small class="text-light">12.3K Tweets</small>
+    </div>
+
+    <div class="mb-2">
+      <p class="mb-0 text-light small">Deutschland · Trending</p>
+      <strong class="text-light">#KI</strong><br>
+      <small class="text-light">27.8K Tweets</small>
+    </div>
+
+    <div class="mb-2">
+      <p class="mb-0 text-light small">Entwicklung</p>
+      <strong class="text-light">#Bootstrap5</strong><br>
+      <small class="text-light">3.2K Tweets</small>
+    </div>
+  </div>
+</div>
+
+
   </div>
 
   <!-- ============================

@@ -222,7 +222,6 @@
   .tweet-box {
     background-color: #1b2730;
     border-radius: 20px;
-    margin-bottom: 20px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     grid-column: 2 / span 3;
     grid-row-start: 1;
@@ -296,13 +295,15 @@
     display: flex;
     justify-content: center;
   }
-  
+
   .tweet-image {
-    max-width: 90%;
-    max-height: 400px;
+    max-width: 100%;
+    width: 100%;
+    max-height: 360px;
     border-radius: 16px;
     object-fit: cover;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.2);
+    aspect-ratio: 16/9;
   }
   
   /* ============================
