@@ -1,74 +1,97 @@
-/* Allgemeine Einstellungen */
+/* ============================
+   Global Settings
+============================ */
 * {
-    margin: 0px;
-    padding: 0px;
-}
-
-body {
+    margin: 0;
+    padding: 0;
+  }
+  
+  body {
     background-color: #05141c;
-}
-
-/* Navigation */
-.nav {
+  }
+  
+  /* ============================
+     Layout Grid Container
+  ============================ */
+  .parent {
+    margin-top: 80px;
+    background-color: #05141c;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: repeat(5, 1fr);
+    gap: 8px;
+    height: 100%;
+  }
+  
+  /* ============================
+     Navigation (Top Bar)
+  ============================ */
+  .nav {
     display: flex;
     justify-content: space-between;
+    align-items: center;
     background-color: #05141c;
+    height: 80px;
     width: 100%;
-    height: 100px;
-}
-
-.nav-left {
+    z-index: 1050;
+  }
+  
+  .nav-left {
     display: flex;
     align-items: center;
     height: 80px;
     width: 400px;
-    margin: 0px 16px 0px 20px;
-}
-
-.logo {
+    margin: 0 16px 0 20px;
+  }
+  
+  .logo {
     width: 40px;
     height: 40px;
-}
-
-.nav input {
+  }
+  
+  .nav input {
     border: none;
-}
-
-.explore {
+  }
+  
+  .explore {
     display: flex;
     align-items: center;
     background-color: #1b2730;
     border-radius: 60px;
     height: 40px;
     margin-left: 16px;
-}
-
-.explore i {
+  }
+  
+  .explore i {
     margin-left: 16px;
     color: #b7c8d2;
-}
-
-.explore input {
+  }
+  
+  .explore input {
     margin-left: 8px;
     border: none;
     background-color: transparent;
-}
-
-.explore input::placeholder {
+    color: white;
+  }
+  
+  .explore input::placeholder {
     color: #b7c8d2;
-}
-
-.nav-right {
+  }
+  
+  .nav-right {
     display: flex;
     justify-content: end;
     align-items: center;
     height: 80px;
     width: 400px;
-    margin: 0px 16px 0px 16px;
+    margin: 0 16px;
     gap: 16px;
-}
-
-.user {
+  }
+  
+  /* ============================
+     User Info in Navbar
+  ============================ */
+  .user {
     display: flex;
     align-items: center;
     position: relative;
@@ -76,69 +99,33 @@ body {
     height: 40px;
     width: 150px;
     border-radius: 60px;
-    margin: 0px 8px 0px 8px;
     padding: 5px;
     color: white;
-}
-
-.fa-chevron-down {
-    margin: 0px 16px 0px 16px;
-}
-
-.user p {
+  }
+  
+  .user p {
     margin: auto;
-}
-
-.user-image {
+  }
+  
+  .fa-chevron-down {
+    margin: 0 16px;
+  }
+  
+  .user-image {
     height: 30px;
     width: 30px;
     border-radius: 50%;
-}
-
-.user-image-wrap {
-    height: 50px;
-    width: 50px;
-    border-radius: 100%;
-    border: 2px solid white;
-}
-
-button.home {
-    background-color: white;
-    border: 1px solid black;
-    height: 40px;
-    width: 100px;
-    border-radius: 60px;
-    color: black;
-    padding: 5px;
-}
-
-button.home .fa-house {
-    color: skyblue;
-    margin-right: 8px;
-}
-
-.notification-container {
+  }
+  
+  /* ============================
+     Notification Badge
+  ============================ */
+  .notification-container {
     position: relative;
     cursor: pointer;
-}
-
-.icon {
-    font-size: 18px;
-    color: black;
-    position: relative;
-}
-
-.fa-bars {
-    color: white;
-    font-size: 22px;
-}
-
-.fa-bell {
-    color: white;
-    font-size: 22px;
-}
-
-.notification-badge {
+  }
+  
+  .notification-badge {
     background-color: skyblue;
     color: white;
     font-size: 12px;
@@ -149,269 +136,214 @@ button.home .fa-house {
     line-height: 20px;
     border-radius: 50%;
     position: absolute;
-    top: 0px;
+    top: 0;
     left: 10px;
-}
-
-.sub-menu-wrap {
-    position: absolute;
-    top: 0px;
-    right: 0px;
-    width: 250px;
-    height: 400px;
-    background-color: #28353e;
-    border-radius: 8px;
-    display: flex;
-}
-
-.sub-menu-head > img {
-    margin-top: 8px;
-    margin-left: 16px;
-}
-
-.sub-menu-head > h3 {
-    margin-top: 8px;
-    margin-left: 8px;
-}
-
-.sub-menu {
-    position: relative;
-}
-
-.sub-menu-head {
-    display: flex;
-    justify-content: center;
-}
-
-.sub-menu span {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    cursor: pointer;
-}
-
-/* Grid Parent Container */
-.parent {
-    background-color: #05141c;
-    height: 100vh;
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    grid-template-rows: repeat(5, 1fr);
-    gap: 8px;
-    height: 100%; /* Wichtige Änderung */
-}
-
-/* Profile Card */
-.left-top-sidebar {
-    display: flex;
-    flex-direction: column;
-    margin-left: 10px;
+  }
+  
+  .fa-bell {
+    color: white;
+    font-size: 22px;
+  }
+  
+  /* ============================
+     Sidebar (Profilbereich)
+  ============================ */
+  .left-top-sidebar {
     background-color: #1b2730;
     border-radius: 20px;
-    grid-row: span 2 / span 3;
-    grid-column-start: 1;
-    grid-row-start: 1;
-}
-
-.profile {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    margin-left: 10px;
+    grid-column: 1;
+    grid-row: 1 / span 3;
+  }
+  
+  .profile-top {
+    height: 30%;
+    background-image: url(./img/Background.jpg);
+    background-size: cover;
+    background-repeat: no-repeat;
+    border-radius: 20px 20px 0 0;
+  }
+  
+  .profile {
     display: flex;
     flex-direction: column;
     align-items: center;
     margin-top: -10%;
-}
-
-.profile h3 {
-    color: #b7c8d2;
-    margin: 8px 0px 0px 0px;
+  }
+  
+  .profile h3 {
+    color: white;
+    margin-top: 8px;
     font-size: 24px;
-}
-
-.profile > p {
-    color: #b7c8d2;
+  }
+  
+  .profile p {
+    
     font-weight: 100;
-}
-
-.profile-image {
+  }
+  
+  .profile-image {
     height: 80px;
     width: 80px;
     border-radius: 100%;
     border: 2px solid white;
-}
-
-.profile-top {
-    height: 30%;
-    background-image: url(./img/Background.jpg);
-    background-size: 100%;
-    background-repeat: no-repeat;
-    border-radius: 20px 20px 0px 0px;
-}
-
-.left-down-sidebar {
-    background-color: #1b2730;
-    grid-row: span 3 / span 3;
-    grid-row-start: 4;
-    border-radius: 20px;
-    margin-left: 10px;
-}
-
-.stats {
+  }
+  
+  /* ============================
+     Follower / Following Stats
+  ============================ */
+  .stats {
     display: flex;
     justify-content: space-around;
-    margin-top: 10%;
-}
-
-.left-stats {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    margin: 8px;
-    width: 50%;
-}
-
-.left-stats > h3 {
-    font-size: 40px;
-}
-
-.right-stats {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    margin: 8px;
-    width: 50%;
-}
-
-.right-stats > h3 {
-    font-size: 40px;
-}
-
-.profile-link {
-    display: flex;
-    justify-content: center;
-}
-
-.profile-link > a {
-    color: skyblue;
-    text-decoration: none;
-}
-
-.input-box {
-    display: flex;
-    margin: 16px;
-}
-
-.input-box > input {
-    width: 95%;
-    height: 60px;
-    border: none;
-    border-radius: 10px;
+    margin: 10% 8px 0;
+    gap: 8px;
+  }
+  
+  .left-stats, .right-stats {
     background-color: #28353e;
-    color: white;
-    margin-left: 16px;
-}
+    width: 50%;
+    padding: 16px;
+    border-radius: 12px;
+    text-align: center;
+    transition: box-shadow 0.2s ease;
+  }
+  
+  .left-stats h3, .right-stats h3 {
+    font-size: 40px;
+  }
 
-.tweet-profile-image {
-    height: 30px;
-    width: 30px;
-    border-radius: 50%;
-}
-
-.input-box > input::placeholder {
-    font-size: 16px;
-    color: #b7c8d2;
-}
-
-.input-box > input {
-    padding-left: 16px;
-}
-
-.tweet-user {
+  
+  /* ============================
+     Tweet Box (Neue Beiträge)
+  ============================ */
+  .tweet-box {
+    background-color: #1b2730;
+    border-radius: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    grid-column: 2 / span 3;
+    grid-row-start: 1;
+  }
+  
+  .tweet-user {
     display: flex;
     align-items: center;
     margin-left: 32px;
     margin-top: 16px;
-}
-
-.tweet-box-name {
+  }
+  
+  .tweet-box-name {
     margin-left: 16px;
-}
-
-.tweet-buttons-left {
+  }
+  
+  .tweet-buttons-left {
     display: flex;
     gap: 16px;
     margin-left: 32px;
     margin-bottom: 16px;
-}
-
-button.tweet-button {
-    background-color: transparent;
-    border: 1px solid #b7c8d2;
-    height: 40px;
-    width: 150px;
-    border-radius: 60px;
+  }
+  
+  .tweet-input-box {
+    resize: none;
+    min-height: 100px;
+    max-height: 200px;
+    overflow-y: auto;
+    background-color: #28353e;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding-left: 16px;
+  }
+  
+  .tweet-input-box::placeholder {
     color: #b7c8d2;
-    padding: 5px;
-}
-
-.fa-image {
+  }
+  
+  /* ============================
+     Feed (Beitragsliste)
+  ============================ */
+  .feed {
+    background-color: #1b2730;
+    border-radius: 20px;
+    grid-column: 2 / span 3;
+    grid-row: 2 / span 5;
+    height: 70vh;
+    overflow-y: auto;
+  }
+  
+  /* ============================
+     Tweet Cards
+  ============================ */
+  .tweet-card {
+    background-color: #1b2730;
+    border: none;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+    padding: 1rem;
+  }
+  
+  .tweet-profile-image {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  
+  .tweet-image-wrapper {
+    display: flex;
+    justify-content: center;
+  }
+  
+  .tweet-image {
+    max-width: 90%;
+    max-height: 400px;
+    border-radius: 16px;
+    object-fit: cover;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  }
+  
+  /* ============================
+     Icons Farben
+  ============================ */
+  .fa-image {
     color: mediumspringgreen;
     margin-right: 8px;
-}
-
-.fa-circle-play {
+  }
+  
+  .fa-circle-play {
     color: blue;
     margin-right: 8px;
-}
-
-.fa-threads {
+  }
+  
+  .fa-threads {
     color: orange;
     margin-right: 8px;
-}
-
-.fa-calendar-days {
+  }
+  
+  .fa-calendar-days {
     color: yellow;
     margin-right: 8px;
-}
-
-.searchbar {
+  }
+  
+  /* ============================
+     Rechte Seitenbereiche
+  ============================ */
+  .searchbar,
+  .trends {
     background-color: #1b2730;
     border-radius: 20px;
-    grid-row: span 3 / span 5;
     grid-column-start: 5;
-    grid-row-start: 1;
-}
-
-.trends {
-    background-color: #1b2730;
-    border-radius: 20px;
-    grid-row: span 3 / span 3;
-    grid-column-start: 5;
-    grid-row-start: 4;
-}
-
-.tweet-box {
-    background-color: #1b2730;
-    border-radius: 20px;
-    grid-column: span 3 / span 3;
-    grid-column-start: 2;
-    grid-row-start: 1;
-}
-
-/* Änderungen für den Feed Container */
-.feed {
-    background-color: #1b2730;
-    border-radius: 20px;
-    grid-column: span 3 / span 3;
-    grid-row: span 5 / span 5;
-    grid-column-start: 2;
-    grid-row-start: 2;
-    height: 70vh; /* Feste Höhe für den Feed */
-    overflow-y: auto; /* Erlaubt das Scrollen im Feed */
-}
-
-/* Sicherstellen, dass der Parent-Container die gesamte Höhe einnimmt */
-.parent {
-    display: grid;
-    height: 100%; /* Wichtig für das Layout */
-}
+  }
+  
+  .searchbar {
+    grid-row: 1 / span 5;
+    height: 100vh;
+  }
+  
+  .trends {
+    grid-row: 4 / span 3;
+  }
+  

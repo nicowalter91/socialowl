@@ -1,310 +1,253 @@
 <?php
+// ============================
+// Session- und Authentifizierung
+// ============================
 require "connection.php";
-
 session_start();
 
-// Überprüfen, ob der Benutzer bereits angemeldet ist
 if (!isset($_SESSION["username"])) {
+  if (isset($_COOKIE["remember_token"])) {
+    $remember_token = $_COOKIE["remember_token"];
 
-    // Wenn keine Session besteht, überprüfe das Cookie
-    if (isset($_COOKIE["remember_token"])) {
-        $remember_token = $_COOKIE["remember_token"];
+    // Token aus Datenbank prüfen
+    $stmt = $conn->prepare("SELECT username FROM users WHERE remember_token = :remember_token");
+    $stmt->bindParam(":remember_token", $remember_token);
+    $stmt->execute();
+    $data = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        // Erstes SQL-Statement: Überprüfe den remember_token und hole den Benutzernamen
-        $stmt = $conn->prepare("SELECT username FROM users WHERE remember_token = :remember_token");
-        $stmt->bindParam(":remember_token", $remember_token);
-        $stmt->execute();
-        $data = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        // Wenn ein Benutzer gefunden wird, die Session starten
-        if ($data) {
-            $_SESSION["username"] = $data["username"];
-
-            // Zweites SQL-Statement: Hole 'firstname' und 'lastname' aus der Datenbank
-            $stmt2 = $conn->prepare("SELECT firstname, lastname FROM users WHERE username = :username");
-            $stmt2->bindParam(":username", $_SESSION["username"]);
-            $stmt2->execute();
-            $data2 = $stmt2->fetch(PDO::FETCH_ASSOC);
-
-            // Überprüfen, ob 'firstname' und 'lastname' vorhanden sind
-            if ($data2) {
-                $_SESSION["firstname"] = $data2["firstname"];
-                $_SESSION["lastname"] = $data2["lastname"];
-            } else {
-                // Wenn keine Daten für Vorname und Nachname gefunden wurden
-                $_SESSION["firstname"] = 'Unbekannt';
-                $_SESSION["lastname"] = 'Unbekannt';
-            }
-
-        } else {
-            // Wenn kein Benutzer mit diesem Token gefunden wurde, Cookie löschen
-            setcookie("remember_token", "", time() - 3600); // Cookie löschen
-        }
+    if ($data) {
+      $_SESSION["username"] = $data["username"];
+    } else {
+      setcookie("remember_token", "", time() - 3600);
     }
+  }
 
-    // Wenn keine gültige Session oder Cookie vorhanden ist, zum Login weiterleiten
-    if (!isset($_SESSION["username"])) {
-        header("Location: login.php");
-        exit();
-    }
+  if (!isset($_SESSION["username"])) {
+    header("Location: login.php");
+    exit();
+  }
+}
+
+// Vor- und Nachname abrufen
+$stmt2 = $conn->prepare("SELECT firstname, lastname FROM users WHERE username = :username");
+$stmt2->bindParam(":username", $_SESSION["username"]);
+$stmt2->execute();
+$data2 = $stmt2->fetch(PDO::FETCH_ASSOC);
+
+if ($data2) {
+  $_SESSION["firstname"] = $data2["firstname"];
+  $_SESSION["lastname"] = $data2["lastname"];
+} else {
+  $_SESSION["firstname"] = 'Unbekannt';
+  $_SESSION["lastname"] = 'Unbekannt';
 }
 ?>
 
-
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Social Owl</title>
 
-  <!--Style-->
+  <!-- Styles & Icons -->
   <script src="https://kit.fontawesome.com/7cf2870798.js" crossorigin="anonymous"></script>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-  <link rel="stylesheet" href="./css/bootstrap.min.css">
-  <link rel="shortcut icon" href="./img/Owl_logo.svg" type="image/x-icon">
+  <script src="https://cdn.jsdelivr.net/npm/@joeattardi/emoji-button@4.6.4/dist/index.min.js"></script>
+  <link href="./css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
+  <link rel="shortcut icon" href="./img/Owl_logo.svg" type="image/x-icon">
 </head>
 
 <body>
 
-  <!-- Navigation-Header -->
-  <div class="nav">
-    <!-- Header-left -->
+  <!-- ============================
+       Navigation Bar
+  ============================ -->
+  <div class="nav fixed-top">
     <div class="nav-left">
       <img class="logo" src="./img/Owl_logo.svg" alt="Owl Logo">
       <div class="container-fluid">
         <form class="d-flex" role="search">
-          <input class="form-control me-2" style="border-radius: 48px" type="search" placeholder="# Search" aria-label="Search">
-
-
+          <input class="form-control me-2" style="border-radius: 48px" type="search" placeholder="# Search">
         </form>
       </div>
     </div>
-    <!-- Header-right -->
-    <div class="nav-right">
 
+    <div class="nav-right">
       <div class="notification-container">
         <span class="icon"><i class="fa-solid fa-bell"></i></span>
         <span class="notification-badge">3</span>
       </div>
+
       <div class="dropdown">
-        <a href="#" class="d-flex align-items-center link-body-emphasis text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+        <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
           <img src="./img/profil.png" alt="" width="32" height="32" class="rounded-circle me-2">
           <strong class="text-light"><?php echo $_SESSION["username"] ?></strong>
         </a>
         <ul class="dropdown-menu dropdown-menu-end">
+          <li><a class="dropdown-item" href="#"><i class="bi bi-person-circle me-2"></i>Profil</a></li>
+          <li><a class="dropdown-item" href="settings.html"><i class="bi bi-gear me-2"></i>Einstellungen</a></li>
           <li>
-            <a class="dropdown-item" href="#"><i class="bi bi-person-circle me-2"></i>Profil</a>
+            <hr class="dropdown-divider">
           </li>
-          <li>
-            <a class="dropdown-item" href="settings.html"><i class="bi bi-gear me-2"></i>Einstellungen</a>
-          </li>
-          <li>
-            <hr class="dropdown-divider" />
-          </li>
-          <li>
-            <a class="dropdown-item text-danger" href="./logout.php"><i class="bi bi-box-arrow-right me-2"></i>Abmelden</a>
-          </li>
+          <li><a class="dropdown-item text-danger" href="./logout.php"><i class="bi bi-box-arrow-right me-2"></i>Abmelden</a></li>
         </ul>
       </div>
     </div>
   </div>
 
-  <!-- Grid-Layout -->
-  <div class="parent">
+  <!-- ============================
+       Hauptbereich (Grid Layout)
+  ============================ -->
+  <div class="parent fixed-top">
 
-    <!-- Sidebar-left -->
+    <!-- Sidebar: Profilbereich -->
     <div class="left-top-sidebar">
       <div class="profile-top"></div>
       <div class="profile">
-        <img class="profile-image" src="./img/profil.png" alt="Picture of a Man">
-        <h3><?php echo $_SESSION["firstname"] . " " . $_SESSION["lastname"]?></h3>
-        <p class="username">@<?php echo $_SESSION["username"] ?></p>
-        <p class="bio" style="color: white; font-style: normal">🌍 Explorer of ideas</p>
-
+        <img class="profile-image" src="./img/profil.png" alt="Profilbild">
+        <h3><?php echo $_SESSION["firstname"] . " " . $_SESSION["lastname"] ?></h3>
+        <p class="username text-light">@<?php echo $_SESSION["username"] ?></p>
+        <p class="bio text-light">🌍 Explorer of ideas</p>
       </div>
 
       <div class="stats">
         <div class="left-stats">
-          <p style="color: #b7c8d2">Follower</p>
-          <h3 style="color: white">7</h3>
+          <p class="text-light">Follower</p>
+          <h3 class="text-light">7</h3>
         </div>
         <div class="right-stats">
-          <p style="color: #b7c8d2">Following</p>
-          <h3 style="color: white">35</h3>
+          <p class="text-light">Following</p>
+          <h3 class="text-light">35</h3>
+        </div>
+      </div>
+    </div>
+
+    <!-- Beitrag erstellen -->
+    <div class="tweet-box p-3">
+      <div class="d-flex align-items-start mb-3">
+        <img class="tweet-profile-image me-3" src="./img/profil.png" alt="">
+        <div class="flex-grow-1">
+          <textarea class="form-control tweet-input-box bg-dark text-light border-0 rounded-4 px-3 py-2" rows="3" placeholder="Was passiert gerade?"></textarea>
         </div>
       </div>
 
+      <div class="d-flex justify-content-between align-items-center mt-2 flex-wrap gap-2">
+        <div class="d-flex gap-2 flex-wrap">
+          <label for="file-upload-image" class="btn btn-sm btn-outline-secondary">
+            <i class="fa-solid fa-image me-1"></i> Bild
+          </label>
+          <input type="file" id="file-upload-image" style="display: none;">
 
+          <label for="file-upload-video" class="btn btn-sm btn-outline-secondary">
+            <i class="fa-solid fa-video me-1"></i> Video
+          </label>
+          <input type="file" id="file-upload-video" style="display: none;">
 
-    </div>
-    <div class="left-down-sidebar">
-      <div class="follow-suggestions bg-dark p-3 rounded">
-        <h5 class="text-light mb-3">Benutzer zum Folgen</h5>
+          <button id="emoji-button" class="btn btn-sm btn-outline-secondary">
+            <i class="fa-regular fa-face-smile me-1"></i> Emoji
+          </button>
+        </div>
 
-        <?php
-        // Beispiel für das Abrufen von Benutzerdaten aus der Datenbank
-        // $users = Abrufen von Benutzern, denen man folgen kann
-        // Angenommen, es gibt eine Tabelle 'users' mit den Spalten 'profile_img', 'username'
-        $users = [
-          [
-            'profile_img' => './img/profil.png', // Profilbild
-            'username' => 'Max Müller'           // Benutzername
-          ],
-          [
-            'profile_img' => './img/profil.png',
-            'username' => 'Anna Schmidt'
-          ],
-          [
-            'profile_img' => './img/profil.png',
-            'username' => 'John Doe'
-          ]
-        ];
-
-        // Durchlaufen der Benutzer und anzeigen der Vorschläge
-        foreach ($users as $user) {
-          echo '
-                <div class="user-suggestion d-flex justify-content-between align-items-center bg-dark p-2 rounded mb-2">
-                    <div class="d-flex align-items-center">
-                        <!-- Profilbild des Benutzers -->
-                        <img class="profile-image" src="' . $user['profile_img'] . '" alt="Profilbild" style="width: 40px; height: 40px; border-radius: 50%;">
-                        <strong class="text-light ms-3">' . $user['username'] . '</strong>
-                    </div>
-                    <!-- Follow-Button -->
-                    <button class="btn btn-primary btn-sm">Folgen</button>
-                </div>
-            ';
-        }
-        ?>
+        <button type="button" class="btn btn-sm btn-primary px-4">Posten</button>
       </div>
     </div>
 
-
-
-
-
-
-
-
-    <!-- Main Content -->
-    <div class="tweet-box">
-      <div class="tweet-user">
-        <img class="tweet-profile-image" src="./img/profil.png" alt="">
-        <strong class="text-light tweet-box-name">@<?php echo $_SESSION["username"] ?></strong>
-      </div>
-      <div class="input-box">
-        <input class="tweet-input-box" type="text" placeholder="What's happening?">
-      </div>
-      <div class="tweet-buttons-left">
-        <label for="file-upload" class="btn btn-outline-light">+ Bild</label>
-        <input type="file" id="file-upload" style="display: none;" />
-        <label for="file-upload" class="btn btn-outline-light">+ Video</label>
-        <input type="file" id="file-upload" style="display: none;" />
-
-        <button type="button" class="btn btn-primary">Posten</button>
-      </div>
-
-    </div>
+    <!-- Rechte Seitenleiste -->
     <div class="searchbar"></div>
+
+    <!-- Feedbereich (Beiträge) -->
     <div class="feed">
-  <div class="card">
-    <div class="card-body bg-dark">
-      <h5 class="card-title text-light">
-        <!-- Profilbild und Benutzername -->
-        <img class="tweet-profile-image" src="./img/profil.png" alt="">
-        @<?php echo $_SESSION["username"]; ?>
-      </h5>
-      <p class="card-text text-light">
-        <!-- Beispieltext für den Beitrag -->
-        This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.
-      </p>
-      <p class="card-text text-light">
-        <small class="text-body-secondary">Last updated 3 mins ago</small>
-      </p>
-    </div>
+      <div class="tweet-card mb-4 p-3 rounded">
 
-    <!-- Bild im Beitrag -->
-    <img src="./img/Background.jpg" class="card-img-bottom" alt="...">
-
-    <!-- Footer mit Like und Kommentar-Icons -->
-    <div class="card-footer bg-dark d-flex justify-content-between">
-      <div class="d-flex gap-1">
-        <!-- Like-Button -->
-        <button class="btn btn-light">
-          <i class="bi bi-hand-thumbs-up"></i> <!-- Daumen hoch Icon -->
-        </button>
-        <!-- Kommentar-Button -->
-        <button class="btn btn-light">
-          <i class="bi bi-chat-left-text"></i> <!-- Kommentar Icon -->
-        </button>
-      </div>
-    </div>
-
-    <!-- Kommentarbereich -->
-    <div class="card-body bg-dark">
-      <?php
-      // Beispiel für das Abrufen von Kommentaren aus der Datenbank
-      // $comments = Abrufen der Kommentare aus der Datenbank (z.B. mit PDO)
-      // Angenommen, es gibt eine Tabelle 'comments' mit den Spalten 'profile_img', 'username', 'comment'
-      $comments = [
-        [
-          'profile_img' => './img/profil.png', // Profilbild
-          'username' => '@Max Müller',          // Username
-          'comment' => 'Das ist ein Kommentar!' // Kommentartext
-        ],
-        [
-          'profile_img' => './img/profil.png',
-          'username' => '@Anna Schmidt',
-          'comment' => 'Ich stimme dir zu!'
-        ]
-      ];
-
-      // Durchlaufen der Kommentare
-      foreach ($comments as $comment) {
-        echo '
-          <div class="comment mb-3">
-            <div class="d-flex align-items-center">
-              <!-- Profilbild des Kommentators -->
-              <img class="tweet-profile-image" src="' . $comment['profile_img'] . '" alt="" style="width: 30px; height: 30px;">
-              <strong class="text-light ms-2">' . $comment['username'] . '</strong>
-            </div>
-            <!-- Kommentartext -->
-            <p class="text-light mt-1">' . $comment['comment'] . '</p>
+        <!-- Beitrag Kopf -->
+        <div class="d-flex align-items-start mb-3">
+          <img class="tweet-profile-image me-3" src="./img/profil.png" alt="">
+          <div>
+            <h6 class="text-light mb-0">@<?php echo $_SESSION["username"] ?></h6>
+            <small class="text-light">vor 3 Minuten</small>
           </div>
-        ';
-      }
-      ?>
-    </div>
+        </div>
 
-    <!-- Kommentar Eingabebereich -->
-    <div class="card-body bg-dark">
-      <div class="d-flex align-items-center">
-        <!-- Profilbild des Nutzers -->
-        <img class="tweet-profile-image" src="./img/profil.png" alt="" style="width: 30px; height: 30px;">
-        
-        <!-- Textfeld zur Eingabe des Kommentars -->
-        <input type="text" class="form-control bg-dark text-light border-0 ms-2" placeholder="Deinen Kommentar eingeben...">
+        <!-- Beitrag Inhalt -->
+        <div class="mb-3">
+          <p class="text-light mb-2">
+            "Wenn Code Kunst ist, dann ist jede Zeile eine Entscheidung, jede Schleife ein Rhythmus und jedes Pixel ein Ausdruck deiner Vision. ✨"
+          </p>
+          <div class="tweet-image-wrapper text-center">
+            <img src="./img/Background.jpg" alt="Inspirierender Beitrag" class="tweet-image">
+          </div>
+        </div>
 
-        <!-- Senden-Button -->
-        <button class="btn btn-light ms-2">
-          <i class="bi bi-send"></i> <!-- Senden Icon -->
-        </button>
+
+        <!-- Buttons -->
+        <div class="d-flex justify-content-start gap-2 mb-3">
+          <button class="btn btn-outline-light btn-sm">
+            <i class="bi bi-hand-thumbs-up me-1"></i>Gefällt mir
+          </button>
+          <button class="btn btn-outline-light btn-sm">
+            <i class="bi bi-chat-left-text me-1"></i>Kommentieren
+          </button>
+        </div>
+
+        <!-- Kommentare (Beispielkommentare) -->
+        <div class="mb-3">
+          <?php foreach ($comments as $comment): ?>
+            <div class="comment mb-2">
+              <div class="d-flex align-items-center">
+                <img class="tweet-profile-image" src="<?= $comment['profile_img'] ?>" alt="" style="width: 30px; height: 30px;">
+                <strong class="text-light ms-2"><?= $comment['username'] ?></strong>
+              </div>
+              <p class="text-light mt-1 mb-0"><?= $comment['comment'] ?></p>
+            </div>
+          <?php endforeach; ?>
+        </div>
+
+        <!-- Kommentar Eingabe -->
+        <div>
+          <form class="d-flex align-items-center">
+            <img class="tweet-profile-image" src="./img/profil.png" alt="" style="width: 30px; height: 30px;">
+            <input type="text" class="form-control bg-dark text-light border-0 ms-2" placeholder="Deinen Kommentar eingeben...">
+            <button class="btn btn-light ms-2" type="submit">
+              <i class="bi bi-send"></i>
+            </button>
+          </form>
+        </div>
+
       </div>
     </div>
-
-  </div>
-</div>
-
-
-
-
   </div>
 
+  <!-- ============================
+       Skripte & Interaktionen
+  ============================ -->
+  <script src="./js/bootstrap.bundle.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const emojiBtn = document.querySelector('#emoji-button');
+      const tweetInput = document.querySelector('.tweet-input-box');
 
-  <!-- Bootstrap 5 JS und Popper -->
-  <script defer src="./js/bootstrap.bundle.min.js"></script>
+      if (!emojiBtn || !tweetInput) return;
+
+      const picker = new EmojiButton({
+        theme: 'dark'
+      });
+
+      picker.on('emoji', emoji => {
+        const start = tweetInput.selectionStart;
+        const end = tweetInput.selectionEnd;
+        const text = tweetInput.value;
+        tweetInput.value = text.slice(0, start) + emoji + text.slice(end);
+        tweetInput.focus();
+        tweetInput.selectionStart = tweetInput.selectionEnd = start + emoji.length;
+      });
+
+      emojiBtn.addEventListener('click', () => {
+        picker.togglePicker(emojiBtn);
+      });
+    });
+  </script>
 </body>
 
 </html>
