@@ -116,6 +116,12 @@
     width: 30px;
     border-radius: 50%;
   }
+
+  .dropdown-menu.bg-dark .dropdown-item.text-light:hover {
+    color: #212529 !important; /* Bootstrap "text-dark" */
+    background-color: #f8f9fa; /* Heller Hover-Hintergrund für Kontrast */
+  }
+  
   
   /* ============================
      Notification Badge
@@ -161,7 +167,6 @@
   
   .profile-top {
     height: 30%;
-    background-image: url(./img/Background.jpg);
     background-size: cover;
     background-repeat: no-repeat;
     border-radius: 20px 20px 0 0;
@@ -271,6 +276,12 @@
     grid-row: 2 / span 5;
     height: 70vh;
     overflow-y: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .feed::-webkit-scrollbar {
+    display: none;            
   }
   
   /* ============================
