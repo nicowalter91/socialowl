@@ -9,6 +9,9 @@
   body {
     background-color: #05141c;
   }
+
+
+  
   
   /* ============================
      Layout Grid Container
@@ -21,6 +24,7 @@
     grid-template-rows: repeat(5, 1fr);
     gap: 8px;
     height: 100%;
+    z-index: 1000 !important;
   }
   
   /* ============================

@@ -42,13 +42,17 @@ $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Social Owl</title>
 
-  <!-- Styles & Icons -->
-  <script src="https://kit.fontawesome.com/7cf2870798.js" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@joeattardi/emoji-button@4.6.4/dist/index.min.js"></script>
+  <!-- Styles -->
   <link href="./css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
   <link rel="shortcut icon" href="./img/Owl_logo.svg" type="image/x-icon">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
+  <!-- Scripts -->
+  <script src="./js/bootstrap.bundle.min.js"></script>
+  <script src="https://kit.fontawesome.com/7cf2870798.js" crossorigin="anonymous"></script>
+
+
 
 </head>
 
@@ -83,13 +87,13 @@ $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
           <img src="./uploads/<?php echo $_SESSION["profile_img"] ?>" alt="Profilbild" width="32" height="32" class="rounded-circle me-2">
           <strong class="text-light"><?php echo $_SESSION["username"] ?></strong>
         </a>
-        <ul class="dropdown-menu bg-dark dropdown-menu-end">
+        <ul class="dropdown-menu bg-dark dropdown-menu-end border border-secondary">
           <li><a class="dropdown-item text-light" data-bs-toggle="modal" data-bs-target="#profilModal">
               <i class="bi bi-person-circle me-2"></i>Profil
             </a></li>
           <li><a class="dropdown-item text-light" href="settings.html"><i class="bi bi-gear me-2"></i>Einstellungen</a></li>
           <li>
-            <hr class="dropdown-divider">
+            <hr class="dropdown-divider border-light opacity-75">
           </li>
           <li><a class="dropdown-item text-danger" href="./logout.php"><i class="bi bi-box-arrow-right me-2"></i>Abmelden</a></li>
         </ul>
@@ -181,23 +185,58 @@ $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $likeCount = $likeData["like_count"];
         ?>
 
-        <div class="tweet-card mb-4 p-3 rounded">
+        <div class="tweet-card mb-4 p-3 rounded" data-post-id="<?= $post['id'] ?>">
+
           <!-- Beitrag Kopf -->
-          <div class="d-flex align-items-start mb-3">
-            <img class="tweet-profile-image me-3" src="./uploads/<?= htmlspecialchars($post["profile_img"]) ?>" alt="Profilbild">
-            <div>
-              <h6 class="text-light mb-0">@<?= htmlspecialchars($post["username"]) ?></h6>
-              <small class="text-light"><?= htmlspecialchars($post["created_at"]) ?></small>
+          <!-- Beitrag Kopf mit Dropdown für eigene Posts -->
+          <div class="d-flex justify-content-between align-items-start mb-3">
+            <div class="d-flex align-items-start">
+              <img class="tweet-profile-image me-3" src="./uploads/<?= htmlspecialchars($post["profile_img"]) ?>" alt="Profilbild">
+              <div>
+                <h6 class="text-light mb-0">@<?= htmlspecialchars($post["username"]) ?></h6>
+                <small class="text-light">erstellt am: <?= date("d.m.Y H:i", strtotime($post["created_at"])) ?></small>
+
+              </div>
             </div>
+
+            <!-- Dropdown nur für eigene Posts -->
+            <?php if ($post["user_id"] == $_SESSION["id"]): ?>
+              <div class="dropdown">
+                <button class="btn btn-sm btn-outline-light dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  <i class="bi bi-three-dots-vertical"></i>Optionen
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end bg-dark border border-secondary">
+                  <li>
+                    <a class="dropdown-item text-light" href="edit_post.php?id=<?= $post['id'] ?>">
+                      <i class="bi bi-pencil-square me-2"></i>Bearbeiten
+                    </a>
+                  </li>
+                  <li>
+                    <hr class="dropdown-divider border-light">
+                  </li>
+                  <li>
+                    <button class="dropdown-item text-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                      <i class="bi bi-trash me-2"></i>Löschen
+                    </button>
+                  </li>
+
+                </ul>
+              </div>
+
+
+            <?php endif; ?>
+
           </div>
 
+
           <!-- Beitrag Inhalt -->
-          <div class="mb-3">
+          <div class="mb-3 pb-3 border-bottom border-secondary">
             <p class="text-light mb-2"><?= nl2br(htmlspecialchars($post["content"])) ?></p>
             <?php if (!empty($post["image_path"])): ?>
               <div class="tweet-image-wrapper text-center">
                 <img src="./posts/<?= htmlspecialchars($post["image_path"]) ?>" alt="Beitragsbild" class="tweet-image">
               </div>
+
             <?php endif; ?>
           </div>
 
@@ -251,11 +290,11 @@ $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
             <!-- Kommentare anzeigen -->
             <?php foreach ($comments as $comment): ?>
-              <div class="comment d-flex align-items-start gap-2 mb-2">
+              <div class="comment d-flex align-items-start gap-2 mb-2 pt-3 pb-3 border-bottom border-secondary">
                 <img class="rounded-circle" src="./uploads/<?= htmlspecialchars($comment["profile_img"]) ?>" alt="Profilbild" style="width: 32px; height: 32px;">
                 <div>
                   <strong class="text-light">@<?= htmlspecialchars($comment["username"]) ?></strong><br>
-                  <span class="text-light"><?= nl2br(htmlspecialchars($comment["content"])) ?></span>
+                  <span class="text-light "><?= nl2br(htmlspecialchars($comment["content"])) ?></span>
                 </div>
               </div>
             <?php endforeach; ?>
@@ -265,7 +304,11 @@ $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 
         </div>
+
+
       <?php endforeach; ?>
+
+
     </div>
 
 
@@ -377,13 +420,39 @@ $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
     </div>
   </div>
 
+  <!-- === MODAL: POST LÖSCHEN === -->
+  <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content bg-dark text-light border border-secondary">
+        <div class="modal-header">
+          <h5 class="modal-title" id="deleteModalLabel">
+            <i class="bi bi-exclamation-triangle me-2 text-warning"></i> Post löschen
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Schließen"></button>
+        </div>
+        <div class="modal-body">
+          Bist du sicher, dass du diesen Post löschen möchtest?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-light" data-bs-dismiss="modal">Abbrechen</button>
+          <form action="delete_post.php" method="POST" class="d-inline">
+            <input type="hidden" name="post_id">
+            <button type="submit" class="btn btn-danger">
+              <i class="bi bi-trash me-1"></i> Ja, löschen
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
 
 
 
   <!-- ============================
        Skripte & Interaktionen
   ============================ -->
-  
+
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       const emojiBtn = document.querySelector('#emoji-button');
@@ -416,6 +485,20 @@ $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
         const form = document.getElementById(`comment-form-${postId}`);
         if (form) {
           form.style.display = form.style.display === 'none' ? 'block' : 'none';
+        }
+      });
+    });
+
+
+    // Eventlistener für "Löschen"-Button
+    document.querySelectorAll('[data-bs-target="#deleteModal"]').forEach(deleteBtn => {
+      deleteBtn.addEventListener('click', () => {
+        const postId = deleteBtn.closest('.tweet-card').querySelector('input[name="post_id"]')?.value ||
+          deleteBtn.closest('.tweet-card').dataset.postId;
+
+        const deleteInput = document.querySelector('#deleteModal input[name="post_id"]');
+        if (deleteInput) {
+          deleteInput.value = postId;
         }
       });
     });
