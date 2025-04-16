@@ -28,15 +28,7 @@ $stmt->execute();
 $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 
-$commentStmt = $conn->prepare("
-      SELECT comments.*, users.username, users.profile_img 
-      FROM comments 
-      JOIN users ON comments.user_id = users.id 
-      WHERE comments.post_id = :post_id 
-      ORDER BY comments.created_at ASC
-    ");
-$commentStmt->execute(["post_id" => $post["id"]]);
-$comments = $commentStmt->fetchAll(PDO::FETCH_ASSOC);
+
 
 
 ?>
@@ -223,24 +215,39 @@ $comments = $commentStmt->fetchAll(PDO::FETCH_ASSOC);
             </form>
 
 
-            <button class="btn btn-outline-light btn-sm">
+            <button class="btn btn-outline-light btn-sm toggle-comment-form" data-post-id="<?= $post['id'] ?>">
               <i class="bi bi-chat-left-text me-1"></i>Kommentieren
             </button>
+
           </div>
 
           <!-- Kommentarbereich -->
           <div class="mb-3">
             <?php
             $commentStmt = $conn->prepare("
-      SELECT comments.*, users.username, users.profile_img 
-      FROM comments 
-      JOIN users ON comments.user_id = users.id 
-      WHERE comments.post_id = :post_id 
-      ORDER BY comments.created_at ASC
-    ");
+              SELECT comments.*, users.username, users.profile_img 
+              FROM comments 
+              JOIN users ON comments.user_id = users.id 
+              WHERE comments.post_id = :post_id 
+              ORDER BY comments.created_at ASC
+            ");
             $commentStmt->execute(["post_id" => $post["id"]]);
             $comments = $commentStmt->fetchAll(PDO::FETCH_ASSOC);
             ?>
+
+            <!-- Kommentarformular -->
+            <div class="comment-form mt-3" id="comment-form-<?= $post['id'] ?>" style="display: none;">
+              <form action="create_comment.php" method="POST" class="d-flex align-items-start gap-2 mb-2">
+                <img class="rounded-circle" src="./uploads/<?= $_SESSION["profile_img"] ?>" alt="Profilbild" style="width: 32px; height: 32px;">
+                <div class="flex-grow-1">
+                  <input type="hidden" name="post_id" value="<?= $post["id"] ?>">
+                  <div class="input-group">
+                    <input type="text" name="comment" class="form-control bg-dark text-light border-secondary" placeholder="Schreibe einen Kommentar..." required>
+                    <button type="submit" class="btn btn-primary"><i class="bi bi-send"></i>Senden</button>
+                  </div>
+                </div>
+              </form>
+            </div>
 
             <!-- Kommentare anzeigen -->
             <?php foreach ($comments as $comment): ?>
@@ -253,17 +260,7 @@ $comments = $commentStmt->fetchAll(PDO::FETCH_ASSOC);
               </div>
             <?php endforeach; ?>
 
-            <!-- Kommentar-Formular -->
-            <form action="create_comment.php" method="POST" class="d-flex align-items-start gap-2 mt-3">
-              <img class="rounded-circle" src="./uploads/<?= $_SESSION["profile_img"] ?>" alt="Du" style="width: 32px; height: 32px;">
-              <div class="flex-grow-1">
-                <input type="hidden" name="post_id" value="<?= $post["id"] ?>">
-                <div class="input-group">
-                  <input type="text" name="comment" class="form-control bg-dark text-light border-secondary" placeholder="Schreibe einen Kommentar..." required>
-                  <button type="submit" class="btn btn-primary"><i class="bi bi-send"></i>Kommentieren</button>
-                </div>
-              </div>
-            </form>
+
           </div>
 
 
@@ -386,7 +383,7 @@ $comments = $commentStmt->fetchAll(PDO::FETCH_ASSOC);
   <!-- ============================
        Skripte & Interaktionen
   ============================ -->
-  <script src="./js/bootstrap.bundle.min.js"></script>
+  
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       const emojiBtn = document.querySelector('#emoji-button');
@@ -409,6 +406,17 @@ $comments = $commentStmt->fetchAll(PDO::FETCH_ASSOC);
 
       emojiBtn.addEventListener('click', () => {
         picker.togglePicker(emojiBtn);
+      });
+    });
+
+
+    document.querySelectorAll('.toggle-comment-form').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const postId = btn.dataset.postId;
+        const form = document.getElementById(`comment-form-${postId}`);
+        if (form) {
+          form.style.display = form.style.display === 'none' ? 'block' : 'none';
+        }
       });
     });
   </script>
