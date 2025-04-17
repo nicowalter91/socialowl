@@ -2,7 +2,7 @@
        Post Formular Posts
   ============================ -->
 
-<form action="create_post.php" method="POST" enctype="multipart/form-data" class="tweet-box p-3 d-flex flex-column" style="min-height: 200px;">
+<form method="POST" enctype="multipart/form-data" class="tweet-box p-3 d-flex flex-column" style="min-height: 200px;">
       <!-- Beitrag Inhalt -->
       <div class="d-flex align-items-start mb-3">
         <img class="tweet-profile-image me-3" src="/Social_App/assets/uploads/<?php echo $_SESSION["profile_img"] ?>" alt="Profilbild">

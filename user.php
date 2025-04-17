@@ -1,4 +1,3 @@
-// /includes/user.php
 <?php
 function fetchUserInfo($username) {
   global $conn;

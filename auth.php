@@ -1,4 +1,3 @@
-// /includes/auth.php
 <?php
 session_start();
 require_once "connection.php";

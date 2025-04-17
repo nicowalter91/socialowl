@@ -20,10 +20,10 @@ $posts = fetchAllPosts($conn);
 
   <!-- Styles -->
   <link href="./css/bootstrap.min.css" rel="stylesheet">
+  <link href="./css/bootstrap-icons.css" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
-  <link rel="shortcut icon" href="./assets/img/Owl_logo.svg" type="image/x-icon">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-
+  <link rel="shortcut icon" href="/Social_App/assets/img/Owl_logo.svg" type="image/x-icon">
+  
   <!-- Scripts -->
   <script src="./js/bootstrap.bundle.min.js"></script>
   <script src="https://kit.fontawesome.com/7cf2870798.js" crossorigin="anonymous"></script>

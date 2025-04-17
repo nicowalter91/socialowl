@@ -58,7 +58,7 @@ if (isset($_POST["submit"])) {
 <body class="d-flex align-items-center justify-content-center vh-100">
     <div class="login-container p-4 rounded shadow">
         <div class="mb-3 d-flex align-items-center justify-content-center ">
-            <img src="./img/Owl_logo.svg" height="60px" alt="">
+            <img src="/Social_App/assets/img/Owl_logo.svg" height="60px" alt="">
         </div>
         <h2 class="text-center mb-4">Anmelden</h2>
 
