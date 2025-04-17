@@ -1,40 +1,47 @@
 <?php
 require_once "connection.php";
-session_start();
+require_once "auth.php";
+checkLogin();
 
-if (!isset($_SESSION["id"])) {
-  die("Nicht eingeloggt!");
-}
-
-$userId = $_SESSION["id"];
 $content = $_POST["content"] ?? '';
-$imageName = null;
+$user_id = $_SESSION["id"];
+$edit_id = $_POST["edit_post_id"] ?? null;
 
-// Bildverarbeitung
-if (!empty($_FILES["image"]["name"]) && $_FILES["image"]["error"] === UPLOAD_ERR_OK) {
-  $tmpPath = $_FILES["image"]["tmp_name"];
-  $originalName = $_FILES["image"]["name"];
-  $ext = strtolower(pathinfo($originalName, PATHINFO_EXTENSION));
-
-  $allowed = ['jpg', 'jpeg', 'png', 'gif'];
-  if (in_array($ext, $allowed)) {
-    $imageName = $userId . "_post_" . time() . "." . $ext;
-    move_uploaded_file($tmpPath, "posts/" . $imageName);
-  }
+$image_path = null;
+if (isset($_FILES["image"]) && $_FILES["image"]["error"] === 0) {
+  $filename = uniqid() . "_" . basename($_FILES["image"]["name"]);
+  move_uploaded_file($_FILES["image"]["tmp_name"], "assets/posts/" . $filename);
+  $image_path = $filename;
 }
 
-// Post speichern
-$stmt = $conn->prepare("INSERT INTO posts (user_id, content, image_path, created_at) VALUES (:uid, :content, :img, NOW())");
-$stmt->bindParam(":uid", $userId);
-$stmt->bindParam(":content", $content);
-$stmt->bindParam(":img", $imageName);
+// UPDATE
+if (!empty($edit_id)) {
+  $sql = "UPDATE posts SET content = :content" .
+         ($image_path ? ", image_path = :image_path" : "") .
+         " WHERE id = :id AND user_id = :user_id";
 
-if (!$stmt->execute()) {
-  echo "Fehler beim Speichern: ";
-  print_r($stmt->errorInfo());
-  exit();
+  $stmt = $conn->prepare($sql);
+  $params = [
+    ":content" => $content,
+    ":id" => $edit_id,
+    ":user_id" => $user_id
+  ];
+  if ($image_path) {
+    $params[":image_path"] = $image_path;
+  }
+  $stmt->execute($params);
+
+// NEUER POST
+} else {
+  $stmt = $conn->prepare("INSERT INTO posts (user_id, content, image_path) VALUES (:user_id, :content, :image_path)");
+  $stmt->execute([
+    ":user_id" => $user_id,
+    ":content" => $content,
+    ":image_path" => $image_path
+  ]);
 }
 
 header("Location: welcome.php");
 exit();
+
 ?>

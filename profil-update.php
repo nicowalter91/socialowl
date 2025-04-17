@@ -16,7 +16,7 @@ if (isset($_FILES["profile_img"]) && $_FILES["profile_img"]["error"] === UPLOAD_
   $ext = pathinfo($originalName, PATHINFO_EXTENSION);
   $newName = $username . "_profile_" . time() . "." . $ext;
 
-  $uploadPath = "uploads/" . $newName;
+  $uploadPath = "assets/uploads/" . $newName;
   $allowedTypes = ['jpg', 'jpeg', 'png', 'gif'];
 
   if (in_array(strtolower($ext), $allowedTypes)) {
@@ -32,7 +32,7 @@ if (isset($_FILES["header_img"]) && $_FILES["header_img"]["error"] === UPLOAD_ER
   $ext = pathinfo($originalName, PATHINFO_EXTENSION);
   $newName = $username . "_header_" . time() . "." . $ext;
 
-  $uploadPath = "uploads/" . $newName;
+  $uploadPath = "assets/uploads/" . $newName;
   $allowedTypes = ['jpg', 'jpeg', 'png', 'gif'];
 
   if (in_array(strtolower($ext), $allowedTypes)) {

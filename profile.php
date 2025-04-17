@@ -26,7 +26,7 @@ $user = fetchUserInfo($_SESSION["username"]);
     <!-- Profilbild -->
     <div class="mb-4">
       <label class="form-label">Aktuelles Profilbild</label><br>
-      <img src="<?= $user['profile_img'] ?? './img/profil.png' ?>" class="rounded-circle mb-2" width="100" height="100">
+      <img src="<?= $user['profile_img'] ?? '/Social_App/assets/img/profil.png' ?>" class="rounded-circle mb-2" width="100" height="100">
       <input type="file" name="profile_img" class="form-control mt-2">
     </div>
 

@@ -265,6 +265,13 @@
     border-radius: 10px;
     padding-left: 16px;
   }
+
+  .tweet-input-box:focus {
+  background-color: #212529;
+  color: #fff;
+  box-shadow: none; 
+}
+
   
   .tweet-input-box::placeholder {
     color: #b7c8d2;
@@ -362,4 +369,11 @@
   .trends {
     grid-row: 4 / span 3;
   }
+
+
+   /* ============================
+     Importants
+  ============================ */
+
+  
   

@@ -26,7 +26,7 @@ if (!$post) {
 
 // Falls ein Bild existiert, löschen wir es auch vom Server
 if (!empty($post["image_path"]) && file_exists("posts/" . $post["image_path"])) {
-  unlink("posts/" . $post["image_path"]);
+  unlink("assets/posts/" . $post["image_path"]);
 }
 
 // Post löschen
