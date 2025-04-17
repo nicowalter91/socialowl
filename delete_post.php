@@ -28,6 +28,9 @@ if (!$post) {
 if (!empty($post["image_path"]) && file_exists("posts/" . $post["image_path"])) {
   unlink("assets/posts/" . $post["image_path"]);
 }
+if (!empty($post["video_path"]) && file_exists("posts/" . $post["video_path"])) {
+  unlink("assets/posts/" . $post["video_path"]);
+}
 
 // Post löschen
 $deleteStmt = $conn->prepare("DELETE FROM posts WHERE id = :id");

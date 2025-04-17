@@ -69,13 +69,23 @@
       <!-- Beitrag Inhalt -->
       <div class="mb-3 pb-3 border-bottom border-secondary">
         <p class="text-light mb-2"><?= nl2br(htmlspecialchars($post["content"])) ?></p>
-        <?php if (!empty($post["image_path"])): ?>
-          <div class="tweet-image-wrapper text-center">
-            <img src="/Social_App/assets/posts/<?= htmlspecialchars($post["image_path"]) ?>" alt="Beitragsbild" class="tweet-image">
-          </div>
 
+        <?php if (!empty($post["image_path"])): ?>
+          <div class="tweet-media-wrapper mb-2 w-100">
+            <img src="/Social_App/assets/posts/<?= htmlspecialchars($post["image_path"]) ?>?t=<?= time() ?>" alt="Bild" class="tweet-media img-fluid rounded-4 shadow-sm">
+          </div>
+        <?php endif; ?>
+
+        <?php if (!empty($post["video_path"])): ?>
+          <div class="tweet-media-wrapper">
+            <video controls class="tweet-media rounded-4 shadow-sm" >
+              <source src="/Social_App/assets/posts/<?= htmlspecialchars($post["video_path"]) ?>?t=<?= time() ?>" type="video/mp4">
+              Dein Browser unterstützt dieses Video nicht.
+            </video>
+          </div>
         <?php endif; ?>
       </div>
+
 
       <!-- Buttons -->
       <div class="d-flex justify-content-start align-items-center gap-3 mb-3">
@@ -134,7 +144,7 @@
               <span class="text-light "><?= nl2br(htmlspecialchars($comment["content"])) ?></span>
             </div>
             <label for="file-upload-image" class="btn btn-sm btn-primary">
-            <i class="bi bi-hand-thumbs-up me-1"></i>
+              <i class="bi bi-hand-thumbs-up me-1"></i>
             </label>
           </div>
         <?php endforeach; ?>

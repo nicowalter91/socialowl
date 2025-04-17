@@ -3,7 +3,7 @@
   ==============================-->
 
 
-  <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content bg-dark text-light border-0 shadow-lg rounded-4">
 
@@ -23,16 +23,17 @@
 
       <!-- Footer -->
       <div class="modal-footer border-0 pt-0 d-flex">
+        <input type="hidden" id="delete-post-id">
+
         <button type="button" class="btn btn-outline-secondary px-4" data-bs-dismiss="modal">
           Abbrechen
         </button>
-        <form action="delete_post.php" method="POST" class="d-inline">
-          <input type="hidden" name="post_id">
-          <button type="submit" class="btn btn-danger px-4">
-            <i class="bi bi-trash me-2"></i> Ja, löschen
-          </button>
-        </form>
+
+        <button type="button" class="btn btn-danger confirm-delete-btn px-4">
+          <i class="bi bi-trash me-2"></i> Ja, löschen
+        </button>
       </div>
+
     </div>
   </div>
 </div>
