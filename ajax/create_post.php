@@ -12,7 +12,7 @@ $image_path = null;
 
 // === Bild-Upload verarbeiten ===
 if (isset($_FILES["image"]) && $_FILES["image"]["error"] === 0) {
-    $uploadDir = realpath(__DIR__ . "/../../assets/uploads/posts");
+    $uploadDir = realpath(__DIR__ . "../assets/posts");
     $filename = uniqid() . "_" . basename($_FILES["image"]["name"]);
     $targetPath = $uploadDir ."/". $filename;
 
@@ -68,6 +68,7 @@ $html = ob_get_clean();
 
 echo json_encode([
     "success" => true,
+    "post_id" => $post_id,
     "html" => $html
 ]);
 exit;

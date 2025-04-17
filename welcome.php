@@ -23,10 +23,6 @@ $posts = fetchAllPosts($conn);
   <link href="./css/bootstrap-icons.css" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
   <link rel="shortcut icon" href="/Social_App/assets/img/Owl_logo.svg" type="image/x-icon">
-  
-  <!-- Scripts -->
-  <script src="./js/bootstrap.bundle.min.js"></script>
-  <script src="https://kit.fontawesome.com/7cf2870798.js" crossorigin="anonymous"></script>
 </head>
 
 <body>
@@ -47,6 +43,7 @@ $posts = fetchAllPosts($conn);
   <?php include "./partials/modal-delete-posts.php" ?>
 
   <!-- Java Script -->
+  <script src="./js/bootstrap.bundle.min.js"></script>
   <script src="./script.js"></script>
 </body>
 

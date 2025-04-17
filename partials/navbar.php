@@ -19,7 +19,7 @@
     <!-- Rechte Seite: Notifications + Dropdown -->
     <div class="d-flex align-items-center gap-3">
       <div class="notification-container position-relative">
-        <span class="icon"><i class="fa-solid fa-bell text-white"></i></span>
+        <span class="icon"><i class="bi bi-bell-fill text-white me-3 fs-4"></i></span>
         <span class="notification-badge">3</span>
       </div>
 

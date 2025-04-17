@@ -10,7 +10,7 @@ $edit_id = $_POST["edit_post_id"] ?? null;
 $image_path = null;
 if (isset($_FILES["image"]) && $_FILES["image"]["error"] === 0) {
   $filename = uniqid() . "_" . basename($_FILES["image"]["name"]);
-  move_uploaded_file($_FILES["image"]["tmp_name"], "assets/posts/" . $filename);
+  move_uploaded_file($_FILES["image"]["tmp_name"], "/Social_App/assets/posts/" . $filename);
   $image_path = $filename;
 }
 

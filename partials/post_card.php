@@ -36,7 +36,7 @@ $likeCount = $likeData["like_count"];
             <a href="#" class="dropdown-item text-light edit-post-btn"
               data-post-id="<?= $post['id'] ?>"
               data-content="<?= htmlspecialchars($post['content'], ENT_QUOTES) ?>"
-              data-image="<?= !empty($post['image_path']) ? '/Social_App/assets/uploads/posts/' . htmlspecialchars($post['image_path']) : '' ?>">
+              data-image="<?= !empty($post['image_path']) ? '/Social_App/assets/posts/' . htmlspecialchars($post['image_path']) : '' ?>">
               <i class="bi bi-pencil-square me-2"></i>Bearbeiten
             </a>
           </li>
@@ -55,7 +55,7 @@ $likeCount = $likeData["like_count"];
     <p class="text-light mb-2"><?= nl2br(htmlspecialchars($post["content"])) ?></p>
     <?php if (!empty($post["image_path"])): ?>
       <div class="tweet-image-wrapper text-center">
-        <img src="/Social_App/assets/uploads/posts/<?= htmlspecialchars($post["image_path"]) ?>" alt="Beitragsbild" class="tweet-image">
+        <img src="/Social_App/assets/posts/<?= htmlspecialchars($post["image_path"]) ?>" alt="Beitragsbild" class="tweet-image">
       </div>
     <?php endif; ?>
   </div>
