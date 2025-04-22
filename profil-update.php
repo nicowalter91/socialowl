@@ -41,6 +41,8 @@ if (isset($_FILES["header_img"]) && $_FILES["header_img"]["error"] === UPLOAD_ER
   }
 }
 
+
+
 // === SQL vorbereiten ===
 $sql = "UPDATE users SET bio = :bio";
 if ($profileImageName) {

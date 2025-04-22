@@ -12,17 +12,17 @@
     </div>
   </div>
   <!-- Vorschau -->
-<div id="media-preview" class="position-relative mt-2">
-  <button type="button" id="remove-preview" class="btn btn-sm btn-danger position-absolute top-0 end-0 d-none" title="Entfernen" style="z-index: 10;">
-    <i class="bi bi-x-circle-fill"></i>
-  </button>
+  <div id="media-preview" class="position-relative mt-2">
+    <button type="button" id="remove-preview" class="btn btn-sm btn-danger position-absolute top-0 end-0 d-none" title="Entfernen" style="z-index: 10;">
+      <i class="bi bi-x-circle-fill"></i>
+    </button>
 
-  <img id="image-preview" src="#" alt="Bildvorschau" class="img-thumbnail d-none" style="max-height: 120px;">
-  <video id="video-preview" controls class="d-none" style="max-height: 120px;">
-    <source src="#" type="video/mp4">
-    Dein Browser unterstützt keine Videoanzeige.
-  </video>
-</div>
+    <img id="image-preview" src="#" alt="Bildvorschau" class="img-thumbnail d-none" style="max-height: 120px;">
+    <video id="video-preview" controls class="d-none" style="max-height: 120px;">
+      <source src="#" type="video/mp4">
+      Dein Browser unterstützt keine Videoanzeige.
+    </video>
+  </div>
 
 
   <!-- Footer mit Buttons -->
@@ -45,7 +45,35 @@
       </label>
       <input type="file" name="video" id="file-upload-video" style="display: none;" accept="video/*">
 
-      
+      <!-- Emoji Button + Picker -->
+      <div class="position-relative">
+        <button type="button" class="btn btn-sm btn-outline-light" id="emoji-picker-btn"><i class="bi bi-emoji-smile me-1"></i>Emoji
+        </button>
+
+        <div id="emoji-picker" class="emoji-picker d-none position-absolute p-3 shadow-lg rounded-4 bg-dark text-light">
+          <input type="text" id="emoji-search" class="form-control bg-light form-control-sm mb-2 text-dark" placeholder="Suchen...">
+
+          <div id="emoji-list" class="emoji-grid">
+            <button type="button">😀</button>
+            <button type="button">😂</button>
+            <button type="button">😍</button>
+            <button type="button">😎</button>
+            <button type="button">😭</button>
+            <button type="button">😡</button>
+            <button type="button">👍</button>
+            <button type="button">❤️</button>
+            <button type="button">🔥</button>
+            <button type="button">🎉</button>
+            <button type="button">👏</button>
+            <button type="button">💯</button>
+          </div>
+        </div>
+
+      </div>
+
+
+
+
 
     </div>
 
@@ -53,7 +81,7 @@
 
     <!-- Posten -->
     <div id="post-btn-wrapper" class="d-flex gap-2">
-      <button type="submit" id="create-post-btn" class="btn btn-sm btn-primary px-4"><i class="bi bi-send-fill me-1"></i>Posten</button>
+      <button type="submit" id="create-post-btn" class="btn btn-sm btn-primary px-4"><i class="bi bi-send me-2"></i>Posten</button>
     </div>
 
     <!-- Update & Abbrechen -->

@@ -10,6 +10,8 @@
         $conn = new PDO("mysql:host=$servername;dbname=$dbname;charset=utf8", $username, $password);
         // Fehlerbehandlung im PDO-Modus aktivieren
         $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $conn->exec("SET NAMES utf8mb4");
+
     } catch (PDOException $e) {
         echo "Verbindung fehlgeschlagen: " . $e->getMessage();
     }

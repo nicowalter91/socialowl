@@ -36,7 +36,7 @@
         <?php if ($post["user_id"] == $_SESSION["id"]): ?>
           <div class="dropdown">
             <button class="btn btn-sm btn-outline-light dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-              <i class="bi bi-three-dots"></i>
+              Optionen
             </button>
             <ul class="dropdown-menu dropdown-menu-end bg-dark border border-secondary">
               <li>
@@ -78,7 +78,7 @@
 
         <?php if (!empty($post["video_path"])): ?>
           <div class="tweet-media-wrapper">
-            <video controls class="tweet-media rounded-4 shadow-sm" >
+            <video controls class="tweet-media rounded-4 shadow-sm">
               <source src="/Social_App/assets/posts/<?= htmlspecialchars($post["video_path"]) ?>?t=<?= time() ?>" type="video/mp4">
               Dein Browser unterstützt dieses Video nicht.
             </video>
@@ -88,7 +88,7 @@
 
 
       <!-- Buttons -->
-      <div class="d-flex justify-content-start align-items-center gap-3 mb-3">
+      <div class="d-flex justify-content-start align-items-center gap-1 mb-3">
         <form action="like_post.php" method="POST" class="me-2 d-inline">
           <input type="hidden" name="post_id" value="<?= $post["id"] ?>">
           <button type="submit" class="btn btn-sm <?= $liked ? 'btn-light text-dark' : 'btn-primary' ?>">
@@ -102,7 +102,7 @@
 
 
         <button class="btn btn-outline-light btn-sm toggle-comment-form" data-post-id="<?= $post['id'] ?>">
-          <i class="bi bi-chat-left-text me-1"></i>Kommentieren
+          <i class="bi bi-chat-left-text me-2"></i>Kommentieren
         </button>
 
       </div>
@@ -122,31 +122,115 @@
         ?>
 
         <!-- Kommentarformular -->
-        <div class="comment-form mt-3" id="comment-form-<?= $post['id'] ?>" style="display: none;">
-          <form action="create_comment.php" method="POST" class="d-flex align-items-start gap-2 mb-2">
-            <img class="rounded-circle" src="/Social_App/assets/uploads/<?= $_SESSION["profile_img"] ?>" alt="Profilbild" style="width: 32px; height: 32px;">
-            <div class="flex-grow-1">
+        <div class="comment-form mt-3 px-2" id="comment-form-<?= $post['id'] ?>" style="display: none;">
+          <form method="POST" class="d-flex align-items-start gap-2 mb-3 comment-form-inner" data-post-id="<?= $post["id"] ?>">
+
+            <!-- Profilbild -->
+            <img class="rounded-circle mt-1" src="/Social_App/assets/uploads/<?= $_SESSION["profile_img"] ?>" alt="Profilbild" style="width: 32px; height: 32px;">
+
+
+            <div class="flex-grow-1 w-100">
+              <!-- Versteckte Inputs -->
               <input type="hidden" name="post_id" value="<?= $post["id"] ?>">
-              <div class="input-group">
-                <input type="text" name="comment" class="form-control comment-custom comment-input-box bg-dark text-light border-secondary" placeholder="Schreibe einen Kommentar..." required>
-                <button type="submit" class="btn btn-primary"><i class="bi bi-send"></i>Senden</button>
+              <input type="hidden" name="edit_comment_id" class="edit-comment-id" value="">
+
+              <!-- Textarea + Emoji Picker -->
+              <div class="position-relative">
+                <textarea name="comment" class="tweet-comment-box form-control text-light border-0 rounded-4 px-3 py-2 w-100"
+                  rows="2" placeholder="Schreibe einen Kommentar..." required></textarea>
+
+                <!-- Emoji-Picker (JS generiert hier Emojis rein) -->
+                <div class="emoji-picker d-none position-absolute end-0 bottom-100 mb-2 z-3"></div>
+              </div>
+
+              <!-- Buttons -->
+              <div class="d-flex justify-content-end gap-2 align-items-center mt-2">
+                <div class="d-flex gap-2">
+                  <!-- Emoji Button -->
+                  <button type="button" class="btn btn-sm btn-outline-light emoji-comment-btn" title="Emoji einfügen">
+                    <i class="bi bi-emoji-smile"></i>
+                  </button>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="btn btn-sm btn-primary px-3">
+                  <i class="bi bi-send me-1"></i> Senden
+                </button>
               </div>
             </div>
           </form>
         </div>
 
+
+
+
         <!-- Kommentare anzeigen -->
         <?php foreach ($comments as $comment): ?>
-          <div class="comment d-flex align-items-start gap-2 mb-2 pt-3 pb-3 border-bottom border-secondary">
+
+          <?php
+          $stmt = $conn->prepare("SELECT COUNT(*) AS count, SUM(user_id = :uid) AS liked FROM comment_likes WHERE comment_id = :cid");
+          $stmt->execute([":uid" => $_SESSION["id"], ":cid" => $comment["id"]]);
+          $likeData = $stmt->fetch(PDO::FETCH_ASSOC);
+          ?>
+
+          <div class="comment d-flex align-items-start gap-2 mb-2 pt-3 pb-3 border-bottom border-secondary data-comment-id=<?= $comment["id"] ?>">
             <img class="rounded-circle" src="/Social_App/assets/uploads/<?= htmlspecialchars($comment["profile_img"]) ?>" alt="Profilbild" style="width: 32px; height: 32px;">
-            <div>
+
+            <div class="flex-grow-1">
               <strong class="text-light">@<?= htmlspecialchars($comment["username"]) ?></strong><br>
-              <span class="text-light "><?= nl2br(htmlspecialchars($comment["content"])) ?></span>
+              <small class="text-light"><?= date("d.m.Y H:i", strtotime($post["created_at"])) ?></small>
+              <div class="mt-2"><span class="text-light comment-content"><?= nl2br(htmlspecialchars($comment["content"])) ?></span></div>
             </div>
-            <label for="file-upload-image" class="btn btn-sm btn-primary">
-              <i class="bi bi-hand-thumbs-up me-1"></i>
-            </label>
+
+            <!-- Buttons rechts -->
+            <?php if ($comment["user_id"] == $_SESSION["id"]): ?>
+              <div class="mt-2 d-flex gap-2 align-items-center">
+                <!-- Versteckte ID für Kommentar-Bearbeitung -->
+                <input type="hidden" name="edit_comment_id" class="edit-comment-id" value="">
+
+                <button type="button" title="Bearbeiten"
+                  class="btn btn-sm btn-outline-light edit-comment-btn"
+                  data-comment-id="<?= $comment["id"] ?>"
+                  data-content="<?= htmlspecialchars($comment["content"], ENT_QUOTES) ?>">
+                  <i class="bi bi-pencil"></i>
+                </button>
+
+
+                <!-- Update-Button (initial d-none) -->
+                <button type="submit" class="btn btn-sm btn-success update-comment-btn d-none">
+                  <i class="bi bi-check-lg me-1"></i> Updaten
+                </button>
+
+                <!-- Löschen -->
+                <button type="button" title="Löschen"
+                  class="btn btn-sm btn-outline-danger delete-comment-btn"
+                  data-comment-id="<?= $comment["id"] ?>">
+                  <i class="bi bi-trash"></i>
+                </button>
+
+                <!-- Liken -->
+                <button type="button"
+                  class="btn btn-sm like-comment-btn <?= $likeData['liked'] ? 'btn-light text-dark' : 'btn-outline-light' ?>"
+                  data-comment-id="<?= $comment['id'] ?>">
+                  <i class="bi bi-hand-thumbs-up me-1"></i>
+                  <span class="like-count"><?= $likeData['count'] ?></span>
+                </button>
+              </div>
+            <?php else: ?>
+              <!-- Nur Like-Button ganz rechts -->
+              <div class="ms-auto mt-2">
+                <button
+                  type="button"
+                  class="btn btn-sm like-comment-btn <?= $likeData['liked'] ? 'btn-light text-dark' : 'btn-outline-light' ?>"
+                  data-comment-id="<?= $comment['id'] ?>">
+                  <i class="bi bi-hand-thumbs-up me-1"></i>
+                  <span class="like-count"><?= $likeData['count'] ?></span>
+                </button>
+              </div>
+            <?php endif; ?>
+
           </div>
+
         <?php endforeach; ?>
 
 

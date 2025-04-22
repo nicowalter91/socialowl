@@ -21,7 +21,7 @@ $posts = fetchAllPosts($conn);
   <!-- Styles -->
   <link href="./css/bootstrap.min.css" rel="stylesheet">
   <link href="./css/bootstrap-icons.css" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="./css/style.css">
   <link rel="shortcut icon" href="/Social_App/assets/img/Owl_logo.svg" type="image/x-icon">
 </head>
 
@@ -44,7 +44,7 @@ $posts = fetchAllPosts($conn);
 
   <!-- Java Script -->
   <script src="./js/bootstrap.bundle.min.js"></script>
-  <script src="./script.js"></script>
-</body>
+  <script src="./js/script.js"></script>
+  </body>
 
 </html>
