@@ -29,7 +29,7 @@
           <strong class="text-light"><?php echo $_SESSION["username"] ?></strong>
         </a>
         <ul class="dropdown-menu bg-dark dropdown-menu-end border border-secondary">
-          <li><a class="dropdown-item text-light" data-bs-toggle="modal" data-bs-target="#profilModal">
+          <li><a class="dropdown-item text-light" href="#" data-bs-toggle="modal" data-bs-target="#profilModal">
               <i class="bi bi-person-circle me-2"></i>Profil
             </a></li>
           <li><a class="dropdown-item text-light" href="settings.html"><i class="bi bi-gear me-2"></i>Einstellungen</a></li>

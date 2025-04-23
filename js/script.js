@@ -491,36 +491,16 @@ document.querySelectorAll(".comment-form-inner").forEach((form) => {
 
 
 // // ============================
-// // Kommentar speichern (AJAX)
+// // Vorschau Profil Bilder
 // // ============================
-// document.querySelectorAll(".comment-form-inner").forEach((form) => {
-//   form.addEventListener("submit", async (e) => {
-//     e.preventDefault();
 
-//     const formData = new FormData(form);
-//     const postId = form.dataset.postId;
-//     const textarea = form.querySelector("textarea");
-//     const commentList = form.closest(".comment-form").nextElementSibling; // direkt nach dem Formular
-
-//     try {
-//       const res = await fetch("/Social_App/ajax/create_comment.php", {
-//         method: "POST",
-//         body: formData
-//       });
-
-//       const result = await res.json();
-
-//       if (result.success) {
-//         // Kommentar anhängen
-//         if (result.html && commentList) {
-//           commentList.insertAdjacentHTML("beforeend", result.html);
-//         }
-//         form.reset();
-//       } else {
-//         alert("❌ Kommentar konnte nicht gespeichert werden.");
-//       }
-//     } catch (err) {
-//       console.error("❌ Fehler beim Speichern des Kommentars:", err);
-//     }
-//   });
-// });
+  // Bildvorschau
+  function previewImage(input, targetId) {
+    const file = input.files[0];
+    const preview = document.getElementById(targetId);
+    if (file && preview) {
+      const reader = new FileReader();
+      reader.onload = e => preview.src = e.target.result;
+      reader.readAsDataURL(file);
+    }
+  }
