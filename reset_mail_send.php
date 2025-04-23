@@ -33,11 +33,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Log In</title>
     <link rel="stylesheet" href="./css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="./css/style.css">
 </head>
 <body class="d-flex align-items-center justify-content-center vh-100">
-    <div class="login-container p-4 rounded shadow">
+    <div class="login-container p-4 rounded shadow text-light bg-dark">
         <div class="mb-3 d-flex align-items-center justify-content-center ">
             <img src="./assets/img/Owl_logo.svg" height="60px" alt="">
         </div>

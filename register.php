@@ -6,10 +6,10 @@
         
         $username = $_POST["username"];
         $email = $_POST["email"];
-        $firstname = $_POST["firstname"];  // Vorname
-        $lastname = $_POST["lastname"];    // Nachname
+        $firstname = $_POST["firstname"];  
+        $lastname = $_POST["lastname"];    
         $password = $_POST["password"];
-        $passwordRepeat = $_POST["passwordRepeat"]; // Das zweite Passwort
+        $passwordRepeat = $_POST["passwordRepeat"]; 
 
         // Überprüfen, ob die Passwörter übereinstimmen
         if ($password !== $passwordRepeat) {
@@ -63,8 +63,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registrieren</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="./css/style.css">
     <link rel="stylesheet" href="./css/bootstrap.min.css">
 
     <script>
@@ -88,8 +87,8 @@
         }
     </script>
 </head>
-<body class="d-flex align-items-center justify-content-center vh-100">
-    <div class="login-container p-4 rounded shadow">
+<body class="d-flex align-items-center justify-content-center vh-100" style="background-color: #05141c;">
+    <div class="login-container p-4 rounded shadow text-light bg-dark">
         <div class="mb-3 d-flex align-items-center justify-content-center ">
             <img src="/Social_App/assets/img/Owl_logo.svg" height="60px" alt="">
         </div>
@@ -107,29 +106,29 @@
             <div class="mb-3 row">
                 <div class="col-md-6">
                     <label for="firstname" class="form-label">Vorname</label>
-                    <input type="text" class="form-control" id="firstname"  name="firstname" required>
+                    <input type="text" class="form-control" id="firstname"  placeholder="Vorname eingeben" name="firstname" required>
                 </div>
                 <div class="col-md-6">
                     <label for="lastname" class="form-label">Nachname</label>
-                    <input type="text" class="form-control" id="lastname"  name="lastname" required>
+                    <input type="text" class="form-control" id="lastname" placeholder="Nachname eingeben"  name="lastname" required>
                 </div>
             </div>
 
             <div class="mb-3">
                 <label for="username" class="form-label">Benutzername</label>
-                <input type="text" class="form-control" id="username"  name="username" required>
+                <input type="text" class="form-control" id="username" placeholder="Username eingeben" name="username" required>
             </div>
             <div class="mb-3">
                 <label for="email" class="form-label">E-Mail</label>
-                <input type="email" class="form-control" id="email" name="email" required>
+                <input type="email" class="form-control" id="email" placeholder="Email Adresse eingeben" name="email" required>
             </div>
             <div class="mb-3">
                 <label for="password" class="form-label">Passwort</label>
-                <input type="password" class="form-control" id="password" name="password" required oninput="checkPasswords()">
+                <input type="password" class="form-control" id="password" placeholder="Passwort eingeben" name="password" required oninput="checkPasswords()">
             </div>
             <div class="mb-3">
                 <label for="passwordRepeat" class="form-label">Passwort wiederholen</label>
-                <input type="password" class="form-control" id="passwordRepeat" name="passwordRepeat" required oninput="checkPasswords()">
+                <input type="password" class="form-control" id="passwordRepeat" placeholder="Passwort erneut eingeben" name="passwordRepeat" required oninput="checkPasswords()">
                 <!-- Fehlermeldung wird hier angezeigt, wenn die Passwörter nicht übereinstimmen -->
                 <small id="passwordMessage" style="display:none;"></small>
             </div>
@@ -140,7 +139,6 @@
             </div>
         </form>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="script.js"></script>
+    <script src="./js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

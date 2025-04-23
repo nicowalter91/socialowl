@@ -164,74 +164,80 @@
 
 
 
-        <!-- Kommentare anzeigen -->
-        <?php foreach ($comments as $comment): ?>
+        <!-- Kommentare-Wrapper für JavaScript-Ziel -->
+        <div id="comment-list-<?= $post["id"] ?>">
+          <?php foreach ($comments as $comment): ?>
 
-          <?php
-          $stmt = $conn->prepare("SELECT COUNT(*) AS count, SUM(user_id = :uid) AS liked FROM comment_likes WHERE comment_id = :cid");
-          $stmt->execute([":uid" => $_SESSION["id"], ":cid" => $comment["id"]]);
-          $likeData = $stmt->fetch(PDO::FETCH_ASSOC);
-          ?>
+            <?php
+            $stmt = $conn->prepare("SELECT COUNT(*) AS count, SUM(user_id = :uid) AS liked FROM comment_likes WHERE comment_id = :cid");
+            $stmt->execute([":uid" => $_SESSION["id"], ":cid" => $comment["id"]]);
+            $likeData = $stmt->fetch(PDO::FETCH_ASSOC);
+            ?>
 
-          <div class="comment d-flex align-items-start gap-2 mb-2 pt-3 pb-3 border-bottom border-secondary data-comment-id=<?= $comment["id"] ?>">
-            <img class="rounded-circle" src="/Social_App/assets/uploads/<?= htmlspecialchars($comment["profile_img"]) ?>" alt="Profilbild" style="width: 32px; height: 32px;">
+            <div class="comment d-flex align-items-start gap-2 mb-2 pt-3 pb-3 border-bottom border-secondary"
+              data-comment-id="<?= $comment["id"] ?>">
 
-            <div class="flex-grow-1">
-              <strong class="text-light">@<?= htmlspecialchars($comment["username"]) ?></strong><br>
-              <small class="text-light"><?= date("d.m.Y H:i", strtotime($post["created_at"])) ?></small>
-              <div class="mt-2"><span class="text-light comment-content"><?= nl2br(htmlspecialchars($comment["content"])) ?></span></div>
+              <!-- Profilbild -->
+              <img class="rounded-circle" src="/Social_App/assets/uploads/<?= htmlspecialchars($comment["profile_img"]) ?>"
+                alt="Profilbild" style="width: 32px; height: 32px;">
+
+              <!-- Kommentar-Inhalt -->
+              <div class="flex-grow-1">
+                <strong class="text-light">@<?= htmlspecialchars($comment["username"]) ?></strong><br>
+                <small class="text-light"><?= date("d.m.Y H:i", strtotime($comment["created_at"])) ?></small>
+                <div class="mt-2">
+                  <span class="text-light comment-content"><?= nl2br(htmlspecialchars($comment["content"])) ?></span>
+                </div>
+              </div>
+
+              <!-- Buttons -->
+              <?php if ($comment["user_id"] == $_SESSION["id"]): ?>
+                <div class="mt-2 d-flex gap-2 align-items-center">
+                  <input type="hidden" name="edit_comment_id" class="edit-comment-id" value="">
+
+                  <!-- Bearbeiten -->
+                  <button type="button"
+                    class="btn btn-sm btn-outline-light edit-comment-btn"
+                    data-comment-id="<?= $comment["id"] ?>"
+                    data-content="<?= htmlspecialchars($comment["content"], ENT_QUOTES) ?>">
+                    <i class="bi bi-pencil"></i>
+                  </button>
+
+                  <!-- Update (hidden) -->
+                  <button type="submit" class="btn btn-sm btn-success update-comment-btn d-none">
+                    <i class="bi bi-check-lg me-1"></i> Updaten
+                  </button>
+
+                  <!-- Löschen -->
+                  <button type="button"
+                    class="btn btn-sm btn-outline-danger delete-comment-btn"
+                    data-comment-id="<?= $comment["id"] ?>">
+                    <i class="bi bi-trash"></i>
+                  </button>
+
+                  <!-- Like -->
+                  <button type="button"
+                    class="btn btn-sm like-comment-btn <?= $likeData['liked'] ? 'btn-light text-dark' : 'btn-outline-light' ?>"
+                    data-comment-id="<?= $comment['id'] ?>">
+                    <i class="bi bi-hand-thumbs-up me-1"></i>
+                    <span class="like-count"><?= $likeData['count'] ?></span>
+                  </button>
+                </div>
+              <?php else: ?>
+                <div class="ms-auto mt-2">
+                  <button type="button"
+                    class="btn btn-sm like-comment-btn <?= $likeData['liked'] ? 'btn-light text-dark' : 'btn-outline-light' ?>"
+                    data-comment-id="<?= $comment['id'] ?>">
+                    <i class="bi bi-hand-thumbs-up me-1"></i>
+                    <span class="like-count"><?= $likeData['count'] ?></span>
+                  </button>
+                </div>
+              <?php endif; ?>
+
             </div>
+          <?php endforeach; ?>
+        </div>
 
-            <!-- Buttons rechts -->
-            <?php if ($comment["user_id"] == $_SESSION["id"]): ?>
-              <div class="mt-2 d-flex gap-2 align-items-center">
-                <!-- Versteckte ID für Kommentar-Bearbeitung -->
-                <input type="hidden" name="edit_comment_id" class="edit-comment-id" value="">
-
-                <button type="button" title="Bearbeiten"
-                  class="btn btn-sm btn-outline-light edit-comment-btn"
-                  data-comment-id="<?= $comment["id"] ?>"
-                  data-content="<?= htmlspecialchars($comment["content"], ENT_QUOTES) ?>">
-                  <i class="bi bi-pencil"></i>
-                </button>
-
-
-                <!-- Update-Button (initial d-none) -->
-                <button type="submit" class="btn btn-sm btn-success update-comment-btn d-none">
-                  <i class="bi bi-check-lg me-1"></i> Updaten
-                </button>
-
-                <!-- Löschen -->
-                <button type="button" title="Löschen"
-                  class="btn btn-sm btn-outline-danger delete-comment-btn"
-                  data-comment-id="<?= $comment["id"] ?>">
-                  <i class="bi bi-trash"></i>
-                </button>
-
-                <!-- Liken -->
-                <button type="button"
-                  class="btn btn-sm like-comment-btn <?= $likeData['liked'] ? 'btn-light text-dark' : 'btn-outline-light' ?>"
-                  data-comment-id="<?= $comment['id'] ?>">
-                  <i class="bi bi-hand-thumbs-up me-1"></i>
-                  <span class="like-count"><?= $likeData['count'] ?></span>
-                </button>
-              </div>
-            <?php else: ?>
-              <!-- Nur Like-Button ganz rechts -->
-              <div class="ms-auto mt-2">
-                <button
-                  type="button"
-                  class="btn btn-sm like-comment-btn <?= $likeData['liked'] ? 'btn-light text-dark' : 'btn-outline-light' ?>"
-                  data-comment-id="<?= $comment['id'] ?>">
-                  <i class="bi bi-hand-thumbs-up me-1"></i>
-                  <span class="like-count"><?= $likeData['count'] ?></span>
-                </button>
-              </div>
-            <?php endif; ?>
-
-          </div>
-
-        <?php endforeach; ?>
 
 
       </div>

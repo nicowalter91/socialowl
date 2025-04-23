@@ -415,7 +415,7 @@ document.addEventListener("click", async (e) => {
 });
 
 // ============================
-// Kommentar bearbeiten vorbereiten
+// Kommentare 
 // ============================
 
 // Kommentar bearbeiten – Formular füllen
@@ -447,8 +447,13 @@ document.querySelectorAll(".comment-form-inner").forEach((form) => {
     const commentId = form.querySelector(".edit-comment-id").value;
     const content = form.querySelector("textarea").value;
     const formData = new FormData(form);
+    const postId = form.dataset.postId;
 
-    const url = commentId ? "/Social_App/ajax/update_comment.php" : "/Social_App/create_comment.php";
+    const commentList = document.querySelector(`#comment-list-${postId}`); // ✅ FIX: gezielter Container
+
+    const url = commentId
+      ? "/Social_App/ajax/update_comment.php"
+      : "/Social_App/create_comment.php";
 
     try {
       const res = await fetch(url, {
@@ -460,17 +465,14 @@ document.querySelectorAll(".comment-form-inner").forEach((form) => {
 
       if (result.success) {
         if (commentId) {
-          // ✅ BEARBEITETEN Kommentar updaten
+          // Kommentar updaten
           const commentEl = document.querySelector(`.comment button[data-comment-id="${commentId}"]`)?.closest(".comment");
           if (commentEl) {
             commentEl.querySelector(".comment-content").textContent = content;
           }
-
-          // Reset
           form.querySelector(".edit-comment-id").value = "";
         } else {
-          // ✅ NEUEN Kommentar anhängen
-          const commentList = form.closest(".comment-form").nextElementSibling;
+          // Neuer Kommentar korrekt einfügen
           if (result.html && commentList) {
             commentList.insertAdjacentHTML("beforeend", result.html);
           }
@@ -487,37 +489,38 @@ document.querySelectorAll(".comment-form-inner").forEach((form) => {
 });
 
 
-// ============================
-// 💬 Kommentar speichern (AJAX)
-// ============================
-document.querySelectorAll(".comment-form-inner").forEach((form) => {
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
 
-    const formData = new FormData(form);
-    const postId = form.dataset.postId;
-    const textarea = form.querySelector("textarea");
-    const commentList = form.closest(".comment-form").nextElementSibling; // direkt nach dem Formular
+// // ============================
+// // Kommentar speichern (AJAX)
+// // ============================
+// document.querySelectorAll(".comment-form-inner").forEach((form) => {
+//   form.addEventListener("submit", async (e) => {
+//     e.preventDefault();
 
-    try {
-      const res = await fetch("/Social_App/ajax/create_comment.php", {
-        method: "POST",
-        body: formData
-      });
+//     const formData = new FormData(form);
+//     const postId = form.dataset.postId;
+//     const textarea = form.querySelector("textarea");
+//     const commentList = form.closest(".comment-form").nextElementSibling; // direkt nach dem Formular
 
-      const result = await res.json();
+//     try {
+//       const res = await fetch("/Social_App/ajax/create_comment.php", {
+//         method: "POST",
+//         body: formData
+//       });
 
-      if (result.success) {
-        // Kommentar anhängen
-        if (result.html && commentList) {
-          commentList.insertAdjacentHTML("beforeend", result.html);
-        }
-        form.reset();
-      } else {
-        alert("❌ Kommentar konnte nicht gespeichert werden.");
-      }
-    } catch (err) {
-      console.error("❌ Fehler beim Speichern des Kommentars:", err);
-    }
-  });
-});
+//       const result = await res.json();
+
+//       if (result.success) {
+//         // Kommentar anhängen
+//         if (result.html && commentList) {
+//           commentList.insertAdjacentHTML("beforeend", result.html);
+//         }
+//         form.reset();
+//       } else {
+//         alert("❌ Kommentar konnte nicht gespeichert werden.");
+//       }
+//     } catch (err) {
+//       console.error("❌ Fehler beim Speichern des Kommentars:", err);
+//     }
+//   });
+// });

@@ -68,8 +68,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Log In</title>
     <link rel="stylesheet" href="./css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="./css/style.css">
     <script>
         // Funktion zur Überprüfung, ob die Passwörter übereinstimmen
         function checkPasswords() {
@@ -92,7 +91,7 @@
     </script>
 </head>
 <body class="d-flex align-items-center justify-content-center vh-100">
-    <div class="login-container p-4 rounded shadow">
+    <div class="login-container p-4 rounded shadow text-ligh bg-dark">
         <div class="mb-3 d-flex align-items-center justify-content-center ">
             <img src="./assets/img/Owl_logo.svg" height="60px" alt="">
         </div>
@@ -136,7 +135,7 @@
             </div>
         </form>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="script.js"></script>
+    <script src="./js/bootstrap.bundle.min.js"></script>
+    
 </body>
 </html>

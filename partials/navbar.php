@@ -12,7 +12,7 @@
     <!-- Mitte: Suchfeld -->
     <div class="flex-grow-1 mx-4">
       <form class="d-flex justify-content-center" role="search">
-        <input class="form-control" style="border-radius: 48px; max-width: 400px;" type="search" placeholder="# Search">
+        <input class="form-control" id="post-search" style="border-radius: 48px; max-width: 400px;" type="search" placeholder="# Search">
       </form>
     </div>
 
