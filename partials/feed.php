@@ -4,7 +4,15 @@
 
 <!-- Feedbereich (Beiträge) -->
 <div class="feed">
-  <?php foreach ($posts as $post): ?>
+  <?php if (empty($posts)): ?>
+    <div class="text-center mt-5 p-5">
+      <i class="bi bi-chat-dots display-1 text-secondary"></i>
+      <h4 class="mt-3 text-light">Noch keine Owls vorhanden.</h4>
+      <p class="text-light">Folge Profilen, um Inhalte in deinem Feed zu sehen.</p>
+    </div>
+  <?php else: ?>
+    <?php foreach ($posts as $post): ?>
+
     <?php
     // Likes für diesen Post laden
     $likeStmt = $conn->prepare("SELECT COUNT(*) AS like_count, SUM(CASE WHEN user_id = :current_user THEN 1 ELSE 0 END) AS liked_by_me FROM post_likes WHERE post_id = :post_id");
@@ -247,6 +255,5 @@
 
 
   <?php endforeach; ?>
-
-
+  <?php endif; ?>
 </div>
