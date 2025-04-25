@@ -2,27 +2,48 @@
        Post Formular Posts
   ============================ -->
 
-<form method="POST" enctype="multipart/form-data" class="tweet-box p-3 d-flex flex-column">
+<form action="<?= BASE_URL ?>/controllers/create_post.php" method="POST" enctype="multipart/form-data" class="tweet-box p-3 d-flex flex-column">
   <!-- Beitrag Inhalt -->
   <div class="d-flex align-items-start mb-3">
-    <img class="tweet-profile-image me-3" src="/Social_App/assets/uploads/<?php echo $_SESSION["profile_img"] ?>" alt="Profilbild">
+    <img class="tweet-profile-image me-3"
+      src="<?= BASE_URL ?>/assets/uploads/<?= $_SESSION["profile_img"] ?? DEFAULT_PROFILE_IMG ?>"
+      alt="Profilbild">
+
     <div class="flex-grow-1 d-flex flex-column">
       <textarea name="content" class="form-control tweet-input-box text-light border-0 rounded-4 px-3 py-2 flex-grow-1"
         rows="4" placeholder="Was passiert gerade?" style="min-height: 80px;" required></textarea>
     </div>
   </div>
+
   <!-- Vorschau -->
-  <div id="media-preview" class="position-relative mt-2">
-    <button type="button" id="remove-preview" class="btn btn-sm btn-danger position-absolute top-0 end-0 d-none" title="Entfernen" style="z-index: 10;">
-      <i class="bi bi-x-circle-fill"></i>
+  <div id="media-preview" class="position-relative mt-3 rounded overflow-hidden shadow-sm border d-inline-block bg-dark-subtle">
+
+    <!-- Entfernen-Icon -->
+    <button type="button"
+      id="remove-preview"
+      class="btn btn-sm btn-outline-danger position-absolute top-0 end-0 m-2 d-none"
+      aria-label="Vorschau entfernen"
+      style="z-index: 10;">
+      <i class="bi bi-trash"></i>
     </button>
 
-    <img id="image-preview" src="#" alt="Bildvorschau" class="img-thumbnail d-none" style="max-height: 120px;">
-    <video id="video-preview" controls class="d-none" style="max-height: 120px;">
+    <!-- Bild Vorschau -->
+    <img id="image-preview"
+      src="#"
+      alt="Bildvorschau"
+      class="d-none w-100"
+      style="max-height: 240px; object-fit: cover;">
+
+    <!-- Video Vorschau -->
+    <video id="video-preview"
+      controls
+      class="d-none w-100"
+      style="max-height: 240px; object-fit: cover;">
       <source src="#" type="video/mp4">
       Dein Browser unterstützt keine Videoanzeige.
     </video>
   </div>
+
 
 
   <!-- Footer mit Buttons -->

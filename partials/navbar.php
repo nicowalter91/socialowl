@@ -28,7 +28,7 @@
           <img src="/Social_App/assets/uploads/<?php echo $_SESSION["profile_img"] ?>" alt="Profilbild" width="32" height="32" class="rounded-circle me-2">
           <strong class="text-light"><?php echo $_SESSION["username"] ?></strong>
         </a>
-        <ul class="dropdown-menu bg-dark dropdown-menu-end border border-secondary">
+        <ul class="dropdown-menu bg-dark dropdown-menu-end">
           <li><a class="dropdown-item text-light" href="#" data-bs-toggle="modal" data-bs-target="#profilModal">
               <i class="bi bi-person-circle me-2"></i>Profil
             </a></li>
@@ -36,7 +36,7 @@
           <li>
             <hr class="dropdown-divider border-light opacity-75">
           </li>
-          <li><a class="dropdown-item text-danger" href="./logout.php"><i class="bi bi-box-arrow-right me-2"></i>Abmelden</a></li>
+          <li><a class="dropdown-item text-danger" href="<?= BASE_URL ?>/controllers/logout.php"><i class="bi bi-box-arrow-right me-2"></i>Abmelden</a></li>
         </ul>
       </div>
     </div>

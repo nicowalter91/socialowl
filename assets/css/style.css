@@ -1,0 +1,285 @@
+/* ============================
+   Global Settings
+============================ */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #05141c;
+}
+
+/* ============================
+   Grid Container
+============================ */
+.parent {
+  display: grid;
+  grid-template-columns: 1fr 3fr 1fr; /* Sidebar - Main - Sidebar */
+  grid-template-rows: auto 1fr;
+  gap: 8px;
+  height: 100vh;
+  margin-top: 80px;
+  background-color: #05141c;
+}
+
+/* ============================
+   Navigation (Top Bar)
+============================ */
+.nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #05141c;
+  height: 80px;
+  width: 100%;
+  z-index: 1050;
+}
+
+.nav-left {
+  display: flex;
+  align-items: center;
+  width: 400px;
+  margin: 0 16px 0 20px; 
+}
+
+.logo {
+  width: 40px;
+  height: 40px;
+}
+
+.explore {
+  display: flex;
+  align-items: center;
+  background-color: #1b2730;
+  border-radius: 60px;
+  height: 40px;
+  margin-left: 16px;
+}
+
+.explore i {
+  margin-left: 16px;
+  color: #b7c8d2;
+}
+
+.explore input {
+  margin-left: 8px;
+  border: none;
+  background-color: transparent;
+  color: white;
+}
+
+.explore input::placeholder {
+  color: #b7c8d2;
+}
+
+.nav-right {
+  display: flex;
+  justify-content: end;
+  align-items: center;
+  width: 400px;
+  margin: 0 16px;
+  gap: 16px;
+}
+
+/* ============================
+   User Info
+============================ */
+.user {
+  display: flex;
+  align-items: center;
+  position: relative;
+  background-color: #1b2730;
+  height: 40px;
+  width: 150px;
+  border-radius: 60px;
+  padding: 5px;
+  color: white;
+}
+
+.user-image {
+  height: 30px;
+  width: 30px;
+  border-radius: 50%;
+}
+
+.dropdown-menu.bg-dark .dropdown-item.text-light:hover {
+  color: #212529 !important;
+  background-color: #f8f9fa;
+}
+
+/* ============================
+   Sidebar
+============================ */
+.left-top-sidebar {
+  background-color: #1b2730;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  margin-left: 10px;
+  grid-column: 1;
+  grid-row: 1 / span 3;
+}
+
+.profile-top {
+  height: 30%;
+  background-size: cover;
+  background-repeat: no-repeat;
+  border-radius: 20px 20px 0 0;
+}
+
+.profile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: -10%;
+}
+
+.profile-image {
+  height: 80px;
+  width: 80px;
+  border-radius: 100%;
+  border: 2px solid white;
+}
+
+.stats {
+  display: flex;
+  justify-content: space-around;
+  margin: 10% 8px 0;
+  gap: 8px;
+}
+
+.left-stats,
+.right-stats {
+  background-color: #28353e;
+  width: 50%;
+  padding: 16px;
+  border-radius: 12px;
+  text-align: center;
+}
+
+/* ============================
+   Tweet Box
+============================ */
+.tweet-box {
+  background-color: #1b2730;
+  border-radius: 20px;
+  grid-column: 2 / span 3;
+}
+
+.tweet-input-box,
+.tweet-comment-box {
+  background-color: #28353e;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  resize: none;
+}
+
+.tweet-input-box:focus,
+.tweet-comment-box:focus {
+  background-color: #212529;
+  color: white;
+  box-shadow: none;
+}
+
+.tweet-input-box::placeholder,
+.tweet-comment-box::placeholder {
+  color: #b7c8d2;
+}
+
+/* ============================
+   Feed & Cards
+============================ */
+.feed {
+  background-color: #1b2730;
+  border-radius: 20px;
+  grid-column: 2 / span 3;
+  max-height: calc(100vh - 100px);
+  overflow-y: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.feed::-webkit-scrollbar {
+  display: none;
+}
+
+.tweet-card {
+  background-color: #1b2730;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.tweet-profile-image {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+}
+
+/* ============================
+   Kommentarbereich
+============================ */
+.comment-form {
+  display: none;
+}
+.comment-form.show {
+  display: block !important;
+}
+
+
+/* ============================
+   Emoji Picker
+============================ */
+.emoji-picker {
+  background: #1a1a1a;
+  border: 1px solid #444;
+  border-radius: 10px;
+  padding: 10px;
+  width: 240px;
+  max-height: 250px;
+  overflow-y: auto;
+  z-index: 1000;
+}
+
+.emoji-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(32px, 1fr));
+  gap: 6px;
+}
+
+.emoji-grid button {
+  font-size: 20px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: background 0.2s;
+}
+
+.emoji-grid button:hover {
+  background-color: #333;
+}
+ 
+/* ============================
+   Follow 
+============================ */
+
+.right-top-sidebar {
+  background-color: #1b2730;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  margin-right: 10px; 
+  grid-column: 5;     
+  grid-row: 1 / span 3;
+}
+
+.follow {
+  background: #28353e;
+}
