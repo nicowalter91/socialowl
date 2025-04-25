@@ -147,3 +147,33 @@ function fetchPostsSince(PDO $conn, int $userId, int $sinceTimestamp): array {
 
     return $posts;
 }
+
+/**
+ * Holt nur Posts von Nutzern, denen man folgt (inkl. eigene).
+ */
+function fetchFollowedPostsWithComments(PDO $conn, int $currentUserId): array {
+    $stmt = $conn->prepare("
+    SELECT posts.*, users.username, users.profile_img,
+           (SELECT COUNT(*) FROM post_likes WHERE post_id = posts.id) AS like_count,
+           (SELECT COUNT(*) FROM post_likes WHERE post_id = posts.id AND user_id = :uid) AS liked_by_me
+    FROM posts
+    JOIN users ON posts.user_id = users.id
+    WHERE posts.user_id = :uid
+       OR posts.user_id IN (
+           SELECT followed_id FROM followers WHERE follower_id = :uid
+       )
+    ORDER BY posts.created_at DESC
+");
+$stmt->execute([
+    ":uid" => $currentUserId
+]);
+
+
+    $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    foreach ($posts as &$post) {
+        $post["comments"] = fetchCommentsForPost($conn, $post["id"], $currentUserId);
+    }
+
+    return $posts;
+}

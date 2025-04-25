@@ -5,14 +5,14 @@ require_once __DIR__ . '/../includes/config.php';
 require_once __DIR__ . '/../includes/connection.php';
 require_once __DIR__ . '/../models/post.php';
 
-echo "🧪 Starte Test: Beitrag erstellen...\n";
+echo "Starte Test: Beitrag erstellen...\n";
 
 // Verbindung holen
 $conn = getDatabaseConnection();
 
 // Dummy-Nutzer-ID (achte darauf, dass dieser User existiert!)
 $user_id = 8;
-$content = "Test-Post von PHPUnit um " . date("H:i:s");
+$content = "Test-Post um " . date("H:i:s");
 
 // Post anlegen
 $post_id = createPost($conn, $user_id, $content, null, null);

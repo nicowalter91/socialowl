@@ -17,7 +17,7 @@ Benutzer können Inhalte teilen, kommentieren, liken und sich in einer
 ✅ Features (Stand: April 2025)
 --------------------------------------------------
 ✔️ Registrierung & Login inkl. "Angemeldet bleiben" (Token)
-✔️ Passwort-Reset via E-Mail (Token-basiert)
+✔️ Passwort-Reset via (E-Mail) (Token-basiert)
 ✔️ Post-Erstellung mit Text, Bildern und Videos  
 ✔️ Kommentar-Funktion mit:
    → Bearbeiten / Löschen

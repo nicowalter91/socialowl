@@ -32,8 +32,6 @@
           <li><a class="dropdown-item text-light" href="#" data-bs-toggle="modal" data-bs-target="#profilModal">
               <i class="bi bi-person-circle me-2"></i>Profil
             </a></li>
-          <li><a class="dropdown-item text-light" href="settings.html"><i class="bi bi-gear me-2"></i>Einstellungen</a></li>
-          <li>
             <hr class="dropdown-divider border-light opacity-75">
           </li>
           <li><a class="dropdown-item text-danger" href="<?= BASE_URL ?>/controllers/logout.php"><i class="bi bi-box-arrow-right me-2"></i>Abmelden</a></li>

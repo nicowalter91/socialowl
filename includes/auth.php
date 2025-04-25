@@ -47,3 +47,4 @@ function ensureLogin(PDO $conn): void {
         }
     }
 }
+

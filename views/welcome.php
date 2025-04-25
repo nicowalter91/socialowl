@@ -7,7 +7,7 @@ require_once MODELS . '/post.php';
 require_once MODELS . '/comment.php'; 
 
 
-session_start();
+
 $conn = getDatabaseConnection();
 ensureLogin($conn);
 
@@ -24,7 +24,7 @@ $posts = fetchAllPostsWithComments($conn, $_SESSION["id"]);
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Social Owl</title>
-  <meta name="description" content="Willkommen bei Social Owl – deinem sozialen Netzwerk für kreative Köpfe.">
+  <meta name="description" content="Willkommen bei Social Owl - deinem sozialen Netzwerk für kreative Köpfe.">
   <meta name="theme-color" content="#0d6efd" />
 
   <!-- CSS -->

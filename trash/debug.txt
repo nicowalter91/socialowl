@@ -1,4 +1,0 @@
-Array
-(
-    [post_id] => undefined
-)

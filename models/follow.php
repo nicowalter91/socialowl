@@ -32,4 +32,16 @@ function getSuggestions(PDO $conn, int $currentUserId): array {
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
   }
   
+  function countFollowers(PDO $conn, int $userId): int {
+    $stmt = $conn->prepare("SELECT COUNT(*) FROM followers WHERE followed_id = :id");
+    $stmt->execute([":id" => $userId]);
+    return (int)$stmt->fetchColumn();
+}
+
+function countFollowing(PDO $conn, int $userId): int {
+    $stmt = $conn->prepare("SELECT COUNT(*) FROM followers WHERE follower_id = :id");
+    $stmt->execute([":id" => $userId]);
+    return (int)$stmt->fetchColumn();
+}
+
   

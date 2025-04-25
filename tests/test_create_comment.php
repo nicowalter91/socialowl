@@ -4,7 +4,7 @@ require_once __DIR__ . '/../models/comment.php';
 require_once __DIR__ . '/../models/post.php';
 require_once __DIR__ . '/../models/user.php';
 
-echo "🧪 Starte Test: Kommentar erstellen...\n";
+echo "Starte Test: Kommentar erstellen...\n";
 
 $conn = getDatabaseConnection();
 

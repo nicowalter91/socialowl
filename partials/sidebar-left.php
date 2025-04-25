@@ -1,3 +1,15 @@
+<?php
+require_once __DIR__ . '/../includes/connection.php';
+require_once __DIR__ . '/../models/follow.php';
+
+$conn = getDatabaseConnection();
+$userId = $_SESSION["id"];
+
+$followerCount = countFollowers($conn, $userId);
+$followingCount = countFollowing($conn, $userId);
+?>
+
+
 <!-- ============================
        Sidebar links
   ============================ -->
@@ -14,11 +26,11 @@
       <div class="stats">
         <div class="left-stats">
           <p class="text-light">Follower</p>
-          <h3 class="text-light"><?php echo $_SESSION["follower"] ?></h3>
+          <h3 class="text-light"><?php echo $followerCount?></h3>
         </div>
         <div class="right-stats">
           <p class="text-light">Following</p>
-          <h3 class="text-light"><?php echo $_SESSION["following"] ?></h3>
+          <h3 class="text-light"><?php echo $followingCount?></h3>
         </div>
       </div>
     </div>
