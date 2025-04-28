@@ -6,7 +6,7 @@ $conn = getDatabaseConnection();
 ensureLogin($conn);
 
 if (!isset($_POST["user_id"])) {
-  header("Location: /Social_App/welcome.php");
+  header("Location: /Social_App/views/index.php");
   exit;
 }
 
@@ -19,5 +19,5 @@ $stmt->execute([
   ":followed" => $followedId
 ]);
 
-header("Location: /Social_App/views/welcome.php");
+header("Location: /Social_App/views/index.php");
 exit;

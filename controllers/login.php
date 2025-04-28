@@ -8,7 +8,7 @@ $errorMessage = "";
 
 // Falls bereits eingeloggt
 if (isset($_SESSION["username"])) {
-    header("Location: " . BASE_URL . "/views/welcome.php");
+    header("Location: " . BASE_URL . "/views/index.php");
     exit;
 }
 
@@ -46,7 +46,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             ]);
         }
 
-        header("Location: " . BASE_URL . "/views/welcome.php", true, 303);
+        header("Location: " . BASE_URL . "/views/index.php", true, 303);
         exit;
     }
 

@@ -4,6 +4,8 @@
 document.addEventListener("DOMContentLoaded", () => {
   console.log("✅ script.js geladen");
 
+  initPostCardEvents();
+
   // ============================
   // Globale DOM Elemente
   // ============================

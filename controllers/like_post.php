@@ -20,7 +20,7 @@ if (!$postId || !is_numeric($postId)) {
 
 togglePostLike($conn, $userId, (int)$postId);
 
-// Dynamische Rückleitung (z. B. nach AJAX oder zurück zu welcome.php)
-$redirect = $_SERVER["HTTP_REFERER"] ?? BASE_URL . "/views/welcome.php";
+// Dynamische Rückleitung (z. B. nach AJAX oder zurück zu index.php)
+$redirect = $_SERVER["HTTP_REFERER"] ?? BASE_URL . "/views/index.php";
 header("Location: " . $redirect);
 exit;

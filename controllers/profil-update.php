@@ -24,5 +24,5 @@ $_SESSION["bio"] = $bio;
 if ($profileImg)  $_SESSION["profile_img"] = $profileImg;
 if ($headerImg)   $_SESSION["header_img"] = $headerImg;
 
-header("Location: " . BASE_URL . "/views/welcome.php");
+header("Location: " . BASE_URL . "/views/index.php");
 exit;

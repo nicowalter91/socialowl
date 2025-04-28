@@ -15,7 +15,8 @@ $followingCount = countFollowing($conn, $userId);
   ============================ -->
 
 <div class="left-top-sidebar">
-  <div class="profile-top" style="background-image: url(/Social_App/assets/uploads/<?php echo $_SESSION["header_img"]; ?>); background-postition: center"></div>
+  <div class="profile-top" style="background-image: url(/Social_App/assets/uploads/<?php echo $_SESSION["header_img"]; ?>); background-position: center; background-size: cover; 
+              background-repeat: no-repeat;"></div>
   <div class="profile">
     <img class="profile-image" src="/Social_App/assets/uploads/<?php echo $_SESSION["profile_img"] ?>" alt="Profilbild">
     <h3 class="text-light mt-3"><?php echo $_SESSION["firstname"] . " " . $_SESSION["lastname"] ?></h3>

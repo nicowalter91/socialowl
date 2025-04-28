@@ -8,7 +8,7 @@ $errorMessage = "";
 
 // Weiterleitung, wenn eingeloggt
 if (isset($_SESSION["username"])) {
-    header("Location: " . BASE_URL . "/views/welcome.php");
+    header("Location: " . BASE_URL . "/views/index.php");
     exit;
 }
 

@@ -50,7 +50,7 @@ Nutzer können Inhalte posten, liken, kommentieren, folgen und ihr Profil pflege
 --------------------------------------------------
 ├── controllers/      → Business-Logik (z. B. create_post.php)
 ├── models/           → Datenbankabfragen (z. B. user.php, follow.php)
-├── views/            → Hauptseiten wie welcome.php, login.view.php
+├── views/            → Hauptseiten wie index.php, login.view.php
 ├── partials/         → Wiederverwendbare UI-Elemente (Sidebar, Modals)
 ├── includes/         → Konfiguration, Auth, DB-Verbindung
 ├── assets/
