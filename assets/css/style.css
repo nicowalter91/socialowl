@@ -297,7 +297,7 @@ body {
 ============================ */
 
 .highlight-post {
-  animation: highlightFlash 2s ease forwards;
+  animation: highlightFlash 3s ease forwards;
 }
 
 @keyframes highlightFlash {

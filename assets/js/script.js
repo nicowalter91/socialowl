@@ -230,18 +230,19 @@ document.addEventListener("DOMContentLoaded", () => {
   // Kommentar bearbeiten
   document.querySelectorAll(".edit-comment-btn").forEach((btn) => {
     btn.addEventListener("click", () => {
-      const form = btn.closest(".tweet-card")?.querySelector(".comment-form-inner");
+      const form = btn
+        .closest(".tweet-card")
+        ?.querySelector(".comment-form-inner");
       if (!form) return;
       const textarea = form.querySelector("textarea");
       const idInput = form.querySelector(".edit-comment-id");
-  
+
       textarea.value = btn.dataset.content;
       idInput.value = btn.dataset.commentId;
-  
+
       form.closest(".comment-form")?.classList.add("show");
     });
   });
-  
 
   // ============================
   // Kommentar löschen
@@ -304,7 +305,9 @@ document.addEventListener("DOMContentLoaded", () => {
   // Live Update Polling für neue Posts
   // ============================
   let lastPostTimestamp = null;
-  const latestPost = document.querySelector(".tweet-card small.text-light")?.textContent;
+  const latestPost = document.querySelector(
+    ".tweet-card small.text-light"
+  )?.textContent;
   if (latestPost) {
     const [d, m, y, time] = latestPost.split(/\.| |:/);
     lastPostTimestamp = `${y}-${m}-${d} ${time}`;
@@ -312,7 +315,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
   async function fetchNewPosts() {
     try {
-      const res = await fetch(`/Social_App/controllers/api/posts_since.php?since=${encodeURIComponent(lastPostTimestamp ?? "")}`);
+      const res = await fetch(
+        `/Social_App/controllers/api/posts_since.php?since=${encodeURIComponent(
+          lastPostTimestamp ?? ""
+        )}`
+      );
       const result = await res.json();
 
       if (result.success && result.html) {
@@ -334,19 +341,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
   async function fetchNewComments() {
     try {
-      const res = await fetch(`/Social_App/controllers/api/comments_since.php?since=${latestCommentTimestamp || 0}`);
-      const data = await res.json();
-
-      if (data.success && data.html) {
-        const temp = document.createElement("div");
-        temp.innerHTML = data.html;
-
-        temp.querySelectorAll(".comment").forEach((comment) => {
-         let latestCommentTimestamp = null;
-
-  async function fetchNewComments() {
-    try {
-      const res = await fetch(`/Social_App/controllers/api/comments_since.php?since=${latestCommentTimestamp || 0}`);
+      const res = await fetch(
+        `/Social_App/controllers/api/comments_since.php?since=${
+          latestCommentTimestamp || 0
+        }`
+      );
       const data = await res.json();
 
       if (data.success && data.html) {
@@ -356,20 +355,79 @@ document.addEventListener("DOMContentLoaded", () => {
         temp.querySelectorAll(".comment").forEach((comment) => {
           let latestCommentTimestamp = null;
 
-  async function fetchNewComments() {
-    try {
-      const res = await fetch(`/Social_App/controllers/api/comments_since.php?since=${latestCommentTimestamp || 0}`);
-      const data = await res.json();
+          async function fetchNewComments() {
+            try {
+              const res = await fetch(
+                `/Social_App/controllers/api/comments_since.php?since=${
+                  latestCommentTimestamp || 0
+                }`
+              );
+              const data = await res.json();
 
-      if (data.success && data.html) {
-        const temp = document.createElement("div");
-        temp.innerHTML = data.html;
+              if (data.success && data.html) {
+                const temp = document.createElement("div");
+                temp.innerHTML = data.html;
 
-        temp.querySelectorAll(".comment").forEach((comment) => {
-          const tweetCard = [...document.querySelectorAll(".tweet-card")].find(card =>
-            card.contains(comment)
-          );
-          const postId = tweetCard?.dataset.postId;
+                temp.querySelectorAll(".comment").forEach((comment) => {
+                  let latestCommentTimestamp = null;
+
+                  async function fetchNewComments() {
+                    try {
+                      const res = await fetch(
+                        `/Social_App/controllers/api/comments_since.php?since=${
+                          latestCommentTimestamp || 0
+                        }`
+                      );
+                      const data = await res.json();
+
+                      if (data.success && data.html) {
+                        const temp = document.createElement("div");
+                        temp.innerHTML = data.html;
+
+                        temp.querySelectorAll(".comment").forEach((comment) => {
+                          const tweetCard = [
+                            ...document.querySelectorAll(".tweet-card"),
+                          ].find((card) => card.contains(comment));
+                          const postId = tweetCard?.dataset.postId;
+                          const commentList = document.querySelector(
+                            `#comment-list-${postId}`
+                          );
+                          if (commentList) commentList.appendChild(comment);
+                        });
+
+                        latestCommentTimestamp = data.latest;
+                      }
+                    } catch (err) {
+                      console.error(
+                        "❌ Fehler beim Abrufen neuer Kommentare:",
+                        err
+                      );
+                    }
+                  }
+
+                  setInterval(fetchNewComments, 10000);
+
+                  // Initialisieren von Events nach Page Load
+                  initPostCardEvents();
+
+                  const commentList = document.querySelector(
+                    `#comment-list-${postId}`
+                  );
+                  if (commentList) commentList.appendChild(comment);
+                });
+
+                latestCommentTimestamp = data.latest;
+              }
+            } catch (err) {
+              console.error("❌ Fehler beim Abrufen neuer Kommentare:", err);
+            }
+          }
+
+          setInterval(fetchNewComments, 10000);
+
+          // Initialisieren von Events nach Page Load
+          initPostCardEvents();
+
           const commentList = document.querySelector(`#comment-list-${postId}`);
           if (commentList) commentList.appendChild(comment);
         });
@@ -381,203 +439,214 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  setInterval(fetchNewComments, 10000);
+  // ============================
+  // Beitrag löschen (Post)
+  // ============================
 
-  // Initialisieren von Events nach Page Load
-  initPostCardEvents();
+  document.addEventListener("click", (e) => {
+    const deleteTrigger = e.target.closest(".dropdown-item.text-danger");
+    if (!deleteTrigger) return;
 
+    const postId = deleteTrigger.closest(".tweet-card")?.dataset.postId;
+    if (!postId) return;
 
-          const commentList = document.querySelector(`#comment-list-${postId}`);
-          if (commentList) commentList.appendChild(comment);
-        });
+    const confirmBtn = document.querySelector(".confirm-delete-btn");
+    const hiddenInput = document.getElementById("delete-post-id");
 
-        latestCommentTimestamp = data.latest;
-      }
-    } catch (err) {
-      console.error("❌ Fehler beim Abrufen neuer Kommentare:", err);
-    }
-  }
-
-  setInterval(fetchNewComments, 10000);
-
-  // Initialisieren von Events nach Page Load
-  initPostCardEvents();
-
-
-          const commentList = document.querySelector(`#comment-list-${postId}`);
-          if (commentList) commentList.appendChild(comment);
-        });
-
-        latestCommentTimestamp = data.latest;
-      }
-    } catch (err) {
-      console.error("❌ Fehler beim Abrufen neuer Kommentare:", err);
-    }
-  }
-
-// ============================
-// Beitrag löschen (Post)
-// ============================
-
-document.addEventListener("click", (e) => {
-  const deleteTrigger = e.target.closest(".dropdown-item.text-danger");
-  if (!deleteTrigger) return;
-
-  const postId = deleteTrigger.closest(".tweet-card")?.dataset.postId;
-  if (!postId) return;
-
-  const confirmBtn = document.querySelector(".confirm-delete-btn");
-  const hiddenInput = document.getElementById("delete-post-id");
-
-  if (confirmBtn && hiddenInput) {
-    hiddenInput.value = postId;
-    confirmBtn.dataset.postId = postId;
-  }
-});
-
-document.querySelector(".confirm-delete-btn")?.addEventListener("click", async () => {
-  const postId = document.getElementById("delete-post-id")?.value;
-  if (!postId) return;
-
-  const formData = new FormData();
-  formData.append("post_id", postId);
-
-  try {
-    const res = await fetch("/Social_App/controllers/delete_post.php", {
-      method: "POST",
-      body: formData,
-    });
-
-    const result = await res.json();
-    if (result.success) {
-      document.querySelector(`.tweet-card[data-post-id="${postId}"]`)?.remove();
-      const modal = bootstrap.Modal.getInstance(document.getElementById("deleteModal"));
-      modal?.hide();
-    } else {
-      alert("⚠️ Fehler beim Löschen des Beitrags:\n" + result.message);
-    }
-  } catch (err) {
-    console.error("❌ Fehler beim Löschen des Beitrags:", err);
-    alert("❌ Es ist ein Fehler beim Löschen aufgetreten.");
-  }
-});
-
-// ============================
-// Vorschau für Bild & Video
-// ============================
-
-imageInput?.addEventListener("change", () => {
-  const file = imageInput.files[0];
-  if (file) {
-    const url = URL.createObjectURL(file);
-    imagePreview.src = url;
-    imagePreview.classList.remove("d-none");
-    videoPreview.classList.add("d-none");
-    videoPreview.querySelector("source").src = "";
-    removeBtn.classList.remove("d-none");
-  }
-});
-
-videoInput?.addEventListener("change", () => {
-  const file = videoInput.files[0];
-  if (file) {
-    const url = URL.createObjectURL(file);
-    videoPreview.querySelector("source").src = url;
-    videoPreview.load();
-    videoPreview.classList.remove("d-none");
-    imagePreview.classList.add("d-none");
-    imagePreview.src = "";
-    removeBtn.classList.remove("d-none");
-  }
-});
-
-removeBtn?.addEventListener("click", () => {
-  imageInput.value = "";
-  videoInput.value = "";
-  imagePreview.src = "";
-  imagePreview.classList.add("d-none");
-  videoPreview.querySelector("source").src = "";
-  videoPreview.load();
-  videoPreview.classList.add("d-none");
-  removeBtn.classList.add("d-none");
-});
-
-
-
-
-// ============================
-// Suchleiste Navbar
-// ============================
-
-document.getElementById("search-button").addEventListener("click", () => {
-  const query = document.getElementById("post-search").value.toLowerCase();
-  const posts = document.querySelectorAll(".tweet-card");
-  const resultsContainer = document.getElementById("search-results");
-
-  resultsContainer.innerHTML = "";
-  let found = 0;
-
-  posts.forEach(post => {
-    let textElement = post.querySelector(".post-text") || post.querySelector(".text-light");
-    let text = textElement ? textElement.textContent.toLowerCase() : "";
-    let username = post.dataset.username || "@unknown";
-
-    if (text.includes(query) && query.length > 0) {
-      const postId = post.getAttribute("data-post-id");
-
-      const card = document.createElement("div");
-      card.className = "bg-dark rounded p-2 mb-2 search-result-card";
-
-
-      const link = document.createElement("a");
-      link.href = `#post-${postId}`;
-      link.className = "text-light text-decoration-none d-block";
-
-      const title = document.createElement("div");
-      title.className = "fw-bold";
-      title.textContent = username;
-
-      const snippet = document.createElement("small");
-      snippet.className = "d-block text-light";
-      snippet.textContent = text.substring(0, 80) + (text.length > 80 ? "..." : "");
-
-      link.appendChild(title);
-      link.appendChild(snippet);
-      card.appendChild(link);
-
-      // Smooth Scroll und Highlight Effekt bei Klick
-      link.addEventListener("click", (e) => {
-        e.preventDefault();
-        const target = document.getElementById(`post-${postId}`);
-        if (target) {
-          target.scrollIntoView({ behavior: "smooth", block: "start" });
-
-          // Highlight-Effekt
-          target.classList.add("highlight-post");
-          setTimeout(() => {
-            target.classList.remove("highlight-post");
-          }, 2000); // nach 2 Sekunden wieder entfernen
-        }
-        resultsContainer.classList.add("d-none"); // Ergebnisse ausblenden
-      });
-
-      resultsContainer.appendChild(card);
-      found++;
+    if (confirmBtn && hiddenInput) {
+      hiddenInput.value = postId;
+      confirmBtn.dataset.postId = postId;
     }
   });
 
-  if (found > 0) {
-    const info = document.createElement("div");
-    info.className = "text-light mb-2";
-    info.textContent = `${found} Treffer gefunden:`;
-    resultsContainer.prepend(info);
+  document
+    .querySelector(".confirm-delete-btn")
+    ?.addEventListener("click", async () => {
+      const postId = document.getElementById("delete-post-id")?.value;
+      if (!postId) return;
 
-    resultsContainer.classList.remove("d-none");
-  } else {
-    resultsContainer.innerHTML = "<div class='text-danger'><i class='bi bi-exclamation-circle mb-1'></i> Keine Treffer gefunden.</div>";
-    resultsContainer.classList.remove("d-none");
+      const formData = new FormData();
+      formData.append("post_id", postId);
+
+      try {
+        const res = await fetch("/Social_App/controllers/delete_post.php", {
+          method: "POST",
+          body: formData,
+        });
+
+        const result = await res.json();
+        if (result.success) {
+          document
+            .querySelector(`.tweet-card[data-post-id="${postId}"]`)
+            ?.remove();
+          const modal = bootstrap.Modal.getInstance(
+            document.getElementById("deleteModal")
+          );
+          modal?.hide();
+        } else {
+          alert("⚠️ Fehler beim Löschen des Beitrags:\n" + result.message);
+        }
+      } catch (err) {
+        console.error("❌ Fehler beim Löschen des Beitrags:", err);
+        alert("❌ Es ist ein Fehler beim Löschen aufgetreten.");
+      }
+    });
+
+  // ============================
+  // Vorschau für Bild & Video
+  // ============================
+
+  imageInput?.addEventListener("change", () => {
+    const file = imageInput.files[0];
+    if (file) {
+      const url = URL.createObjectURL(file);
+      imagePreview.src = url;
+      imagePreview.classList.remove("d-none");
+      videoPreview.classList.add("d-none");
+      videoPreview.querySelector("source").src = "";
+      removeBtn.classList.remove("d-none");
+    }
+  });
+
+  videoInput?.addEventListener("change", () => {
+    const file = videoInput.files[0];
+    if (file) {
+      const url = URL.createObjectURL(file);
+      videoPreview.querySelector("source").src = url;
+      videoPreview.load();
+      videoPreview.classList.remove("d-none");
+      imagePreview.classList.add("d-none");
+      imagePreview.src = "";
+      removeBtn.classList.remove("d-none");
+    }
+  });
+
+  removeBtn?.addEventListener("click", () => {
+    imageInput.value = "";
+    videoInput.value = "";
+    imagePreview.src = "";
+    imagePreview.classList.add("d-none");
+    videoPreview.querySelector("source").src = "";
+    videoPreview.load();
+    videoPreview.classList.add("d-none");
+    removeBtn.classList.add("d-none");
+  });
+
+  // ============================
+  // Suchleiste Navbar
+  // ============================
+
+  function performSearch() {
+    const input = document.getElementById("post-search");
+    const query = input.value.toLowerCase();
+    const posts = document.querySelectorAll(".tweet-card");
+    const resultsContainer = document.getElementById("search-results");
+  
+    resultsContainer.innerHTML = "";
+    let found = 0;
+  
+    if (query.length === 0) {
+      resultsContainer.classList.add("d-none");
+      return;
+    }
+  
+    posts.forEach((post) => {
+      let textElement =
+        post.querySelector(".post-text") || post.querySelector(".text-light");
+      let text = textElement ? textElement.textContent.toLowerCase() : "";
+      let username = post.dataset.username || "@unknown";
+  
+      if (text.includes(query)) {
+        const postId = post.getAttribute("data-post-id");
+  
+        const card = document.createElement("div");
+        card.className = "bg-dark rounded p-2 mb-2 search-result-card";
+  
+        const link = document.createElement("a");
+        link.href = `#post-${postId}`;
+        link.className = "text-light text-decoration-none d-block";
+  
+        const title = document.createElement("div");
+        title.className = "fw-bold";
+        title.textContent = username;
+  
+        const snippet = document.createElement("small");
+        snippet.className = "d-block text-light";
+        snippet.textContent =
+          text.substring(0, 80) + (text.length > 80 ? "..." : "");
+  
+        link.appendChild(title);
+        link.appendChild(snippet);
+        card.appendChild(link);
+  
+        // Smooth Scroll und Highlight Effekt bei Klick
+        link.addEventListener("click", (e) => {
+          e.preventDefault();
+          const target = document.getElementById(`post-${postId}`);
+          if (target) {
+            target.scrollIntoView({ behavior: "smooth", block: "start" });
+  
+            // Highlight-Effekt
+            target.classList.add("highlight-post");
+            setTimeout(() => {
+              target.classList.remove("highlight-post");
+            }, 2000);
+          }
+          resultsContainer.classList.add("d-none"); // Ergebnisse ausblenden
+        });
+  
+        resultsContainer.appendChild(card);
+        found++;
+      }
+    });
+  
+    if (found > 0) {
+      const info = document.createElement("div");
+      info.className = "text-light mb-2";
+      info.textContent = `${found} Treffer gefunden:`;
+      resultsContainer.prepend(info);
+  
+      resultsContainer.classList.remove("d-none");
+    } else {
+      resultsContainer.innerHTML =
+        "<div class='text-danger'><i class='bi bi-exclamation-circle mb-1'></i> Keine Treffer gefunden.</div>";
+      resultsContainer.classList.remove("d-none");
+    }
+  
+    input.value = ""; // Eingabefeld nach Suche leeren
   }
-});
-
-
+  
+  // Eventlistener für Button-Klick
+  document.getElementById("search-button").addEventListener("click", performSearch);
+  
+  // Eventlistener für ENTER-Taste im Inputfeld
+  document.getElementById("post-search").addEventListener("keypress", (event) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      performSearch();
+    }
+  });
+  
+  // Suchergebnisse ausblenden, wenn das Suchfeld geleert wird
+  document.getElementById("post-search").addEventListener("input", (event) => {
+    const resultsContainer = document.getElementById("search-results");
+    if (event.target.value.trim() === "") {
+      resultsContainer.classList.add("d-none");
+    }
+  });
+  
+  // Suchergebnisse ausblenden, wenn außerhalb geklickt wird
+  document.addEventListener("click", (event) => {
+    const searchInput = document.getElementById("post-search");
+    const searchButton = document.getElementById("search-button");
+    const resultsContainer = document.getElementById("search-results");
+  
+    if (
+      !searchInput.contains(event.target) &&
+      !searchButton.contains(event.target) &&
+      !resultsContainer.contains(event.target)
+    ) {
+      resultsContainer.classList.add("d-none");
+    }
+  });
 });

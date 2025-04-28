@@ -96,6 +96,7 @@ Nutzer können Inhalte posten, liken, kommentieren, folgen und ihr Profil pflege
 - Hashtags in Post erkennen
 - Direct Messaging
 - Live Update (Polling)
+- Suchleiste für Profile
 
 📅 Letzter Stand: 25. April 2025
 ==================================================

@@ -2,8 +2,8 @@
 // Sicherheitskonfiguration und Konstanten für DB
 define('DB_HOST', 'localhost');
 define('DB_NAME', 'social_owl');
-define('DB_USER', 'owl_user');
-define('DB_PASS', 'password');
+define('DB_USER', 'root');
+define('DB_PASS', '');
 
 // Optional: Zeitzone und weitere globale Settings
 date_default_timezone_set('Europe/Berlin');

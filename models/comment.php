@@ -87,28 +87,25 @@ function fetchSingleComment(PDO $conn, int $commentId, int $userId): ?array {
 
 function fetchCommentsSince(PDO $conn, int $userId, int $sinceTimestamp): array {
     $stmt = $conn->prepare("
-      SELECT 
-        c.*,
-        u.username,
-        u.profile_img,
-        IF(cl.id IS NULL, 0, 1) AS liked,
-        (
-          SELECT COUNT(*) 
-          FROM comment_likes 
-          WHERE comment_id = c.id
-        ) AS like_count
-      FROM comments c
-      JOIN users u ON u.id = c.user_id
-      LEFT JOIN comment_likes cl ON cl.comment_id = c.id AND cl.user_id = :uid
-      WHERE UNIX_TIMESTAMP(c.created_at) > :since
-      ORDER BY c.created_at ASC
+        SELECT c.*, u.username, u.profile_img
+        FROM comments c
+        JOIN users u ON c.user_id = u.id
+        WHERE UNIX_TIMESTAMP(c.created_at) > :since
+          AND (c.post_id IN (
+                SELECT p.id
+                FROM posts p
+                WHERE p.user_id = :self
+                   OR p.user_id IN (
+                       SELECT followed_id FROM followers WHERE follower_id = :self
+                   )
+             ))
+        ORDER BY c.created_at ASC
     ");
-  
     $stmt->execute([
-      ':uid' => $userId,
-      ':since' => $sinceTimestamp
+        ":since" => $sinceTimestamp,
+        ":self" => $userId
     ]);
-  
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
-  }
+}
+
   

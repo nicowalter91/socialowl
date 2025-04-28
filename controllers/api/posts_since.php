@@ -4,7 +4,6 @@ require_once INCLUDES . "/connection.php";
 require_once INCLUDES . "/auth.php";
 require_once MODELS . "/post.php";
 
-// Session prüfen
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -14,18 +13,12 @@ header("Content-Type: application/json");
 $conn = getDatabaseConnection();
 ensureLogin($conn);
 
-// Timestamp holen und casten
 $since = isset($_GET["since"]) ? strtotime($_GET["since"]) : 0;
+if (!$since) $since = 0;
 
-if (!$since || !is_int($since)) {
-    echo json_encode(["success" => false, "message" => "Ungültiger Zeitstempel."]);
-    exit;
-}
-
-// Neue Posts laden
+// NEU: Auch Posts von denen, denen man folgt!
 $posts = fetchPostsSince($conn, $_SESSION["id"], $since);
 
-// HTML erzeugen
 $html = "";
 $latest = $since;
 
