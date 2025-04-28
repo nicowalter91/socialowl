@@ -15,22 +15,35 @@ $followingCount = countFollowing($conn, $userId);
   ============================ -->
 
 <div class="left-top-sidebar">
-      <div class="profile-top" style="background-image: url(/Social_App/assets/uploads/<?php echo $_SESSION["header_img"] ?>)"></div>
-      <div class="profile">
-        <img class="profile-image" src="/Social_App/assets/uploads/<?php echo $_SESSION["profile_img"] ?>" alt="Profilbild">
-        <h3 class="text-light"><?php echo $_SESSION["firstname"] . " " . $_SESSION["lastname"] ?></h3>
-        <p class="username text-light">@<?php echo $_SESSION["username"] ?></p>
-        <p class="bio text-light"><?php echo $_SESSION["bio"] ?></p>
-      </div>
+  <div class="profile-top" style="background-image: url(/Social_App/assets/uploads/<?php echo $_SESSION["header_img"]; ?>); background-postition: center"></div>
+  <div class="profile">
+    <img class="profile-image" src="/Social_App/assets/uploads/<?php echo $_SESSION["profile_img"] ?>" alt="Profilbild">
+    <h3 class="text-light mt-3"><?php echo $_SESSION["firstname"] . " " . $_SESSION["lastname"] ?></h3>
+    <p class="username text-light">@<?php echo $_SESSION["username"] ?></p>
+    <p class="bio text-light"><?php echo $_SESSION["bio"] ?></p>
+  </div>
 
-      <div class="stats">
-        <div class="left-stats">
-          <p class="text-light">Follower</p>
-          <h3 class="text-light"><?php echo $followerCount?></h3>
-        </div>
-        <div class="right-stats">
-          <p class="text-light">Following</p>
-          <h3 class="text-light"><?php echo $followingCount?></h3>
-        </div>
-      </div>
+  <!-- 📊 Statistiken -->
+  <div class="stats mt-3 pt-3 d-flex justify-content-around text-center">
+
+    <!-- Follower (hoverbar) -->
+    <div class="left-stats hover-effect" role="button" title="Follower anzeigen">
+      <p class="text-light mb-1">Follower</p>
+      <h3 class="text-light mb-0"><?= $followerCount ?></h3>
     </div>
+
+    <!-- Following (hoverbar) -->
+    <div class="right-stats hover-effect" role="button" title="Following anzeigen">
+      <p class="text-light mb-1">Following</p>
+      <h3 class="text-light mb-0"><?= $followingCount ?></h3>
+    </div>
+  </div>
+
+
+
+
+
+
+
+
+</div>

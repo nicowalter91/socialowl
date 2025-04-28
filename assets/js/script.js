@@ -70,7 +70,6 @@ document.addEventListener("DOMContentLoaded", () => {
         body: formData,
       });
       const raw = await res.text();
-      console.log("📦 Antwort vom Server:", raw);
       const data = JSON.parse(raw);
       if (data.success && data.html) {
         feed.insertAdjacentHTML("afterbegin", data.html);
@@ -502,5 +501,80 @@ removeBtn?.addEventListener("click", () => {
 });
 
 
+
+
+// ============================
+// Suchleiste Navbar
+// ============================
+
+document.getElementById("search-button").addEventListener("click", () => {
+  const query = document.getElementById("post-search").value.toLowerCase();
+  const posts = document.querySelectorAll(".tweet-card");
+  const resultsContainer = document.getElementById("search-results");
+
+  resultsContainer.innerHTML = "";
+  let found = 0;
+
+  posts.forEach(post => {
+    let textElement = post.querySelector(".post-text") || post.querySelector(".text-light");
+    let text = textElement ? textElement.textContent.toLowerCase() : "";
+    let username = post.dataset.username || "@unknown";
+
+    if (text.includes(query) && query.length > 0) {
+      const postId = post.getAttribute("data-post-id");
+
+      const card = document.createElement("div");
+      card.className = "bg-dark border border-secondary rounded p-2 mb-2";
+
+      const link = document.createElement("a");
+      link.href = `#post-${postId}`;
+      link.className = "text-light text-decoration-none d-block";
+
+      const title = document.createElement("div");
+      title.className = "fw-bold";
+      title.textContent = username;
+
+      const snippet = document.createElement("small");
+      snippet.className = "d-block text-light";
+      snippet.textContent = text.substring(0, 80) + (text.length > 80 ? "..." : "");
+
+      link.appendChild(title);
+      link.appendChild(snippet);
+      card.appendChild(link);
+
+      // Smooth Scroll und Highlight Effekt bei Klick
+      link.addEventListener("click", (e) => {
+        e.preventDefault();
+        const target = document.getElementById(`post-${postId}`);
+        if (target) {
+          target.scrollIntoView({ behavior: "smooth", block: "start" });
+
+          // Highlight-Effekt
+          target.classList.add("highlight-post");
+          setTimeout(() => {
+            target.classList.remove("highlight-post");
+          }, 2000); // nach 2 Sekunden wieder entfernen
+        }
+        resultsContainer.classList.add("d-none"); // Ergebnisse ausblenden
+      });
+
+      resultsContainer.appendChild(card);
+      found++;
+    }
+  });
+
+  if (found > 0) {
+    const info = document.createElement("div");
+    info.className = "text-dark mb-2";
+    info.textContent = `${found} Treffer gefunden:`;
+    resultsContainer.prepend(info);
+
+    resultsContainer.classList.remove("d-none");
+  } else {
+    resultsContainer.innerHTML = "<div class='text-light'>Keine Treffer gefunden.</div>";
+    resultsContainer.classList.remove("d-none");
+  }
 });
 
+
+});

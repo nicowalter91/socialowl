@@ -14,6 +14,7 @@ ensureLogin($conn);
 // Benutzer-Session aufbauen & Posts laden
 $user = initUserSession($_SESSION["username"]);
 $posts = fetchAllPostsWithComments($conn, $_SESSION["id"]);
+
 ?>
 
 

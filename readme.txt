@@ -2,106 +2,100 @@
  SOCIAL OWL - README 
 ==================================================
 
-📦 Projektname: Social Owl  
-📁 Version:     1.1 (April 2025)  
-👤 Entwickler:  Nico Walter (FISI, 2. Lehrjahr)  
+📦 Projektname:   Social Owl  
+📁 Version:       1.1 (April 2025)  
+👤 Entwickler:    Nico Walter,
+                  Georg Diesendorf,
+                  Andreas Wiegand,
+                  Florian Prottengeier
 ==================================================
 
 📌 Projektübersicht
 --------------------------------------------------
-Social Owl ist eine moderne Social-Media-Webanwendung mit Fokus auf
-Usability, Erweiterbarkeit und sauberer Struktur nach dem MVC-Prinzip.
-Benutzer können Inhalte teilen, kommentieren, liken und sich in einer 
-übersichtlichen, responsiven Oberfläche bewegen.
+Social Owl ist eine moderne, schlanke Social-Media-Plattform mit Fokus auf 
+Benutzerfreundlichkeit, saubere Struktur (MVC) und vielen Social Features.  
+Nutzer können Inhalte posten, liken, kommentieren, folgen und ihr Profil pflegen.
 
-✅ Features (Stand: April 2025)
+✅ Features
 --------------------------------------------------
-✔️ Registrierung & Login inkl. "Angemeldet bleiben" (Token)
-✔️ Passwort-Reset via (E-Mail) (Token-basiert)
-✔️ Post-Erstellung mit Text, Bildern und Videos  
-✔️ Kommentar-Funktion mit:
-   → Bearbeiten / Löschen
-   → Likes
-   → Emoji-Picker
-✔️ Live-Updates (Posts & Kommentare via Polling ohne Reload)
-✔️ Dark Theme + UI mit Bootstrap 5
-✔️ Profilseiten mit Profilbild, Headerbild & Bio
-✔️ Live-Zeichenzähler & visuelles Feedback
-✔️ Moderner Upload mit Vorschau (Video/Bild)
-✔️ Responsive für Desktop & Tablet
-✔️ Datenbank in 3. Normalform
+✔️ Registrierung & Login inkl. "Angemeldet bleiben"-Token  
+✔️ Passwort-Reset per E-Mail (Token-gesichert)  
+✔️ Beiträge mit Text, Bildern & Videos (Upload inkl. Vorschau)  
+✔️ Kommentare mit Bearbeiten, Löschen & Likes  
+✔️ Like-System für Beiträge und Kommentare  
+✔️ Benutzerprofil mit Profil- & Headerbild  
+✔️ Folgen/Entfolgen von anderen Usern  
+✔️ Live-Feed für neue Posts und Kommentare (Polling)  
+✔️ Responsives Dark-Theme (Bootstrap 5)  
+✔️ Emoji-Picker für Posts & Kommentare  
+✔️ Sidebar mit Follow-Vorschlägen & Trends  
+✔️ Scrollbarer Feed mit unsichtbarem Scrollbalken  
+✔️ Kommentare & Beiträge nur sichtbar von gefolgten Usern  
+✔️ Sidebar zeigt aktuelle Follower- & Following-Anzahl  
+✔️ Modal-Interface für Beitrag löschen & Profil bearbeiten  
+✔️ Live-Kommentar- und Postanzeige (nur bei dir)  
+✔️ Saubere UI-Komponenten & Layout mit Bootstrap  
+✔️ Datenbank vollständig in 3. Normalform
 
 🧰 Technologien
 --------------------------------------------------
-- PHP (procedural + strukturierter MVC-Ansatz)
-- JavaScript (ES6, DOM-basierend)
-- HTML5, CSS3 (Bootstrap 5.3, Icons)
+- PHP (strukturierter MVC-Ansatz)
+- HTML5, CSS3, JavaScript (ES6)
+- Bootstrap 5.3 + Bootstrap Icons (lokal Eingebunden)
 - MySQL / MariaDB
-- UniServerZ als lokale Entwicklungsumgebung
+- UniServerZ (lokale Entwicklungsumgebung)
 
 📁 Projektstruktur (nach MVC)
 --------------------------------------------------
-├── controllers/         → Logik & Routing (z. B. create_post.php)
-│   └── api/             → Endpunkte für Polling (z. B. posts_since.php)
-├── models/              → Datenbankabfragen (z. B. post.php, comment.php)
-├── views/               → HTML-Templates (login.view.php, welcome.php etc.)
-├── partials/            → Wiederverwendbare UI-Komponenten
-├── includes/            → Config, DB-Verbindung, Authentifizierung
+├── controllers/      → Business-Logik (z. B. create_post.php)
+├── models/           → Datenbankabfragen (z. B. user.php, follow.php)
+├── views/            → Hauptseiten wie welcome.php, login.view.php
+├── partials/         → Wiederverwendbare UI-Elemente (Sidebar, Modals)
+├── includes/         → Konfiguration, Auth, DB-Verbindung
 ├── assets/
-│   ├── css/             → style.css, bootstrap.css
-│   ├── js/              → script.js (alle Funktionen in einer Datei)
-│   ├── img/             → Logos & Standardbilder
-│   ├── posts/           → Medien aus Beiträgen
-│   └── uploads/         → Profil- & Headerbilder
-├── modal/               → Bootstrap-Modals (Post löschen etc.)
-├── trash/               → Archiv, Debug-Dateien, Altversionen
+│   ├── css/          → style.css, bootstrap.min.css
+    ├── fonts/        → bootstrap icons (woff-Dateien)
+│   ├── js/           → script.js (Emoji, Feed, Vorschau etc.)
+│   ├── img/          → Logos & Default-Bilder
+│   ├── posts/        → Medien aus Beiträgen
+│   └── uploads/      → Profil- und Headerbilder
+├── trash/            → Alte/temporäre Dateien (nicht produktiv)
+├── tests/            → PHP Skripte für automatisierte Tests
 
 🛠 Einrichtung / Setup
 --------------------------------------------------
-1. Lokale Umgebung starten (z. B. UniServerZ)
-2. Datenbank `social_owl` erstellen
-3. SQL-Migration importieren (`social_owl_migration.sql`)
-4. Zugangsdaten in `includes/config.php` anpassen
-5. Aufruf im Browser: http://localhost/Social_App/
+1. UniServerZ oder XAMPP starten
+2. Datenbank `social_owl` anlegen
+3. SQL-Dump importieren (`social_owl_migration.sql`)
+4. Zugangsdaten in `includes/config.php` eintragen
+5. Projekt starten: http://localhost/Social_App/
 
 🧾 Konfigurationsdatei (`config.php`)
 --------------------------------------------------
-define("DB_HOST", "localhost");  
-define("DB_NAME", "social_owl");  
-define("DB_USER", "owl_user");  
-define("DB_PASS", "password");  
-define("BASE_URL", "/Social_App");  
-define("DEBUG_MODE", true);  
+- DB_HOST     = 'localhost'  
+- DB_NAME     = 'social_owl'  
+- DB_USER     = 'owl_user'  
+- DB_PASS     = 'password'  
+- BASE_URL    = '/Social_App'  
+- DEBUG_MODE  = true (nur für DEV!)
 
-🗃 Datenbankstruktur (Kurzüberblick)
+🗃 Datenbank-Tabellen (Kurzüberblick)
 --------------------------------------------------
-- `users`            → Nutzerinfo, Tokens, Bilder
-- `posts`            → Beiträge mit Medien
-- `comments`         → Kommentare mit Like-Zähler
-- `post_likes`       → Like-Zuordnung für Posts
-- `comment_likes`    → Like-Zuordnung für Kommentare
-- `followers`        → (Zukünftig: Follower-Funktion)
+- `users`          → Benutzerkonto, Token, Medien
+- `posts`          → Beiträge mit Content, Bild, Video
+- `comments`       → Kommentare zu Beiträgen
+- `post_likes`     → Likes für Beiträge
+- `comment_likes`  → Likes für Kommentare
+- `followers`      → Wer folgt wem
 
-📊 Getestete Funktionen (Automatisiert)
---------------------------------------------------
-✅ User-Registrierung & Login  
-✅ 5 Posts erstellt mit Bild/Video  
-✅ Pro Post 5 Kommentare erzeugt  
-✅ Kommentare bearbeitet und gelöscht  
-✅ Likes für Kommentare getestet  
-✅ Alle Inhalte erscheinen live (Polling)  
-✅ Vorschau von Bildern & Videos ohne Seitenreload  
-✅ Responsives Design überprüft  
+📚 Features Backlog
+---------------------------------------------------
 
-🧭 Roadmap / ToDo
---------------------------------------------------
-🚧 Folgen/Friend-System (Follow/Unfollow)  
-🚧 Nutzerprofile öffentlich anzeigen  
-🚧 Admin-Modus mit Moderation  
-🚧 Medien-Komprimierung beim Upload (Thumbnails etc.)  
-🚧 REST-API für Mobile/Desktop-Client vorbereiten  
-🚧 SEO & Ladezeit-Optimierung  
-🚧 JavaScript modularisieren (geplant für v1.2)  
+- Notification nach Follow
+- Hashtags in Post erkennen
+- Suchleiste für Posts & Hashtags
+- Direct Messaging
+- Live Update (Polling)
 
-📅 Letzter Stand: 24. April 2025  
+📅 Letzter Stand: 25. April 2025
 ==================================================

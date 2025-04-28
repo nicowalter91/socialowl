@@ -16,7 +16,7 @@
   </div>
 
   <!-- Vorschau -->
-  <div id="media-preview" class="position-relative mt-3 rounded overflow-hidden shadow-sm border d-inline-block bg-dark-subtle">
+  <div id="media-preview" class="position-relative mt-3 rounded overflow-hidden shadow-sm d-inline-block bg-dark-subtle">
 
     <!-- Entfernen-Icon -->
     <button type="button"
@@ -52,7 +52,7 @@
   <input type="hidden" id="original-image-path" name="original_image_path">
 
   <!-- Footer mit Buttons -->
-  <div class="mt-auto d-flex justify-content-between align-items-center flex-wrap gap-2 pt-3 border-top border-secondary">
+  <div class="mt-auto d-flex justify-content-between align-items-center flex-wrap gap-2 pt-3">
     <div class="d-flex gap-2 flex-wrap">
       <!-- Bild Upload -->
       <label for="file-upload-image" class="btn btn-sm btn-outline-light">

@@ -1,7 +1,7 @@
 <?php if (!isset($post) || empty($post["id"])) return; 
 echo "<!-- RENDERE post_card.php für Post-ID {$post['id']} -->";?>
 
-<div class="tweet-card mb-4 p-3 rounded" data-post-id="<?= $post['id'] ?>">
+<div class="tweet-card mb-4 p-3 rounded" id="post-<?= $post['id']?>" data-post-id="<?= $post['id'] ?>" data-username="@<?= $post['username'] ?>">
   <!-- Kopfbereich -->
   <div class="d-flex justify-content-between align-items-start mb-3">
     <div class="d-flex align-items-start">
@@ -41,7 +41,7 @@ echo "<!-- RENDERE post_card.php für Post-ID {$post['id']} -->";?>
 
   <!-- Inhalt -->
   <div class="mb-3 pb-3 border-bottom border-secondary">
-    <p class="text-light mb-2"><?= nl2br(htmlspecialchars($post["content"])) ?></p>
+    <p class="post-text text-light mb-2"><?= nl2br(htmlspecialchars($post["content"])) ?></p>
 
     <?php if (!empty($post["image_path"])): ?>
       <div class="tweet-media-wrapper mb-2 w-100">
