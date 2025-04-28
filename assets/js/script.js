@@ -524,7 +524,8 @@ document.getElementById("search-button").addEventListener("click", () => {
       const postId = post.getAttribute("data-post-id");
 
       const card = document.createElement("div");
-      card.className = "bg-dark border border-secondary rounded p-2 mb-2";
+      card.className = "bg-dark rounded p-2 mb-2 search-result-card";
+
 
       const link = document.createElement("a");
       link.href = `#post-${postId}`;
@@ -565,13 +566,13 @@ document.getElementById("search-button").addEventListener("click", () => {
 
   if (found > 0) {
     const info = document.createElement("div");
-    info.className = "text-dark mb-2";
+    info.className = "text-light mb-2";
     info.textContent = `${found} Treffer gefunden:`;
     resultsContainer.prepend(info);
 
     resultsContainer.classList.remove("d-none");
   } else {
-    resultsContainer.innerHTML = "<div class='text-light'>Keine Treffer gefunden.</div>";
+    resultsContainer.innerHTML = "<div class='text-danger'><i class='bi bi-exclamation-circle mb-1'></i> Keine Treffer gefunden.</div>";
     resultsContainer.classList.remove("d-none");
   }
 });

@@ -19,7 +19,7 @@ Nutzer können Inhalte posten, liken, kommentieren, folgen und ihr Profil pflege
 ✅ Features
 --------------------------------------------------
 ✔️ Registrierung & Login inkl. "Angemeldet bleiben"-Token  
-✔️ Passwort-Reset per E-Mail (Token-gesichert)  
+✔️ Passwort-Reset per "E-Mail" (Token-gesichert)  
 ✔️ Beiträge mit Text, Bildern & Videos (Upload inkl. Vorschau)  
 ✔️ Kommentare mit Bearbeiten, Löschen & Likes  
 ✔️ Like-System für Beiträge und Kommentare  
@@ -36,6 +36,7 @@ Nutzer können Inhalte posten, liken, kommentieren, folgen und ihr Profil pflege
 ✔️ Live-Kommentar- und Postanzeige (nur bei dir)  
 ✔️ Saubere UI-Komponenten & Layout mit Bootstrap  
 ✔️ Datenbank vollständig in 3. Normalform
+✔️ Suchleiste für Posts
 
 🧰 Technologien
 --------------------------------------------------
@@ -93,7 +94,6 @@ Nutzer können Inhalte posten, liken, kommentieren, folgen und ihr Profil pflege
 
 - Notification nach Follow
 - Hashtags in Post erkennen
-- Suchleiste für Posts & Hashtags
 - Direct Messaging
 - Live Update (Polling)
 

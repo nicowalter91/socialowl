@@ -9,22 +9,27 @@
     <h3 class="text-light mb-0">Social Owl</h3>
   </div>
 
- <!-- Mitte: Suchfeld -->
+<!-- Mitte: Suchfeld -->
 <div class="flex-grow-1 mx-4 position-relative">
-  <form id="post-search-form" class="d-flex justify-content-center position-relative" onsubmit="return false;" style="max-width: 400px; width: 100%;">
+  <form id="post-search-form" class="d-flex justify-content-center" onsubmit="return false;" style="max-width: 400px; width: 100%;">
     <div class="input-group">
-      <input class="form-control" id="post-search" type="search" placeholder="Text eingeben...">
-      <button class="btn btn-light btn-sm" id="search-button" type="button">
-        <i class="bi bi-search me-1"></i>
+      <input class="form-control bg-dark text-light border-secondary rounded-start-pill" 
+             id="post-search" 
+             type="search" 
+             placeholder="Text eingeben..." 
+             aria-label="Suche">
+      <button class="btn btn-primary border-secondary rounded-end-pill" id="search-button" type="button">
+        <i class="bi bi-search"></i>
       </button>
     </div>
 
     <!-- Container für Suchergebnisse -->
-    <div id="search-results" class="bg-dark-subtle p-2 rounded d-none mt-2 w-100" style="position: absolute; top: 100%; left: 0; z-index: 1000;">
+    <div id="search-results" class="p-2 rounded d-none mt-2 w-100" style="background-color: #28353e; position: absolute; top: 100%; left: 0; z-index: 1000;">
       <!-- Ergebnisse erscheinen hier -->
     </div>
   </form>
 </div>
+
 
 
 
