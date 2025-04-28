@@ -5,7 +5,7 @@
 <?php endif; ?>
 
 
-<div class="feed">
+<div class="feed" id="feed" data-user-id="<?= $_SESSION["id"] ?>">
   <?php if (empty($posts)): ?>
     <div class="text-center mt-5 p-5">
       <i class="bi bi-chat-dots display-1 text-secondary"></i>

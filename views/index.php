@@ -35,7 +35,7 @@ $posts = fetchAllPostsWithComments($conn, $_SESSION["id"]);
   <link rel="icon" href="<?= BASE_URL ?>/assets/img/Owl_logo.svg" type="image/x-icon">
 </head>
 
-<body class="app-body">
+<body class="app-body" data-current-user-id="<?= (int)$_SESSION['id'] ?>">
 
   <!-- Navigation -->
   <?php include PARTIALS . '/navbar.php'; ?>

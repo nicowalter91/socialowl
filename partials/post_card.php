@@ -1,16 +1,21 @@
-<?php if (!isset($post) || empty($post["id"])) return; 
-echo "<!-- RENDERE post_card.php für Post-ID {$post['id']} -->";?>
+<?php if (!isset($post) || empty($post["id"])) return;
+echo "<!-- RENDERE post_card.php für Post-ID {$post['id']} -->"; ?>
 
-<div class="tweet-card mb-4 p-3 rounded" id="post-<?= $post['id']?>" data-post-id="<?= $post['id'] ?>" data-username="@<?= $post['username'] ?>">
+<div class="tweet-card mb-4 p-3 rounded" id="post-<?= $post['id'] ?>" data-post-id="<?= $post['id'] ?>" data-username="@<?= $post['username'] ?>">
   <!-- Kopfbereich -->
   <div class="d-flex justify-content-between align-items-start mb-3">
     <div class="d-flex align-items-start">
       <img class="tweet-profile-image me-3"
-           src="<?= BASE_URL ?>/assets/uploads/<?= htmlspecialchars($post["profile_img"]) ?>"
-           alt="Profilbild">
+        src="<?= BASE_URL ?>/assets/uploads/<?= htmlspecialchars($post["profile_img"]) ?>"
+        alt="Profilbild">
       <div>
         <h6 class="text-light mb-0">@<?= htmlspecialchars($post["username"]) ?></h6>
-        <small class="text-light"><?= date("d.m.Y H:i", strtotime($post["created_at"])) ?></small>
+        <small
+          class="post-timestamp text-light"
+          data-timestamp="<?= htmlspecialchars($post['created_at'], ENT_QUOTES) ?>">
+          <?= date("d.m.Y H:i", strtotime($post["created_at"])) ?>
+        </small>
+
       </div>
     </div>
 
@@ -22,13 +27,15 @@ echo "<!-- RENDERE post_card.php für Post-ID {$post['id']} -->";?>
         <ul class="dropdown-menu dropdown-menu-end bg-dark border border-secondary">
           <li>
             <a href="#" class="dropdown-item text-light edit-post-btn"
-               data-post-id="<?= $post['id'] ?>"
-               data-content="<?= htmlspecialchars($post['content'], ENT_QUOTES) ?>"
-               data-image="<?= !empty($post['image_path']) ? BASE_URL . '/assets/posts/' . htmlspecialchars($post['image_path']) : '' ?>">
+              data-post-id="<?= $post['id'] ?>"
+              data-content="<?= htmlspecialchars($post['content'], ENT_QUOTES) ?>"
+              data-image="<?= !empty($post['image_path']) ? BASE_URL . '/assets/posts/' . htmlspecialchars($post['image_path']) : '' ?>">
               <i class="bi bi-pencil-square me-2"></i> Bearbeiten
             </a>
           </li>
-          <li><hr class="dropdown-divider border-light"></li>
+          <li>
+            <hr class="dropdown-divider border-light">
+          </li>
           <li>
             <button class="dropdown-item text-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
               <i class="bi bi-trash me-2"></i> Löschen
@@ -46,7 +53,7 @@ echo "<!-- RENDERE post_card.php für Post-ID {$post['id']} -->";?>
     <?php if (!empty($post["image_path"])): ?>
       <div class="tweet-media-wrapper mb-2 w-100">
         <img src="<?= BASE_URL ?>/assets/posts/<?= htmlspecialchars($post["image_path"]) ?>?t=<?= time() ?>"
-             alt="Bild" class="tweet-media img-fluid rounded-4 shadow-sm">
+          alt="Bild" class="tweet-media img-fluid rounded-4 shadow-sm">
       </div>
     <?php endif; ?>
 

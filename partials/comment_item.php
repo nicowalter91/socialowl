@@ -1,8 +1,10 @@
 <?php if (!isset($comment)) return; ?>
 
-<div class="comment d-flex align-items-start gap-2 mb-2 pt-3 pb-3 border-bottom border-secondary"
-     data-comment-id="<?= $comment["id"] ?>"
+<div class="comment d-flex align-items-start gap-2 mb-2 pt-3 pb-3 border-bottom border-secondary" 
+     id="comment-<?= $comment["id"] ?>" 
+     data-comment-id="<?= $comment["id"] ?>" 
      data-post-id="<?= $comment["post_id"] ?>">
+
 
 
   <!-- Profilbild -->
@@ -14,7 +16,12 @@
   <!-- Inhalt -->
   <div class="flex-grow-1">
     <strong class="text-light">@<?= htmlspecialchars($comment["username"]) ?></strong><br>
-    <small class="text-light"><?= date("d.m.Y H:i", strtotime($comment["created_at"])) ?></small>
+    <small 
+    class="comment-timestamp text-light" 
+    data-timestamp="<?= htmlspecialchars($comment["created_at"]) ?>">
+  <?= date("d.m.Y H:i", strtotime($comment["created_at"])) ?>
+</small>
+
     <div class="mt-2">
       <span class="text-light comment-content"><?= nl2br(htmlspecialchars($comment["content"])) ?></span>
     </div>

@@ -3,6 +3,9 @@
 // ============================
 document.addEventListener("DOMContentLoaded", () => {
   console.log("✅ script.js geladen");
+  let lastPostTimestamp = null;
+  let lastCommentTimestamp = null;
+  initLastCommentTimestamp();
 
   initPostCardEvents();
 
@@ -16,12 +19,74 @@ document.addEventListener("DOMContentLoaded", () => {
   const originalImagePathInput = document.getElementById("original-image-path");
   const cancelEditBtn = document.getElementById("cancel-edit");
   const form = document.querySelector(".tweet-box");
-  const feed = document.querySelector(".feed");
+  const feed = document.getElementById("feed");
   const imageInput = document.getElementById("file-upload-image");
   const videoInput = document.getElementById("file-upload-video");
   const imagePreview = document.getElementById("image-preview");
   const videoPreview = document.getElementById("video-preview");
   const removeBtn = document.getElementById("remove-preview");
+  const CURRENT_USER_ID =
+    parseInt(document.body.dataset.currentUserId, 10) || null;
+
+  // ============================
+  // Last Comment Timestamp automatisch setzen
+  // ============================
+
+  function initLastCommentTimestamp() {
+    const timestampElements = document.querySelectorAll(".comment-timestamp");
+
+    if (timestampElements.length > 0) {
+      const timestamps = Array.from(timestampElements)
+        .map((el) => new Date(el.dataset.timestamp))
+        .filter((date) => !isNaN(date)); // Nur gültige Datumswerte nehmen
+
+      if (timestamps.length > 0) {
+        const latest = timestamps.sort((a, b) => b - a)[0]; // neuestes Datum finden
+
+        lastCommentTimestamp =
+          latest.getFullYear() +
+          "-" +
+          String(latest.getMonth() + 1).padStart(2, "0") +
+          "-" +
+          String(latest.getDate()).padStart(2, "0") +
+          " " +
+          String(latest.getHours()).padStart(2, "0") +
+          ":" +
+          String(latest.getMinutes()).padStart(2, "0") +
+          ":" +
+          String(latest.getSeconds()).padStart(2, "0");
+      }
+    }
+  }
+
+  /**
+   * Initialisiert lastPostTimestamp anhand aller bereits
+   * gerenderten Posts im HTML.
+   */
+  function initLastPostTimestamp() {
+    const els = document.querySelectorAll(".post-timestamp");
+    if (!els.length) return;
+    const dates = Array.from(els)
+      .map((el) => new Date(el.dataset.timestamp))
+      .filter((d) => !isNaN(d))
+      .sort((a, b) => b - a);
+    const latest = dates[0];
+    lastPostTimestamp =
+      latest.getFullYear() +
+      "-" +
+      String(latest.getMonth() + 1).padStart(2, "0") +
+      "-" +
+      String(latest.getDate()).padStart(2, "0") +
+      " " +
+      String(latest.getHours()).padStart(2, "0") +
+      ":" +
+      String(latest.getMinutes()).padStart(2, "0") +
+      ":" +
+      String(latest.getSeconds()).padStart(2, "0");
+  }
+
+  // direkt nach Variablen-Initialisierung aufrufen
+  initLastPostTimestamp();
 
   // ============================
   // Initialisierungen
@@ -36,6 +101,24 @@ document.addEventListener("DOMContentLoaded", () => {
         editBtnWrapper.classList.remove("d-none");
         window.scrollTo({ top: 100, behavior: "smooth" });
       });
+    });
+  }
+
+  function escapeHTML(text) {
+    if (!text) return "";
+    return text.replace(/[&<>"']/g, (match) => {
+      switch (match) {
+        case "&":
+          return "&amp;";
+        case "<":
+          return "&lt;";
+        case ">":
+          return "&gt;";
+        case '"':
+          return "&quot;";
+        case "'":
+          return "&#039;";
+      }
     });
   }
 
@@ -74,7 +157,16 @@ document.addEventListener("DOMContentLoaded", () => {
       const raw = await res.text();
       const data = JSON.parse(raw);
       if (data.success && data.html) {
+        // 1) einfügen
         feed.insertAdjacentHTML("afterbegin", data.html);
+  
+        // 2) lastPostTimestamp auf das Timestamp-Attribut des neuen Elements setzen:
+        const inserted = feed.firstElementChild;
+        const tsEl = inserted.querySelector(".post-timestamp");
+        if (tsEl) {
+          lastPostTimestamp = tsEl.dataset.timestamp;
+        }
+  
         resetPostForm();
         initPostCardEvents();
       }
@@ -82,7 +174,7 @@ document.addEventListener("DOMContentLoaded", () => {
       console.error("❌ Fehler beim Senden des Beitrags:", err);
     }
   });
-
+  
   // ============================
   // Emoji Picker für Posts
   // ============================
@@ -174,60 +266,9 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // ============================
-  // Kommentare speichern / bearbeiten
+  // Kommentare  bearbeiten
   // ============================
 
-  document.querySelectorAll(".comment-form-inner").forEach((form) => {
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
-
-      const commentId = form.querySelector(".edit-comment-id").value;
-      const content = form.querySelector("textarea").value;
-      const postId = form.dataset.postId;
-      const formData = new FormData(form);
-      const commentList = document.querySelector(`#comment-list-${postId}`);
-
-      const url = commentId
-        ? "/Social_App/controllers/update_comment.php"
-        : "/Social_App/controllers/create_comment.php";
-
-      try {
-        const res = await fetch(url, { method: "POST", body: formData });
-        const raw = await res.text();
-        console.log("📦 Kommentar-Serverantwort:", raw);
-
-        const result = JSON.parse(raw);
-
-        if (result.success) {
-          if (commentId) {
-            const commentEl = document
-              .querySelector(`.comment button[data-comment-id="${commentId}"]`)
-              ?.closest(".comment");
-            if (commentEl)
-              commentEl.querySelector(".comment-content").textContent = content;
-            form.querySelector(".edit-comment-id").value = "";
-          } else {
-            if (result.html && commentList)
-              commentList.insertAdjacentHTML("beforeend", result.html);
-          }
-
-          // 🧹 Formular leeren & schließen
-          form.reset();
-          console.log("🧹 Formular zurückgesetzt:", form);
-
-          form.querySelector("textarea").value = "";
-          const wrapper = form.closest(".comment-form");
-          if (wrapper) wrapper.classList.remove("show");
-        } else {
-          alert("⚠️ Fehler: " + result.message);
-        }
-      } catch (err) {
-        console.error("❌ Fehler beim Speichern des Kommentars:", err);
-      }
-    });
-  });
-
-  // Kommentar bearbeiten
   document.querySelectorAll(".edit-comment-btn").forEach((btn) => {
     btn.addEventListener("click", () => {
       const form = btn
@@ -302,142 +343,195 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // ============================
-  // Live Update Polling für neue Posts
+  // Kommentare speichern / bearbeiten (richtig für Kommentarformulare!)
   // ============================
-  let lastPostTimestamp = null;
-  const latestPost = document.querySelector(
-    ".tweet-card small.text-light"
-  )?.textContent;
-  if (latestPost) {
-    const [d, m, y, time] = latestPost.split(/\.| |:/);
-    lastPostTimestamp = `${y}-${m}-${d} ${time}`;
+
+  document.querySelectorAll(".comment-form-inner").forEach((commentForm) => {
+    commentForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const formData = new FormData(commentForm);
+      const commentId =
+        commentForm.querySelector(".edit-comment-id")?.value || null;
+      const postId = commentForm.dataset.postId;
+      const url = commentId
+        ? "/Social_App/controllers/update_comment.php"
+        : "/Social_App/controllers/create_comment.php";
+
+      try {
+        const res = await fetch(url, { method: "POST", body: formData });
+        const result = await res.json();
+
+        if (result.success) {
+          // wenn ein neues Kommentar erzeugt wurde, von den JSON-Daten rendern
+          if (!commentId && result.comment) {
+            renderComment(result.comment);
+            lastCommentTimestamp = result.comment.created_at;
+          }
+          // zurücksetzen & Form schließen
+          commentForm.reset();
+          const wrapper = commentForm.closest(".comment-form");
+          if (wrapper) wrapper.classList.remove("show");
+        } else {
+          alert("⚠️ Fehler: " + result.message);
+        }
+      } catch (err) {
+        console.error("❌ Fehler beim Senden des Kommentars:", err);
+      }
+    });
+  });
+
+  function formatGermanDate(dateString) {
+    const d = new Date(dateString);
+    return (
+      `${String(d.getDate()).padStart(2, "0")}.${String(
+        d.getMonth() + 1
+      ).padStart(2, "0")}.${d.getFullYear()} ` +
+      `${String(d.getHours()).padStart(2, "0")}:${String(
+        d.getMinutes()
+      ).padStart(2, "0")}`
+    );
   }
+
+  // ============================
+  // Live Update: Neue Posts abrufen
+  // ============================
 
   async function fetchNewPosts() {
     try {
       const res = await fetch(
-        `/Social_App/controllers/api/posts_since.php?since=${encodeURIComponent(
-          lastPostTimestamp ?? ""
-        )}`
+        `/Social_App/controllers/api/posts_since.php?since=${
+          lastPostTimestamp || "1970-01-01 00:00:00"
+        }`
       );
-      const result = await res.json();
-
-      if (result.success && result.html) {
-        feed.insertAdjacentHTML("afterbegin", result.html);
-        lastPostTimestamp = result.latest;
-        initPostCardEvents();
+      const data = await res.json();
+  
+      // API liefert „posts“ (Rohdaten) und parallel dazu „html“ (HTML-Fragmente)
+      if (data.success && Array.isArray(data.posts) && Array.isArray(data.html)) {
+        data.posts.forEach((post, i) => {
+          // nur wirklich neu einfügen
+          if (!document.getElementById(`post-${post.id}`)) {
+            feed.insertAdjacentHTML("afterbegin", data.html[i]);
+            lastPostTimestamp = post.created_at;
+            // neu hinzugefügte Buttons/Links initialisieren
+            initPostCardEvents();
+          }
+        });
       }
     } catch (err) {
       console.error("❌ Fehler beim Abrufen neuer Posts:", err);
     }
   }
-
-  setInterval(fetchNewPosts, 10000);
+  
+  
 
   // ============================
-  // Live Update Polling für neue Kommentare
+  // Live Update: Neue Kommentare abrufen
   // ============================
-  let latestCommentTimestamp = null;
+
+  function renderComment(comment) {
+    const commentsContainer = document.getElementById(
+      `comment-list-${comment.post_id}`
+    );
+    if (!commentsContainer || document.getElementById(`comment-${comment.id}`))
+      return;
+
+    const isOwn = comment.user_id === CURRENT_USER_ID;
+
+    const commentElement = document.createElement("div");
+    commentElement.className =
+      "comment d-flex align-items-start gap-2 mb-2 pt-3 pb-3 border-bottom border-secondary";
+    commentElement.id = `comment-${comment.id}`;
+    commentElement.dataset.commentId = comment.id;
+    commentElement.dataset.postId = comment.post_id;
+
+    commentElement.innerHTML = `
+      <img class="rounded-circle"
+           src="/Social_App/assets/uploads/${
+             comment.profile_img || "profil.png"
+           }"
+           alt="Profilbild"
+           style="width:32px;height:32px;">
+  
+      <div class="flex-grow-1">
+        <strong class="text-light">@${escapeHTML(comment.username)}</strong><br>
+        <small class="comment-timestamp text-light" data-timestamp="${escapeHTML(
+          comment.created_at
+        )}">
+          ${formatGermanDate(comment.created_at)}
+        </small>
+        <div class="mt-2">
+          <span class="text-light comment-content">${escapeHTML(
+            comment.content
+          )}</span>
+        </div>
+      </div>
+  
+      <div class="${
+        isOwn ? "mt-2 d-flex gap-2 align-items-center" : "ms-auto mt-2"
+      }">
+        ${
+          isOwn
+            ? `
+          <button type="button"
+                  class="btn btn-sm btn-outline-light edit-comment-btn"
+                  data-comment-id="${comment.id}"
+                  data-content="${escapeHTML(comment.content)}">
+            <i class="bi bi-pencil me-1"></i>Bearbeiten
+          </button>
+          <button type="button"
+                  class="btn btn-sm btn-outline-danger delete-comment-btn"
+                  data-comment-id="${comment.id}">
+            <i class="bi bi-trash me-1"></i>Löschen
+          </button>
+        `
+            : ""
+        }
+        <button type="button"
+                class="btn btn-sm like-comment-btn ${
+                  comment.liked ? "btn-light text-dark" : "btn-outline-light"
+                }"
+                data-comment-id="${comment.id}">
+          <i class="bi bi-hand-thumbs-up me-1"></i>
+          <span class="like-count">${comment.like_count || 0}</span>
+        </button>
+      </div>
+    `;
+
+    commentsContainer.appendChild(commentElement);
+  }
 
   async function fetchNewComments() {
     try {
       const res = await fetch(
         `/Social_App/controllers/api/comments_since.php?since=${
-          latestCommentTimestamp || 0
+          lastCommentTimestamp || "1970-01-01 00:00:00"
         }`
       );
       const data = await res.json();
 
-      if (data.success && data.html) {
-        const temp = document.createElement("div");
-        temp.innerHTML = data.html;
-
-        temp.querySelectorAll(".comment").forEach((comment) => {
-          let latestCommentTimestamp = null;
-
-          async function fetchNewComments() {
-            try {
-              const res = await fetch(
-                `/Social_App/controllers/api/comments_since.php?since=${
-                  latestCommentTimestamp || 0
-                }`
-              );
-              const data = await res.json();
-
-              if (data.success && data.html) {
-                const temp = document.createElement("div");
-                temp.innerHTML = data.html;
-
-                temp.querySelectorAll(".comment").forEach((comment) => {
-                  let latestCommentTimestamp = null;
-
-                  async function fetchNewComments() {
-                    try {
-                      const res = await fetch(
-                        `/Social_App/controllers/api/comments_since.php?since=${
-                          latestCommentTimestamp || 0
-                        }`
-                      );
-                      const data = await res.json();
-
-                      if (data.success && data.html) {
-                        const temp = document.createElement("div");
-                        temp.innerHTML = data.html;
-
-                        temp.querySelectorAll(".comment").forEach((comment) => {
-                          const tweetCard = [
-                            ...document.querySelectorAll(".tweet-card"),
-                          ].find((card) => card.contains(comment));
-                          const postId = tweetCard?.dataset.postId;
-                          const commentList = document.querySelector(
-                            `#comment-list-${postId}`
-                          );
-                          if (commentList) commentList.appendChild(comment);
-                        });
-
-                        latestCommentTimestamp = data.latest;
-                      }
-                    } catch (err) {
-                      console.error(
-                        "❌ Fehler beim Abrufen neuer Kommentare:",
-                        err
-                      );
-                    }
-                  }
-
-                  setInterval(fetchNewComments, 10000);
-
-                  // Initialisieren von Events nach Page Load
-                  initPostCardEvents();
-
-                  const commentList = document.querySelector(
-                    `#comment-list-${postId}`
-                  );
-                  if (commentList) commentList.appendChild(comment);
-                });
-
-                latestCommentTimestamp = data.latest;
-              }
-            } catch (err) {
-              console.error("❌ Fehler beim Abrufen neuer Kommentare:", err);
-            }
-          }
-
-          setInterval(fetchNewComments, 10000);
-
-          // Initialisieren von Events nach Page Load
-          initPostCardEvents();
-
-          const commentList = document.querySelector(`#comment-list-${postId}`);
-          if (commentList) commentList.appendChild(comment);
+      if (data.success && Array.isArray(data.comments)) {
+        data.comments.forEach((comment) => {
+          renderComment(comment);
+          lastCommentTimestamp = comment.created_at;
         });
-
-        latestCommentTimestamp = data.latest;
       }
-    } catch (err) {
-      console.error("❌ Fehler beim Abrufen neuer Kommentare:", err);
+    } catch (error) {
+      console.error("❌ Fehler beim Abrufen neuer Kommentare:", error);
     }
   }
+
+  // ============================
+  // Live Update Intervall starten
+  // ============================
+  setInterval(() => {
+    fetchNewPosts();
+    fetchNewComments();
+  }, 5000);
+
+  // Initialer Aufruf beim Laden
+  fetchNewPosts();
+  fetchNewComments();
 
   // ============================
   // Beitrag löschen (Post)
@@ -541,51 +635,51 @@ document.addEventListener("DOMContentLoaded", () => {
     const query = input.value.toLowerCase();
     const posts = document.querySelectorAll(".tweet-card");
     const resultsContainer = document.getElementById("search-results");
-  
+
     resultsContainer.innerHTML = "";
     let found = 0;
-  
+
     if (query.length === 0) {
       resultsContainer.classList.add("d-none");
       return;
     }
-  
+
     posts.forEach((post) => {
       let textElement =
         post.querySelector(".post-text") || post.querySelector(".text-light");
       let text = textElement ? textElement.textContent.toLowerCase() : "";
       let username = post.dataset.username || "@unknown";
-  
+
       if (text.includes(query)) {
         const postId = post.getAttribute("data-post-id");
-  
+
         const card = document.createElement("div");
         card.className = "bg-dark rounded p-2 mb-2 search-result-card";
-  
+
         const link = document.createElement("a");
         link.href = `#post-${postId}`;
         link.className = "text-light text-decoration-none d-block";
-  
+
         const title = document.createElement("div");
         title.className = "fw-bold";
         title.textContent = username;
-  
+
         const snippet = document.createElement("small");
         snippet.className = "d-block text-light";
         snippet.textContent =
           text.substring(0, 80) + (text.length > 80 ? "..." : "");
-  
+
         link.appendChild(title);
         link.appendChild(snippet);
         card.appendChild(link);
-  
+
         // Smooth Scroll und Highlight Effekt bei Klick
         link.addEventListener("click", (e) => {
           e.preventDefault();
           const target = document.getElementById(`post-${postId}`);
           if (target) {
             target.scrollIntoView({ behavior: "smooth", block: "start" });
-  
+
             // Highlight-Effekt
             target.classList.add("highlight-post");
             setTimeout(() => {
@@ -594,39 +688,43 @@ document.addEventListener("DOMContentLoaded", () => {
           }
           resultsContainer.classList.add("d-none"); // Ergebnisse ausblenden
         });
-  
+
         resultsContainer.appendChild(card);
         found++;
       }
     });
-  
+
     if (found > 0) {
       const info = document.createElement("div");
       info.className = "text-light mb-2";
       info.textContent = `${found} Treffer gefunden:`;
       resultsContainer.prepend(info);
-  
+
       resultsContainer.classList.remove("d-none");
     } else {
       resultsContainer.innerHTML =
         "<div class='text-danger'><i class='bi bi-exclamation-circle mb-1'></i> Keine Treffer gefunden.</div>";
       resultsContainer.classList.remove("d-none");
     }
-  
+
     input.value = ""; // Eingabefeld nach Suche leeren
   }
-  
+
   // Eventlistener für Button-Klick
-  document.getElementById("search-button").addEventListener("click", performSearch);
-  
+  document
+    .getElementById("search-button")
+    .addEventListener("click", performSearch);
+
   // Eventlistener für ENTER-Taste im Inputfeld
-  document.getElementById("post-search").addEventListener("keypress", (event) => {
-    if (event.key === "Enter") {
-      event.preventDefault();
-      performSearch();
-    }
-  });
-  
+  document
+    .getElementById("post-search")
+    .addEventListener("keypress", (event) => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        performSearch();
+      }
+    });
+
   // Suchergebnisse ausblenden, wenn das Suchfeld geleert wird
   document.getElementById("post-search").addEventListener("input", (event) => {
     const resultsContainer = document.getElementById("search-results");
@@ -634,13 +732,13 @@ document.addEventListener("DOMContentLoaded", () => {
       resultsContainer.classList.add("d-none");
     }
   });
-  
+
   // Suchergebnisse ausblenden, wenn außerhalb geklickt wird
   document.addEventListener("click", (event) => {
     const searchInput = document.getElementById("post-search");
     const searchButton = document.getElementById("search-button");
     const resultsContainer = document.getElementById("search-results");
-  
+
     if (
       !searchInput.contains(event.target) &&
       !searchButton.contains(event.target) &&

@@ -1,42 +1,47 @@
 <?php
-require_once "../../includes/config.php";
-require_once INCLUDES . "/connection.php";
-require_once INCLUDES . "/auth.php";
-require_once MODELS . "/post.php";
+require_once '../../includes/connection.php';
+require_once '../../includes/config.php';
 
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
+session_start();
+header('Content-Type: application/json');
 
-header("Content-Type: application/json");
+$pdo = getDatabaseConnection();
 
-$conn = getDatabaseConnection();
-ensureLogin($conn);
+$since = $_GET['since'] ?? '1970-01-01 00:00:00';
 
-$since = isset($_GET["since"]) ? strtotime($_GET["since"]) : 0;
-if (!$since) $since = 0;
+try {
+    // 1) Daten holen
+    $stmt = $pdo->prepare("
+        SELECT p.*, u.username, u.profile_img,
+               (SELECT COUNT(*) FROM post_likes WHERE post_id = p.id) AS like_count,
+               (SELECT COUNT(*) FROM post_likes WHERE post_id = p.id AND user_id = ?) AS liked_by_me
+        FROM posts p
+        JOIN users u ON p.user_id = u.id
+        WHERE p.created_at > ?
+        ORDER BY p.created_at ASC
+    ");
+    $stmt->execute([ $_SESSION['id'], $since ]);
+    $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-// NEU: Auch Posts von denen, denen man folgt!
-$posts = fetchPostsSince($conn, $_SESSION["id"], $since);
-
-$html = "";
-$latest = $since;
-
-foreach ($posts as $post) {
-    $GLOBALS["post"] = $post;
-    ob_start();
-    include PARTIALS . "/post_card.php";
-    $html .= ob_get_clean();
-
-    $createdAt = strtotime($post["created_at"]);
-    if ($createdAt > $latest) {
-        $latest = $createdAt;
+    // 2) Für jedes Post das HTML‐Partial rendern
+    $htmls = [];
+    foreach ($posts as $post) {
+        // $post steht jetzt als $post im partial zur Verfügung
+        $GLOBALS['post'] = $post;
+        ob_start();
+        include PARTIALS . '/post_card.php';
+        $htmls[] = ob_get_clean();
     }
-}
 
-echo json_encode([
-    "success" => true,
-    "html" => $html,
-    "latest" => date("Y-m-d H:i:s", $latest),
-]);
-exit;
+    echo json_encode([
+        'success' => true,
+        'posts'   => $posts,
+        'html'    => $htmls
+    ]);
+} catch (PDOException $e) {
+    http_response_code(500);
+    echo json_encode([
+        'success' => false,
+        'message' => 'Fehler beim Abrufen der Posts: ' . $e->getMessage(),
+    ]);
+}

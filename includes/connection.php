@@ -11,6 +11,17 @@ function getDatabaseConnection(): PDO {
         ];
         return new PDO($dsn, DB_USER, DB_PASS, $options);
     } catch (PDOException $e) {
-        die("Verbindung zur Datenbank fehlgeschlagen: " . $e->getMessage());
+        // Fehler sauber als JSON ausgeben, wenn nötig
+        if (defined('DEBUG_MODE') && DEBUG_MODE) {
+            http_response_code(500);
+            echo json_encode([
+                'success' => false,
+                'message' => 'Verbindung zur Datenbank fehlgeschlagen: ' . $e->getMessage()
+            ]);
+            exit;
+        } else {
+            die('Verbindungsfehler.');
+        }
     }
 }
+?>
