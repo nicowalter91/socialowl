@@ -208,14 +208,13 @@ function fetchFollowedPostsWithComments(PDO $conn, int $currentUserId): array {
     JOIN users ON posts.user_id = users.id
     WHERE posts.user_id = :uid
        OR posts.user_id IN (
-           SELECT followed_id FROM followers WHERE follower_id = :uid
+           SELECT followed_id FROM follower WHERE follower_id = :uid AND status = 'accepted'
        )
     ORDER BY posts.created_at DESC
 ");
-$stmt->execute([
-    ":uid" => $currentUserId
-]);
-
+    $stmt->execute([
+        ":uid" => $currentUserId
+    ]);
 
     $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
 

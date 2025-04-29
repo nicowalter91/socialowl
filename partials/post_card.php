@@ -196,11 +196,3 @@ if (!isset($post) || empty($post["id"])) return;
     <?php endif; ?>
   </div>
 </div>
-
-<!-- EmojiHandler initialisieren (einmal pro Seite) -->
-<script src="<?= BASE_URL ?>/assets/js/EmojiHandler.js"></script>
-<script>
-  document.addEventListener('DOMContentLoaded', () => {
-    new EmojiHandler();
-  });
-</script>

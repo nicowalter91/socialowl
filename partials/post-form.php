@@ -102,11 +102,3 @@
   </div>
 
 </form>
-
-<!-- EmojiHandler laden und initialisieren -->
-<script src="<?= BASE_URL ?>/assets/js/EmojiHandler.js"></script>
-<script>
-  document.addEventListener('DOMContentLoaded', () => {
-    new EmojiHandler();
-  });
-</script>

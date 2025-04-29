@@ -15,26 +15,23 @@ $followerId = $_SESSION['id'];
 $followedId = $_POST['user_id'];
 
 try {
-    // Prüfen ob bereits gefolgt wird
-    if (isFollowing($conn, $followerId, $followedId)) {
-        throw new Exception('Du folgst diesem Benutzer bereits');
+    // Prüfen ob bereits eine Anfrage existiert
+    $stmt = $conn->prepare("SELECT * FROM followers WHERE follower_id = ? AND followed_id = ?");
+    $stmt->execute([$followerId, $followedId]);
+    if ($stmt->fetch()) {
+        throw new Exception('Du hast bereits eine Anfrage gesendet oder folgst diesem Benutzer.');
     }
 
-    // Folgen hinzufügen
-    addFollow($conn, $followerId, $followedId);
+    // Neue Follow-Anfrage mit Status 'pending' speichern
+    $stmt = $conn->prepare("INSERT INTO followers (follower_id, followed_id, status, followed_at) VALUES (?, ?, 'pending', NOW())");
+    $stmt->execute([$followerId, $followedId]);
 
-    // Benachrichtigung erstellen
-    $stmt = $conn->prepare("
-        INSERT INTO notifications (user_id, type, content) 
-        VALUES (?, 'follow', ?)
-    ");
-    
-    // Benutzername des Follower abrufen
+    // Benachrichtigung als Follow-Request erstellen
     $stmt2 = $conn->prepare("SELECT username FROM users WHERE id = ?");
     $stmt2->execute([$followerId]);
     $follower = $stmt2->fetch(PDO::FETCH_ASSOC);
-    
-    $content = "@{$follower['username']} folgt dir jetzt";
+    $content = "@{$follower['username']} möchte dir folgen";
+    $stmt = $conn->prepare("INSERT INTO notifications (user_id, type, content) VALUES (?, 'follow_request', ?)");
     $stmt->execute([$followedId, $content]);
 
     header('Location: ' . $_SERVER['HTTP_REFERER']);

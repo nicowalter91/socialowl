@@ -4,7 +4,6 @@ setInterval(loadNotifications, 30000);
 // Initial Benachrichtigungen laden
 document.addEventListener('DOMContentLoaded', () => {
     loadNotifications();
-    initializeNotificationHandlers();
 });
 
 async function loadNotifications() {
@@ -65,6 +64,10 @@ function updateNotificationsList(notifications) {
                 icon = 'bi-person-plus-fill';
                 color = 'text-primary';
                 break;
+            case 'follow_request':
+                icon = 'bi-person-plus';
+                color = 'text-warning';
+                break;
             case 'like':
                 icon = 'bi-heart-fill';
                 color = 'text-danger';
@@ -80,18 +83,30 @@ function updateNotificationsList(notifications) {
 
         // Wenn post_id vorhanden ist, mache die Notification klickbar
         const wrapperClass = notification.post_id ? 'cursor-pointer' : '';
-        
+
+        // Spezialfall: Follow-Request mit Buttons
+        let notificationContent = `<p class=\"mb-1 text-light\">${notification.content}</p>\n<small class=\"text-secondary\">${formatDate(notification.created_at)}</small>`;
+        if (notification.type === 'follow_request') {
+            notificationContent = `
+                <p class=\"mb-1 text-light\">${notification.content}</p>
+                <div class=\"mt-2 d-flex gap-2\">
+                    <button type=\"button\" class=\"btn btn-success btn-sm accept-follow-request\" data-request-id=\"${notification.id}\"><i class=\"bi bi-check-lg\"></i></button>
+                    <button type=\"button\" class=\"btn btn-danger btn-sm reject-follow-request\" data-request-id=\"${notification.id}\"><i class=\"bi bi-x-lg\"></i></button>
+                </div>
+                <small class=\"text-secondary\">${formatDate(notification.created_at)}</small>
+            `;
+        }
+
         item.innerHTML = `
-            <div class="d-flex align-items-start gap-2 ${wrapperClass}">
-                <i class="bi ${icon} ${color} fs-4"></i>
-                <div class="flex-grow-1">
-                    <div class="d-flex justify-content-between align-items-start">
+            <div class=\"d-flex align-items-start gap-2 ${wrapperClass}\">
+                <i class=\"bi ${icon} ${color} fs-4\"></i>
+                <div class=\"flex-grow-1\">
+                    <div class=\"d-flex justify-content-between align-items-start\">
                         <div>
-                            <p class="mb-1 text-light">${notification.content}</p>
-                            <small class="text-secondary">${formatDate(notification.created_at)}</small>
+                            ${notificationContent}
                         </div>
-                        <button type="button" class="btn btn-link btn-sm delete-notification ps-4" title="Benachrichtigung löschen" style="color: #b7c8d2; font-size: 1.2rem; padding-left: 1.5rem !important; padding-right: 0; margin-left: 12px;">
-                            <i class="bi bi-x"></i>
+                        <button type=\"button\" class=\"btn btn-link btn-sm delete-notification ps-4\" title=\"Benachrichtigung löschen\" style=\"color: #b7c8d2; font-size: 1.2rem; padding-left: 1.5rem !important; padding-right: 0; margin-left: 12px;\">
+                            <i class=\"bi bi-x\"></i>
                         </button>
                     </div>
                 </div>
@@ -123,6 +138,26 @@ function updateNotificationsList(notifications) {
                             setTimeout(() => postElement.classList.remove('highlight-post'), 2000);
                         }
                     }
+                });
+            }
+        }
+
+        // Event-Listener für Follow-Request-Buttons
+        if (notification.type === 'follow_request') {
+            const acceptBtn = item.querySelector('.accept-follow-request');
+            const rejectBtn = item.querySelector('.reject-follow-request');
+            if (acceptBtn) {
+                acceptBtn.addEventListener('click', async (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    await handleFollowRequest(notification.id, true);
+                });
+            }
+            if (rejectBtn) {
+                rejectBtn.addEventListener('click', async (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    await handleFollowRequest(notification.id, false);
                 });
             }
         }
@@ -199,4 +234,26 @@ function formatDate(dateString) {
         minute: '2-digit'
     };
     return new Date(dateString).toLocaleString('de-DE', options);
+}
+
+// Handler für Annahme/Ablehnung Follow-Request
+async function handleFollowRequest(notificationId, accept) {
+    try {
+        const formData = new FormData();
+        formData.append('notification_id', notificationId);
+        formData.append('action', accept ? 'accept' : 'reject');
+        const response = await fetch('/Social_App/controllers/api/follow_request_action.php', {
+            method: 'POST',
+            body: formData
+        });
+        if (!response.ok) throw new Error('Netzwerkfehler');
+        const data = await response.json();
+        if (data.success) {
+            await loadNotifications();
+        } else {
+            alert('Fehler: ' + (data.message || 'Unbekannter Fehler'));
+        }
+    } catch (error) {
+        alert('Fehler beim Bearbeiten der Anfrage');
+    }
 }

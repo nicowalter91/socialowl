@@ -337,6 +337,7 @@ async function updateFollowingSidebar(userId) {
 // Listen for follow events
 const followEventSource = new EventSource("/Social_App/controllers/api/follow_stream.php");
 followEventSource.onmessage = (event) => {
+  if (event.data === "heartbeat") return; // Heartbeat ignorieren
   const { userId } = JSON.parse(event.data);
   updateFollowingSidebar(userId);
 };

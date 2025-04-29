@@ -13,12 +13,11 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Module importieren und initialisieren
   try {
     // Alle Module parallel laden für bessere Performance
-    const [liveUpdatesModule, postHandlerModule, commentHandlerModule, searchHandlerModule, emojiHandlerModule] = await Promise.all([
+    const [liveUpdatesModule, postHandlerModule, commentHandlerModule, searchHandlerModule] = await Promise.all([
       import('./modules/live-updates.js'),
       import('./modules/post-handler.js'),
       import('./modules/comment-handler.js'),
-      import('./modules/search-handler.js'),
-      import('./modules/emoji-handler.js')
+      import('./modules/search-handler.js')
     ]);
 
     // Module initialisieren und global verfügbar machen
@@ -26,7 +25,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     window.postHandler = new postHandlerModule.PostHandler();
     window.commentHandler = new commentHandlerModule.CommentHandler();
     window.searchHandler = new searchHandlerModule.SearchHandler();
-    window.emojiHandler = new emojiHandlerModule.EmojiHandler();
 
     console.log("✅ Alle Module erfolgreich initialisiert");
   } catch (error) {
@@ -277,7 +275,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // ============================
   // Live-Update-Listener initialisieren
-  initLiveUpdateListeners();
+  // initLiveUpdateListeners(); // ENTFERNT, da dies bereits durch LiveUpdates-Instanz erfolgt
 });
 
 // ============================
