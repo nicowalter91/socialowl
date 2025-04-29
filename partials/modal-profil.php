@@ -3,12 +3,12 @@ require_once __DIR__ . '/../includes/config.php';
 
 // Pfade auflösen
 $profileImg = isset($_SESSION["profile_img"]) && file_exists(UPLOADS . '/' . $_SESSION["profile_img"])
-    ? BASE_URL . "/assets/uploads/" . $_SESSION["profile_img"]
-    : BASE_URL . "/assets/img/" . DEFAULT_PROFILE_IMG;
+  ? BASE_URL . "/assets/uploads/" . $_SESSION["profile_img"]
+  : BASE_URL . "/assets/img/" . DEFAULT_PROFILE_IMG;
 
 $headerImg = isset($_SESSION["header_img"]) && file_exists(UPLOADS . '/' . $_SESSION["header_img"])
-    ? BASE_URL . "/assets/uploads/" . $_SESSION["header_img"]
-    : BASE_URL . "/assets/img/" . DEFAULT_HEADER_IMG;
+  ? BASE_URL . "/assets/uploads/" . $_SESSION["header_img"]
+  : BASE_URL . "/assets/img/" . DEFAULT_HEADER_IMG;
 ?>
 
 <div class="modal fade" id="profilModal" tabindex="-1" aria-labelledby="profilModalLabel" aria-hidden="true">
@@ -49,7 +49,7 @@ $headerImg = isset($_SESSION["header_img"]) && file_exists(UPLOADS . '/' . $_SES
             <div class="position-relative">
               <textarea name="bio" id="bio" class="form-control bg-dark text-light border-secondary pe-5" style="white-space: pre-wrap;" maxlength="150" rows="3"><?= htmlspecialchars($_SESSION["bio"] ?? '') ?></textarea>
               <div class="emoji-picker d-none position-absolute end-0 bottom-100 mb-2"></div>
-              <button type="button" class="btn btn-sm btn-outline-light position-absolute end-0 top-0 mt-1 me-1 emoji-bio-btn">
+              <button type="button" class="btn btn-sm btn-outline-light position-absolute end-0 top-0 mt-2 me-2 emoji-bio-btn">
                 <i class="bi bi-emoji-smile"></i>
               </button>
             </div>
@@ -70,26 +70,26 @@ $headerImg = isset($_SESSION["header_img"]) && file_exists(UPLOADS . '/' . $_SES
 
 <!-- Vorschau + Zeichenzähler -->
 <script>
-function previewImage(input, targetId) {
-  const file = input.files[0];
-  const preview = document.getElementById(targetId);
-  if (file && preview) {
-    const reader = new FileReader();
-    reader.onload = e => preview.src = e.target.result;
-    reader.readAsDataURL(file);
+  function previewImage(input, targetId) {
+    const file = input.files[0];
+    const preview = document.getElementById(targetId);
+    if (file && preview) {
+      const reader = new FileReader();
+      reader.onload = e => preview.src = e.target.result;
+      reader.readAsDataURL(file);
+    }
   }
-}
 
-function updateBioCounter() {
-  const textarea = document.getElementById("bio");
-  const counter = document.getElementById("bioCounter");
-  if (textarea && counter) {
-    counter.textContent = textarea.value.length;
+  function updateBioCounter() {
+    const textarea = document.getElementById("bio");
+    const counter = document.getElementById("bioCounter");
+    if (textarea && counter) {
+      counter.textContent = textarea.value.length;
+    }
   }
-}
 
-document.addEventListener("DOMContentLoaded", () => {
-  updateBioCounter();
-  document.getElementById("bio")?.addEventListener("input", updateBioCounter);
-});
+  document.addEventListener("DOMContentLoaded", () => {
+    updateBioCounter();
+    document.getElementById("bio")?.addEventListener("input", updateBioCounter);
+  });
 </script>

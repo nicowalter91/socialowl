@@ -29,14 +29,14 @@ require_once __DIR__ . '/../includes/config.php';
 
             <div class="mb-3">
                 <label for="username" class="form-label">Benutzername</label>
-                <input type="text" class="form-control" id="username" name="username" required autofocus>
+                <input type="text" class="form-control" id="username" name="username" placeholder="Benutzername eingeben" required autofocus>
             </div>
 
             <div class="mb-3">
                 <label for="password" class="form-label">Passwort</label>
-                <input type="password" class="form-control" id="password" name="password" required>
+                <input type="password" class="form-control" id="password" name="password" placeholder="Passwort eingeben" required>
                 <div class="mt-1">
-                    <a href="<?= BASE_URL ?>/controllers/reset_mail_send.php" class="text-light">Passwort vergessen?</a>
+                    <a href="<?= BASE_URL ?>/controllers/reset_mail_send.php" class="text-light" >Passwort vergessen?</a>
                 </div>
             </div>
 

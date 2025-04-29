@@ -24,32 +24,32 @@
       <div class="row">
         <div class="mb-3 col-md-6">
           <label for="firstname" class="form-label">Vorname</label>
-          <input type="text" class="form-control" id="firstname" name="firstname" required>
+          <input type="text" class="form-control" id="firstname" name="firstname" placeholder="Vornamen eingeben"required>
         </div>
         <div class="mb-3 col-md-6">
           <label for="lastname" class="form-label">Nachname</label>
-          <input type="text" class="form-control" id="lastname" name="lastname" required>
+          <input type="text" class="form-control" id="lastname" name="lastname" placeholder="Nachnamen eingeben" required>
         </div>
       </div>
 
       <div class="mb-3">
         <label for="username" class="form-label">Benutzername</label>
-        <input type="text" class="form-control" id="username" name="username" required>
+        <input type="text" class="form-control" id="username" name="username" placeholder="Usernamen eingeben" required>
       </div>
 
       <div class="mb-3">
         <label for="email" class="form-label">E-Mail-Adresse</label>
-        <input type="email" class="form-control" id="email" name="email" required>
+        <input type="email" class="form-control" id="email" name="email" placeholder="Email Adresse eingeben" required>
       </div>
 
       <div class="mb-3">
         <label for="password" class="form-label">Passwort</label>
-        <input type="password" class="form-control" id="password" name="password" required>
+        <input type="password" class="form-control" id="password" name="password" placeholder="Passwort eingeben" required>
       </div>
 
       <div class="mb-3">
         <label for="passwordRepeat" class="form-label">Passwort wiederholen</label>
-        <input type="password" class="form-control" id="passwordRepeat" name="passwordRepeat" required>
+        <input type="password" class="form-control" id="passwordRepeat" name="passwordRepeat" placeholder="Passwort bestätigen" required>
       </div>
 
       <button type="submit" class="btn btn-primary w-100" name="submit">Registrieren</button>
