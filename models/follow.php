@@ -44,4 +44,11 @@ function countFollowing(PDO $conn, int $userId): int {
     return (int)$stmt->fetchColumn();
 }
 
-  
+// Function to check if a user is already following another user
+function isFollowing($conn, $followerId, $followedId) {
+    $stmt = $conn->prepare("SELECT COUNT(*) FROM follows WHERE follower_id = ? AND followed_id = ?");
+    $stmt->execute([$followerId, $followedId]);
+    return $stmt->fetchColumn() > 0;
+}
+
+
