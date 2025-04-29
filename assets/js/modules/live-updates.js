@@ -283,3 +283,60 @@ export class LiveUpdates {
         }, 3000);
     }
 }
+
+// ============================
+// Live Update: Following Count and Sidebar Updates
+// ============================
+async function updateFollowingSidebar(userId) {
+  try {
+    const res = await fetch(`/Social_App/controllers/api/following_update.php?user_id=${userId}`);
+    const data = await res.json();
+
+    if (data.success) {
+      // Update Following Count in Sidebar-Left
+      const followingCountElement = document.querySelector(".right-stats h3");
+      if (followingCountElement) {
+        followingCountElement.textContent = data.followingCount;
+      }
+
+      // Update Follower Count in Sidebar-Left
+      const followerCountElement = document.querySelector(".left-stats h3");
+      if (followerCountElement) {
+        followerCountElement.textContent = data.followerCount;
+      }
+
+      // Update Sidebar-Right with New Followed User
+      const sidebarRight = document.querySelector(".following");
+      if (sidebarRight && data.newFollowedUserHtml) {
+        const tempDiv = document.createElement("div");
+        tempDiv.innerHTML = data.newFollowedUserHtml;
+        const newUserElement = tempDiv.firstElementChild;
+
+        // Check for duplicates before adding
+        const existingUser = sidebarRight.querySelector(`[data-user-id="${userId}"]`);
+        if (!existingUser) {
+          // Find the container after the heading
+          const container = sidebarRight.querySelector(".following p") || 
+                          sidebarRight.querySelector("h6").nextElementSibling;
+          
+          // If "Noch keine Nutzer gefolgt" message exists, remove it
+          const noUsersMessage = sidebarRight.querySelector("p.text-light.small");
+          if (noUsersMessage && noUsersMessage.textContent.includes("Noch keine Nutzer gefolgt")) {
+            noUsersMessage.remove();
+          }
+
+          container.parentNode.insertBefore(newUserElement, container.nextSibling);
+        }
+      }
+    }
+  } catch (err) {
+    console.error("❌ Fehler beim Aktualisieren der Sidebar:", err);
+  }
+}
+
+// Listen for follow events
+const followEventSource = new EventSource("/Social_App/controllers/api/follow_stream.php");
+followEventSource.onmessage = (event) => {
+  const { userId } = JSON.parse(event.data);
+  updateFollowingSidebar(userId);
+};

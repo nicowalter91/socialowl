@@ -46,9 +46,15 @@ function countFollowing(PDO $conn, int $userId): int {
 
 // Function to check if a user is already following another user
 function isFollowing($conn, $followerId, $followedId) {
-    $stmt = $conn->prepare("SELECT COUNT(*) FROM follows WHERE follower_id = ? AND followed_id = ?");
+    $stmt = $conn->prepare("SELECT COUNT(*) FROM followers WHERE follower_id = ? AND followed_id = ?");
     $stmt->execute([$followerId, $followedId]);
     return $stmt->fetchColumn() > 0;
+}
+
+// Function to add a follow relationship between two users
+function addFollow($conn, $followerId, $followedId) {
+    $stmt = $conn->prepare("INSERT INTO followers (follower_id, followed_id, followed_at) VALUES (?, ?, NOW())");
+    return $stmt->execute([$followerId, $followedId]);
 }
 
 
