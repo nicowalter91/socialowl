@@ -2,7 +2,10 @@
 setInterval(loadNotifications, 30000);
 
 // Initial Benachrichtigungen laden
-document.addEventListener('DOMContentLoaded', loadNotifications);
+document.addEventListener('DOMContentLoaded', () => {
+    loadNotifications();
+    initializeNotificationHandlers();
+});
 
 async function loadNotifications() {
     try {
@@ -22,7 +25,6 @@ async function loadNotifications() {
         }
     } catch (error) {
         console.error('Fehler beim Laden der Benachrichtigungen:', error);
-        // Bei Fehler Badge ausblenden
         updateNotificationBadge(0);
     }
 }
@@ -50,9 +52,11 @@ function updateNotificationsList(notifications) {
         return;
     }
 
+    // Benachrichtigungen hinzufügen
     notifications.forEach(notification => {
         const item = document.createElement('div');
         item.className = `notification-item p-3 border-bottom border-secondary ${notification.is_read ? '' : 'bg-dark'}`;
+        item.dataset.notificationId = notification.id;
         
         const icon = notification.type === 'follow' ? 'bi-person-plus-fill' : 'bi-chat-dots-fill';
         const color = notification.type === 'follow' ? 'text-primary' : 'text-success';
@@ -61,39 +65,101 @@ function updateNotificationsList(notifications) {
             <div class="d-flex align-items-start gap-2">
                 <i class="bi ${icon} ${color} fs-4"></i>
                 <div class="flex-grow-1">
-                    <p class="mb-1 text-light">${notification.content}</p>
-                    <small class="text-secondary">${formatDate(notification.created_at)}</small>
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <p class="mb-1 text-light">${notification.content}</p>
+                            <small class="text-secondary">${formatDate(notification.created_at)}</small>
+                        </div>
+                        <button type="button" class="btn btn-danger btn-sm delete-notification" title="Benachrichtigung löschen">
+                            <i class="bi bi-x"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
         `;
         
         list.appendChild(item);
+
+        // Event-Listener direkt nach dem Erstellen des Elements hinzufügen
+        const deleteButton = item.querySelector('.delete-notification');
+        if (deleteButton) {
+            deleteButton.addEventListener('click', async (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                await deleteNotification(notification.id);
+            });
+        }
+    });
+
+    // "Alle löschen" Button nach den Benachrichtigungen hinzufügen
+    const deleteAllButton = document.createElement('button');
+    deleteAllButton.className = 'btn text-danger mx-3 mt-2 d-flex align-items-center gap-1';
+    deleteAllButton.style.fontWeight = '300';
+    deleteAllButton.innerHTML = '<i class="bi bi-trash-fill"></i> Alle Benachrichtigungen löschen';
+    list.appendChild(deleteAllButton);
+
+    // Event-Listener für "Alle löschen" Button
+    deleteAllButton.addEventListener('click', async (e) => {
+        e.preventDefault();
+        if (confirm('Möchten Sie wirklich alle Benachrichtigungen löschen?')) {
+            await deleteAllNotifications();
+        }
     });
 }
 
-function formatDate(dateString) {
-    if (!dateString) return '';
-    
-    const date = new Date(dateString);
-    const now = new Date();
-    const diff = now - date;
-    
-    // Weniger als 24 Stunden
-    if (diff < 24 * 60 * 60 * 1000) {
-        const hours = Math.floor(diff / (60 * 60 * 1000));
-        if (hours === 0) {
-            const minutes = Math.floor(diff / (60 * 1000));
-            return `vor ${minutes} Minuten`;
+async function deleteNotification(notificationId) {
+    try {
+        const formData = new FormData();
+        formData.append('notification_id', notificationId);
+
+        const response = await fetch('/Social_App/controllers/api/delete_notification.php', {
+            method: 'POST',
+            body: formData
+        });
+
+        if (!response.ok) throw new Error('Netzwerkfehler');
+
+        const data = await response.json();
+        if (data.success) {
+            await loadNotifications();
+        } else {
+            console.error('Fehler beim Löschen:', data.message);
         }
-        return `vor ${hours} Stunden`;
+    } catch (error) {
+        console.error('Fehler beim Löschen der Benachrichtigung:', error);
     }
-    
-    // Weniger als 7 Tage
-    if (diff < 7 * 24 * 60 * 60 * 1000) {
-        const days = Math.floor(diff / (24 * 60 * 60 * 1000));
-        return `vor ${days} Tagen`;
+}
+
+async function deleteAllNotifications() {
+    try {
+        const formData = new FormData();
+        formData.append('delete_all', 'true');
+
+        const response = await fetch('/Social_App/controllers/api/delete_notification.php', {
+            method: 'POST',
+            body: formData
+        });
+
+        if (!response.ok) throw new Error('Netzwerkfehler');
+
+        const data = await response.json();
+        if (data.success) {
+            await loadNotifications();
+        } else {
+            console.error('Fehler beim Löschen aller Benachrichtigungen:', data.message);
+        }
+    } catch (error) {
+        console.error('Fehler beim Löschen aller Benachrichtigungen:', error);
     }
-    
-    // Älter als 7 Tage
-    return date.toLocaleDateString('de-DE');
-} 
+}
+
+function formatDate(dateString) {
+    const options = { 
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+    };
+    return new Date(dateString).toLocaleString('de-DE', options);
+}

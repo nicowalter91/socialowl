@@ -291,10 +291,17 @@ body {
   background: #28353e;
 }
 
+.suggestions {
+  max-height: calc(100vh - 400px);
+  overflow-y: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  padding-bottom: 200px;
+}
 
-/* ============================
-   Suchleiste Highlighting
-============================ */
+.suggestions::-webkit-scrollbar {
+  display: none;
+}
 
 .highlight-post {
   animation: highlightFlash 3s ease forwards;

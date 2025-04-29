@@ -13,7 +13,7 @@ $suggestions = getSuggestions($conn, $currentUserId);
 
   <!-- Du folgst -->
   <div class="following p-3 follow rounded shadow-sm">
-    <h6 class="text-light border-bottom pb-2 mb-3">Du folgst</h6>
+    <h6 class="text-light border-bottom pb-2 mb-3">Du folgst (<?= $followingCount ?>)</h6>
 
     <?php if (empty($followedUsers)): ?>
       <p class="text-light small">Noch keine Nutzer gefolgt.</p>
