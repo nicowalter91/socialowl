@@ -225,3 +225,27 @@ $stmt->execute([
 
     return $posts;
 }
+
+/**
+ * Gibt die Top N Hashtags aus allen Posts im Feed zurück (meistgenutzt zuerst).
+ * @param PDO $conn
+ * @param int $limit
+ * @return array Array mit Hashtag als key und Anzahl als value
+ */
+function getTopHashtags(PDO $conn, int $limit = 3): array {
+    $stmt = $conn->query("SELECT content FROM posts");
+    $allPosts = $stmt->fetchAll(PDO::FETCH_COLUMN);
+    $hashtagCounts = [];
+    foreach ($allPosts as $content) {
+        // Hashtags mit Unicode-Buchstaben, Zahlen, Unterstrich, Bindestrich, !, ?, . erlauben
+        if (preg_match_all('/#([\p{L}\p{N}_\-!?.]{2,50})/u', $content, $matches)) {
+            foreach ($matches[1] as $tag) {
+                $tag = mb_strtolower($tag); // Case-insensitive
+                if (!isset($hashtagCounts[$tag])) $hashtagCounts[$tag] = 0;
+                $hashtagCounts[$tag]++;
+            }
+        }
+    }
+    arsort($hashtagCounts);
+    return array_slice($hashtagCounts, 0, $limit, true);
+}
