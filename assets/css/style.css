@@ -342,7 +342,8 @@ body {
 
 .emoji-container {
   flex: 1;
-  overflow-y: auto;
+  overflow-y: auto;    /* nur vertikal scrollen */
+  overflow-x: hidden;  /* kein horizontal scrollen */
   padding: 8px;
   background: #1b2730;
   scrollbar-width: thin;
@@ -367,6 +368,7 @@ body {
   grid-template-columns: repeat(7, 1fr);
   gap: 4px;
   padding: 4px;
+  overflow-x: hidden; /* sicherstellen, dass kein horizontaler Scroll entsteht */
 }
 
 .emoji-grid button {
@@ -400,6 +402,7 @@ body {
 #profilModal .emoji-picker {
   z-index: 1060;
 }
+
 
 /* ============================
    Follow 
