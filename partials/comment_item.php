@@ -51,7 +51,7 @@
               class="btn btn-sm like-comment-btn <?= $comment["liked"] ? 'btn-light text-dark' : 'btn-outline-light' ?>"
               data-comment-id="<?= $comment["id"] ?>">
         <i class="bi bi-hand-thumbs-up me-1"></i>
-        <span class="like-count"><?= $comment["like_count"] ?></span>
+        <span class="like-count text-light"><?= $comment["like_count"] ?></span>
       </button>
     </div>
   <?php else: ?>
@@ -60,7 +60,7 @@
               class="btn btn-sm like-comment-btn <?= $comment["liked"] ? 'btn-light text-dark' : 'btn-outline-light' ?>"
               data-comment-id="<?= $comment["id"] ?>">
         <i class="bi bi-hand-thumbs-up me-1"></i>
-        <span class="like-count"><?= $comment["like_count"] ?></span>
+        <span class="like-count text-light"><?= $comment["like_count"] ?></span>
       </button>
     </div>
   <?php endif; ?>

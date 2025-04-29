@@ -90,7 +90,7 @@ function updateNotificationsList(notifications) {
                             <p class="mb-1 text-light">${notification.content}</p>
                             <small class="text-secondary">${formatDate(notification.created_at)}</small>
                         </div>
-                        <button type="button" class="btn btn-danger btn-sm delete-notification" title="Benachrichtigung löschen">
+                        <button type="button" class="btn btn-link btn-sm delete-notification ps-4" title="Benachrichtigung löschen" style="color: #b7c8d2; font-size: 1.2rem; padding-left: 1.5rem !important; padding-right: 0; margin-left: 12px;">
                             <i class="bi bi-x"></i>
                         </button>
                     </div>
