@@ -36,8 +36,16 @@
   <!-- Rechte Seite: Notifications + Dropdown -->
   <div class="d-flex align-items-center gap-3">
     <div class="notification-container position-relative">
-      <span class="icon"><i class="bi bi-bell-fill text-white me-3 fs-4"></i></span>
-      <span class="notification-badge">3</span>
+      <button class="btn btn-link text-light p-0" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+        <i class="bi bi-bell-fill fs-4"></i>
+        <span class="notification-badge" id="notification-badge"></span>
+      </button>
+      <div class="dropdown-menu dropdown-menu-end bg-dark border border-secondary" style="width: 300px;">
+        <h6 class="dropdown-header text-light border-bottom border-secondary">Benachrichtigungen</h6>
+        <div id="notifications-list" class="notifications-list" style="max-height: 400px; overflow-y: auto;">
+          <!-- Benachrichtigungen werden hier dynamisch eingefügt -->
+        </div>
+      </div>
     </div>
 
     <div class="dropdown">

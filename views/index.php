@@ -59,6 +59,7 @@ $posts = fetchAllPostsWithComments($conn, $_SESSION["id"]);
   </script>
   <script src="<?= BASE_URL ?>/assets/js/bootstrap.bundle.min.js"></script>
   <script type="module" src="<?= BASE_URL ?>/assets/js/script.js"></script>
+  <script src="<?= BASE_URL ?>/assets/js/notifications.js"></script>
 
 </body>
 
