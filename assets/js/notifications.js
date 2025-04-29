@@ -1,3 +1,25 @@
+// SSE für Follower-Anfragen
+if (window.EventSource) {
+    const followStream = new EventSource('/Social_App/controllers/api/follow_stream.php');
+    followStream.onmessage = function(event) {
+        if (!event.data || event.data === 'heartbeat') return;
+        try {
+            const data = JSON.parse(event.data);
+            if (data.event === 'new_follow_request' || data.event === 'follow_request_update') {
+                loadNotifications();
+                if (window.liveUpdates && window.CURRENT_USER_ID) {
+                    window.liveUpdates.updateFollowingSidebar(window.CURRENT_USER_ID);
+                }
+            }
+        } catch (e) {
+            // ignore parse errors for heartbeats etc.
+        }
+    };
+    followStream.onerror = function() {
+        // Optional: reconnect logic oder Fehlermeldung
+    };
+}
+
 // Benachrichtigungen alle 30 Sekunden aktualisieren
 setInterval(loadNotifications, 30000);
 
