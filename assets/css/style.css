@@ -303,75 +303,47 @@ body {
   display: none;
 }
 
+.cursor-pointer {
+    cursor: pointer;
+}
+
+.cursor-pointer:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+@keyframes highlightPost {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 0 0 rgba(var(--bs-primary-rgb), 0);
+    }
+    50% {
+        transform: scale(1.02);
+        box-shadow: 0 0 20px rgba(var(--bs-primary-rgb), 0.3);
+    }
+    100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 rgba(var(--bs-primary-rgb), 0);
+    }
+}
+
 .highlight-post {
-  animation: highlightFlash 3s ease forwards;
-}
-
-@keyframes highlightFlash {
-  0% { background-color: rgba(97, 100, 97, 0.658); }
-  100% { background-color: transparent; }
-}
-
-.search-result-card {
-  transition: border 0.2s ease;
-  border: 1px solid transparent;
-}
-
-.search-result-card:hover {
-  border: 1px solid #ffffff; 
-}
-
-#post-search::placeholder {
-  color: #f8f9fa; /* oder einfach weiß (#fff) */
-  opacity: 1; /* für maximale Sichtbarkeit */
-}
-
-/* ============================
-   Notifications
-============================ */
-.notification-container {
-    position: relative;
+    animation: highlightPost 2s ease-in-out;
 }
 
 .notification-badge {
     position: absolute;
     top: -5px;
     right: -5px;
-    background-color: #dc3545;
+    background-color: var(--bs-danger);
     color: white;
     border-radius: 50%;
-    padding: 2px 6px;
-    font-size: 12px;
-    display: none;
-}
-
-.notifications-list {
-    max-height: 400px;
-    overflow-y: auto;
-}
-
-.notification-item {
-    transition: background-color 0.2s;
-}
-
-.notification-item:hover {
-    background-color: #28353e !important;
-}
-
-.notification-item:last-child {
-    border-bottom: none !important;
-}
-
-/* Hashtag Styling */
-.hashtag {
-    color: #0d6efd;
-    font-size: 0.9em;
-    text-decoration: none;
-    cursor: pointer;
-}
-
-.hashtag:hover {
-    text-decoration: underline;
+    width: 18px;
+    height: 18px;
+    font-size: 11px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
 }
 
 

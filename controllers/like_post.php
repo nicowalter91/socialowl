@@ -18,9 +18,40 @@ if (!$postId || !is_numeric($postId)) {
     die("Ungültiger Post.");
 }
 
-togglePostLike($conn, $userId, (int)$postId);
+// Like toggle durchführen
+$isLiked = togglePostLike($conn, $userId, (int)$postId);
 
-// Dynamische Rückleitung (z. B. nach AJAX oder zurück zu index.php)
+if ($isLiked) {
+    // Post-Besitzer und Like-Ersteller abrufen
+    $stmt = $conn->prepare("
+        SELECT p.user_id, u.username 
+        FROM posts p 
+        JOIN users u ON u.id = :user_id 
+        WHERE p.id = :post_id
+    ");
+    $stmt->execute([
+        ":user_id" => $userId,
+        ":post_id" => $postId
+    ]);
+    $data = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    // Benachrichtigung nur erstellen, wenn man nicht seinen eigenen Post liked
+    if ($data && $data['user_id'] != $userId) {
+        $stmt = $conn->prepare("
+            INSERT INTO notifications (user_id, type, content, post_id) 
+            VALUES (:user_id, 'like', :content, :post_id)
+        ");
+        
+        $content = "@{$data['username']} gefällt dein Post";
+        $stmt->execute([
+            ":user_id" => $data['user_id'],
+            ":content" => $content,
+            ":post_id" => $postId
+        ]);
+    }
+}
+
+// Dynamische Rückleitung
 $redirect = $_SERVER["HTTP_REFERER"] ?? BASE_URL . "/views/index.php";
 header("Location: " . $redirect);
 exit;

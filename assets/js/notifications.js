@@ -58,11 +58,31 @@ function updateNotificationsList(notifications) {
         item.className = `notification-item p-3 border-bottom border-secondary ${notification.is_read ? '' : 'bg-dark'}`;
         item.dataset.notificationId = notification.id;
         
-        const icon = notification.type === 'follow' ? 'bi-person-plus-fill' : 'bi-chat-dots-fill';
-        const color = notification.type === 'follow' ? 'text-primary' : 'text-success';
+        // Icon und Farbe je nach Typ
+        let icon, color;
+        switch(notification.type) {
+            case 'follow':
+                icon = 'bi-person-plus-fill';
+                color = 'text-primary';
+                break;
+            case 'like':
+                icon = 'bi-heart-fill';
+                color = 'text-danger';
+                break;
+            case 'comment':
+                icon = 'bi-chat-dots-fill';
+                color = 'text-success';
+                break;
+            default:
+                icon = 'bi-bell-fill';
+                color = 'text-secondary';
+        }
+
+        // Wenn post_id vorhanden ist, mache die Notification klickbar
+        const wrapperClass = notification.post_id ? 'cursor-pointer' : '';
         
         item.innerHTML = `
-            <div class="d-flex align-items-start gap-2">
+            <div class="d-flex align-items-start gap-2 ${wrapperClass}">
                 <i class="bi ${icon} ${color} fs-4"></i>
                 <div class="flex-grow-1">
                     <div class="d-flex justify-content-between align-items-start">
@@ -80,7 +100,7 @@ function updateNotificationsList(notifications) {
         
         list.appendChild(item);
 
-        // Event-Listener direkt nach dem Erstellen des Elements hinzufügen
+        // Event-Listener für Löschen-Button
         const deleteButton = item.querySelector('.delete-notification');
         if (deleteButton) {
             deleteButton.addEventListener('click', async (e) => {
@@ -88,6 +108,23 @@ function updateNotificationsList(notifications) {
                 e.stopPropagation();
                 await deleteNotification(notification.id);
             });
+        }
+
+        // Event-Listener für Klick auf Benachrichtigung (nur wenn post_id vorhanden)
+        if (notification.post_id) {
+            const wrapper = item.querySelector(`.${wrapperClass}`);
+            if (wrapper) {
+                wrapper.addEventListener('click', (e) => {
+                    if (!e.target.closest('.delete-notification')) {
+                        const postElement = document.querySelector(`#post-${notification.post_id}`);
+                        if (postElement) {
+                            postElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            postElement.classList.add('highlight-post');
+                            setTimeout(() => postElement.classList.remove('highlight-post'), 2000);
+                        }
+                    }
+                });
+            }
         }
     });
 

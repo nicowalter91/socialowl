@@ -53,14 +53,15 @@ if ($post['user_id'] != $userId) {
     
     // Benachrichtigung einfügen
     $stmt = $conn->prepare("
-        INSERT INTO notifications (user_id, type, content) 
-        VALUES (:user_id, 'comment', :content)
+        INSERT INTO notifications (user_id, type, content, post_id) 
+        VALUES (:user_id, 'comment', :content, :post_id)
     ");
     
     $content = "@{$commenter['username']} hat deinen Post kommentiert";
     $stmt->execute([
         ":user_id" => $post['user_id'],
-        ":content" => $content
+        ":content" => $content,
+        ":post_id" => $postId
     ]);
 }
 
