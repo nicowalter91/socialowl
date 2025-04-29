@@ -28,9 +28,8 @@
   </div>
 
   <!-- Buttons -->
-  <?php if ($comment["user_id"] == $_SESSION["id"]): ?>
-    <div class="mt-2 d-flex gap-2 align-items-center">
-
+  <div class="ms-auto mt-2 d-flex gap-2 align-items-center">
+    <?php if ($comment["user_id"] == $_SESSION["id"]): ?>
       <!-- Bearbeiten -->
       <button type="button"
               class="btn btn-sm btn-outline-light edit-comment-btn"
@@ -38,31 +37,20 @@
               data-content="<?= htmlspecialchars($comment["content"], ENT_QUOTES) ?>">
         <i class="bi bi-pencil me-1"></i>Bearbeiten
       </button>
-
       <!-- Löschen -->
       <button type="button"
               class="btn btn-sm btn-outline-danger delete-comment-btn"
               data-comment-id="<?= $comment["id"] ?>">
         <i class="bi bi-trash me-1"></i>Löschen
       </button>
-
-      <!-- Like -->
-      <button type="button"
-              class="btn btn-sm like-comment-btn <?= $comment["liked"] ? 'btn-light text-dark' : 'btn-outline-light' ?>"
-              data-comment-id="<?= $comment["id"] ?>">
-        <i class="bi bi-hand-thumbs-up me-1"></i>
-        <span class="like-count text-light"><?= $comment["like_count"] ?></span>
-      </button>
-    </div>
-  <?php else: ?>
-    <div class="ms-auto mt-2">
-      <button type="button"
-              class="btn btn-sm like-comment-btn <?= $comment["liked"] ? 'btn-light text-dark' : 'btn-outline-light' ?>"
-              data-comment-id="<?= $comment["id"] ?>">
-        <i class="bi bi-hand-thumbs-up me-1"></i>
-        <span class="like-count text-light"><?= $comment["like_count"] ?></span>
-      </button>
-    </div>
-  <?php endif; ?>
+    <?php endif; ?>
+    <!-- Like (immer gleich) -->
+    <button type="button"
+            class="btn btn-sm like-comment-btn <?= $comment["liked"] ? 'btn-light text-dark' : 'btn-outline-light' ?>"
+            data-comment-id="<?= $comment["id"] ?>">
+      <i class="bi bi-hand-thumbs-up me-1"></i>
+      <span class="like-count <?= $comment["liked"] ? 'text-dark' : '' ?>"><?= $comment["like_count"] ?></span>
+    </button>
+  </div>
 
 </div>
