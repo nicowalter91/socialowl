@@ -284,6 +284,11 @@ body {
   border-color: var(--bs-primary) !important;
 }
 
+.emoji-search-container input::placeholder {
+  color: rgba(183, 200, 210, 0.8);
+  opacity: 1;
+}
+
 .emoji-tabs {
   background: #28353e;
   flex-shrink: 0;

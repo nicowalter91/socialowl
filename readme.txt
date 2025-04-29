@@ -3,7 +3,7 @@
 ==================================================
 
 📦 Projektname:   Social Owl  
-📁 Version:       1.1 (April 2025)  
+📁 Version:       1.2 (April 2025)  
 👤 Entwickler:    Nico Walter,
                   Georg Diesendorf,
                   Andreas Wiegand,
@@ -36,7 +36,9 @@ Nutzer können Inhalte posten, liken, kommentieren, folgen und ihr Profil pflege
 ✔️ Live-Kommentar- und Postanzeige (nur bei dir)  
 ✔️ Saubere UI-Komponenten & Layout mit Bootstrap  
 ✔️ Datenbank vollständig in 3. Normalform
-✔️ Suchleiste für Posts
+✔️ Suchleiste für Posts, Hashtags und Usern
+✔️ Notification für Likes, Kommentare und gefolgten Usern
+
 
 🧰 Technologien
 --------------------------------------------------
@@ -55,8 +57,9 @@ Nutzer können Inhalte posten, liken, kommentieren, folgen und ihr Profil pflege
 ├── includes/         → Konfiguration, Auth, DB-Verbindung
 ├── assets/
 │   ├── css/          → style.css, bootstrap.min.css
-    ├── fonts/        → bootstrap icons (woff-Dateien)
+|   ├── fonts/        → bootstrap icons (woff-Dateien)
 │   ├── js/           → script.js (Emoji, Feed, Vorschau etc.)
+|       ├── modules/  → handler für comments, emoji, live, post, search 
 │   ├── img/          → Logos & Default-Bilder
 │   ├── posts/        → Medien aus Beiträgen
 │   └── uploads/      → Profil- und Headerbilder
@@ -92,11 +95,9 @@ Nutzer können Inhalte posten, liken, kommentieren, folgen und ihr Profil pflege
 📚 Features Backlog
 ---------------------------------------------------
 
-- Notification nach Follow
-- Hashtags in Post erkennen
-- Direct Messaging
-- Live Update (Polling)
-- Suchleiste für Profile
 
-📅 Letzter Stand: 25. April 2025
+- Live Update (Polling)
+
+
+📅 Letzter Stand: 29. April 2025
 ==================================================
