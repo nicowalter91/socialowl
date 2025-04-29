@@ -59,7 +59,7 @@ $suggestions = getSuggestions($conn, $currentUserId);
           <form method="POST" action="/Social_App/controllers/follow_user.php" class="ms-2">
             <input type="hidden" name="user_id" value="<?= $user["id"] ?>">
             <button class="btn btn-sm btn-outline-light d-flex align-items-center">
-              <i class="bi bi-person-plus-fill me-1"></i>
+              <i class="bi bi-person-plus-fill"></i>
             </button>
           </form>
         </div>

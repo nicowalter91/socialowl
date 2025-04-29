@@ -1,9 +1,9 @@
-// Suchfunktionalität
 export class SearchHandler {
     constructor() {
         this.searchInput = document.getElementById("post-search");
         this.searchButton = document.getElementById("search-button");
         this.resultsContainer = document.getElementById("search-results");
+        this.BASE_URL = '/Social_App';  // Base URL hinzufügen
         this.init();
     }
 
@@ -20,9 +20,18 @@ export class SearchHandler {
             }
         });
 
-        this.searchInput.addEventListener("input", (event) => {
-            if (event.target.value.trim() === "") {
+        // Live-Suche bei Eingabe
+        this.searchInput.addEventListener("input", async (event) => {
+            const query = event.target.value.trim();
+            if (query === "") {
                 this.resultsContainer.classList.add("d-none");
+                return;
+            }
+            
+            if (query.startsWith("@")) {
+                await this.performUserSearch(query.substring(1));
+            } else {
+                await this.performSearch();
             }
         });
 
@@ -35,6 +44,85 @@ export class SearchHandler {
                 this.resultsContainer.classList.add("d-none");
             }
         });
+    }
+
+    async performUserSearch(query) {
+        try {
+            const response = await fetch(`${this.BASE_URL}/controllers/api/search_users.php?q=${encodeURIComponent(query)}`);
+            if (!response.ok) throw new Error('Netzwerkfehler');
+            const data = await response.json();
+            
+            this.resultsContainer.innerHTML = "";
+            
+            if (data.success && data.users && data.users.length > 0) {
+                data.users.forEach(user => {
+                    this.createUserResultCard(user);
+                });
+                this.resultsContainer.classList.remove("d-none");
+            } else {
+                this.resultsContainer.innerHTML = "<div class='text-danger p-2'><i class='bi bi-exclamation-circle mb-1'></i> Keine Benutzer gefunden.</div>";
+                this.resultsContainer.classList.remove("d-none");
+            }
+        } catch (error) {
+            console.error('Fehler bei der Benutzersuche:', error);
+            this.resultsContainer.innerHTML = "<div class='text-danger p-2'><i class='bi bi-exclamation-circle mb-1'></i> Fehler bei der Suche.</div>";
+            this.resultsContainer.classList.remove("d-none");
+        }
+    }
+
+    createUserResultCard(user) {
+        const card = document.createElement("div");
+        card.className = "bg-dark rounded p-2 mb-2 search-result-card d-flex justify-content-between align-items-center";
+        
+        const userInfo = document.createElement("div");
+        userInfo.className = "d-flex align-items-center";
+        
+        const profileImg = document.createElement("img");
+        profileImg.src = `${this.BASE_URL}/assets/uploads/${user.profile_img}`;
+        profileImg.className = "rounded-circle me-2";
+        profileImg.width = 40;
+        profileImg.height = 40;
+        
+        const userText = document.createElement("div");
+        userText.innerHTML = `
+            <strong class="text-light">@${user.username}</strong>
+            ${user.bio ? `<p class="mb-0 text-light small">${user.bio}</p>` : ''}
+        `;
+        
+        userInfo.appendChild(profileImg);
+        userInfo.appendChild(userText);
+        
+        const followButton = document.createElement("button");
+        followButton.className = `btn btn-sm ${user.is_following ? 'btn-outline-danger' : 'btn-outline-light'}`;
+        followButton.innerHTML = `<i class="bi bi-person-${user.is_following ? 'x' : 'plus'}-fill"></i>`;
+        
+        followButton.addEventListener("click", async () => {
+            const action = user.is_following ? 'unfollow' : 'follow';
+            try {
+                const response = await fetch(`${this.BASE_URL}/controllers/${action}_user.php`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `user_id=${user.id}`
+                });
+                
+                if (response.ok) {
+                    user.is_following = !user.is_following;
+                    followButton.className = `btn btn-sm ${user.is_following ? 'btn-outline-danger' : 'btn-outline-light'}`;
+                    followButton.innerHTML = `<i class="bi bi-person-${user.is_following ? 'x' : 'plus'}-fill"></i>`;
+                    
+                    // Update sidebar and stats
+                    window.liveUpdates.updateFollowingSidebar(user.id);
+                }
+            } catch (error) {
+                console.error('Fehler beim Folgen/Entfolgen:', error);
+            }
+        });
+        
+        card.appendChild(userInfo);
+        card.appendChild(followButton);
+        this.resultsContainer.appendChild(card);
     }
 
     performSearch() {
@@ -68,12 +156,9 @@ export class SearchHandler {
             this.resultsContainer.prepend(info);
             this.resultsContainer.classList.remove("d-none");
         } else {
-            this.resultsContainer.innerHTML =
-                "<div class='text-danger'><i class='bi bi-exclamation-circle mb-1'></i> Keine Treffer gefunden.</div>";
+            this.resultsContainer.innerHTML = "<div class='text-danger'><i class='bi bi-exclamation-circle mb-1'></i> Keine Treffer gefunden.</div>";
             this.resultsContainer.classList.remove("d-none");
         }
-
-        this.searchInput.value = "";
     }
 
     createSearchResultCard(postId, username, text) {
@@ -111,4 +196,4 @@ export class SearchHandler {
 
         this.resultsContainer.appendChild(card);
     }
-} 
+}
