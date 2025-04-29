@@ -34,6 +34,36 @@ $stmt->execute([
 
 $commentId = $conn->lastInsertId();
 
+// Post-Besitzer abrufen und Benachrichtigung erstellen
+$stmt = $conn->prepare("
+    SELECT p.user_id, u.username 
+    FROM posts p 
+    JOIN users u ON p.user_id = u.id 
+    WHERE p.id = :post_id
+");
+$stmt->execute([":post_id" => $postId]);
+$post = $stmt->fetch(PDO::FETCH_ASSOC);
+
+// Benachrichtigung erstellen (nur wenn der Kommentar nicht vom Post-Besitzer ist)
+if ($post['user_id'] != $userId) {
+    // Benutzername des Kommentators abrufen
+    $stmt2 = $conn->prepare("SELECT username FROM users WHERE id = :user_id");
+    $stmt2->execute([":user_id" => $userId]);
+    $commenter = $stmt2->fetch(PDO::FETCH_ASSOC);
+    
+    // Benachrichtigung einfügen
+    $stmt = $conn->prepare("
+        INSERT INTO notifications (user_id, type, content) 
+        VALUES (:user_id, 'comment', :content)
+    ");
+    
+    $content = "@{$commenter['username']} hat deinen Post kommentiert";
+    $stmt->execute([
+        ":user_id" => $post['user_id'],
+        ":content" => $content
+    ]);
+}
+
 // Den neuen Kommentar samt Userinfos & Like-Daten holen
 $comment = fetchSingleComment($conn, $commentId, $userId);
 if (!$comment) {
