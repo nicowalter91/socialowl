@@ -16,7 +16,7 @@
       <input class="form-control bg-dark text-light border-secondary rounded-start-pill" 
              id="post-search" 
              type="search" 
-             placeholder="Text eingeben..." 
+             placeholder="Suche nach Text, @Benutzer oder #Hashtags..." 
              aria-label="Suche">
       <button class="btn btn-primary border-secondary rounded-end-pill" id="search-button" type="button">
         <i class="bi bi-search"></i>

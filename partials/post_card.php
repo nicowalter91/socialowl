@@ -48,7 +48,11 @@ echo "<!-- RENDERE post_card.php für Post-ID {$post['id']} -->"; ?>
 
   <!-- Inhalt -->
   <div class="mb-3 pb-3 border-bottom border-secondary">
-    <p class="post-text text-light mb-2"><?= nl2br(htmlspecialchars($post["content"])) ?></p>
+    <p class="post-text text-light mb-2"><?php
+      $content = htmlspecialchars($post["content"]);
+      $content = preg_replace('/#(\w+)/', '<span class="hashtag">#$1</span>', $content);
+      echo nl2br($content);
+    ?></p>
 
     <?php if (!empty($post["image_path"])): ?>
       <div class="tweet-media-wrapper mb-2 w-100">

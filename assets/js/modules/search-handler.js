@@ -30,6 +30,8 @@ export class SearchHandler {
             
             if (query.startsWith("@")) {
                 await this.performUserSearch(query.substring(1));
+            } else if (query.startsWith("#")) {
+                await this.performHashtagSearch(query);
             } else {
                 await this.performSearch();
             }
@@ -44,6 +46,42 @@ export class SearchHandler {
                 this.resultsContainer.classList.add("d-none");
             }
         });
+    }
+
+    async performHashtagSearch(query) {
+        try {
+            const response = await fetch(`${this.BASE_URL}/controllers/search.post.php?q=${encodeURIComponent(query)}&type=hashtag`);
+            if (!response.ok) throw new Error('Netzwerkfehler');
+            const html = await response.text();
+            
+            this.resultsContainer.innerHTML = "";
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = html;
+            
+            const posts = tempDiv.querySelectorAll('.tweet-card');
+            if (posts.length > 0) {
+                const info = document.createElement("div");
+                info.className = "text-light mb-2";
+                info.textContent = `${posts.length} Posts mit ${query} gefunden:`;
+                this.resultsContainer.appendChild(info);
+                
+                posts.forEach(post => {
+                    const postId = post.getAttribute('data-post-id');
+                    const username = post.getAttribute('data-username');
+                    const textElement = post.querySelector('.post-text');
+                    const text = textElement ? textElement.textContent : '';
+                    this.createSearchResultCard(postId, username, text);
+                });
+                this.resultsContainer.classList.remove("d-none");
+            } else {
+                this.resultsContainer.innerHTML = `<div class='text-danger p-2'><i class='bi bi-exclamation-circle mb-1'></i> Keine Posts mit ${query} gefunden.</div>`;
+                this.resultsContainer.classList.remove("d-none");
+            }
+        } catch (error) {
+            console.error('Fehler bei der Hashtag-Suche:', error);
+            this.resultsContainer.innerHTML = "<div class='text-danger p-2'><i class='bi bi-exclamation-circle mb-1'></i> Fehler bei der Suche.</div>";
+            this.resultsContainer.classList.remove("d-none");
+        }
     }
 
     async performUserSearch(query) {
