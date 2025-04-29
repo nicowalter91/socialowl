@@ -3,11 +3,34 @@ require_once __DIR__ . '/like.php';
 require_once __DIR__ . '/comment.php';
 
 /**
- * Speichert hochgeladene Datei (Bild/Video) in Zielordner.
+ * Löscht eine Datei, wenn sie existiert
+ * @param string $filepath - Der vollständige Pfad zur Datei
+ * @return bool - true wenn die Datei gelöscht wurde oder nicht existierte, false bei Fehler
  */
-function handleUpload(string $key, string $destinationDir): ?string {
+function deleteFileIfExists(string $filepath): bool {
+    if (file_exists($filepath)) {
+        return unlink($filepath);
+    }
+    return true;
+}
+
+/**
+ * Speichert hochgeladene Datei (Bild/Video) in Zielordner.
+ * Löscht alte Dateien, wenn sie überschrieben werden.
+ * @param string $key - Der Schlüssel im $_FILES Array
+ * @param string $destinationDir - Der Zielordner
+ * @param string|null $oldFilename - Der alte Dateiname, der gelöscht werden soll
+ * @return string|null - Der neue Dateiname oder null bei Fehler
+ */
+function handleUpload(string $key, string $destinationDir, ?string $oldFilename = null): ?string {
     if (!isset($_FILES[$key]) || $_FILES[$key]['error'] !== UPLOAD_ERR_OK) {
         return null;
+    }
+
+    // Alte Datei löschen, wenn vorhanden
+    if ($oldFilename) {
+        $oldPath = $destinationDir . '/' . $oldFilename;
+        deleteFileIfExists($oldPath);
     }
 
     $ext = pathinfo($_FILES[$key]['name'], PATHINFO_EXTENSION);
@@ -23,6 +46,12 @@ function handleUpload(string $key, string $destinationDir): ?string {
 
 /**
  * Legt einen neuen Post an.
+ * @param PDO $conn - Die Datenbankverbindung
+ * @param int $user_id - Die Benutzer-ID
+ * @param string $content - Der Inhalt des Posts
+ * @param string|null $image_path - Der Pfad zum Bild
+ * @param string|null $video_path - Der Pfad zum Video
+ * @return int - Die ID des neuen Posts
  */
 function createPost(PDO $conn, int $user_id, string $content, ?string $image_path, ?string $video_path): int {
     $stmt = $conn->prepare("
@@ -41,8 +70,17 @@ function createPost(PDO $conn, int $user_id, string $content, ?string $image_pat
 
 /**
  * Aktualisiert bestehenden Post.
+ * Löscht alte Medien-Dateien, wenn sie überschrieben werden.
+ * @param PDO $conn - Die Datenbankverbindung
+ * @param int $post_id - Die Post-ID
+ * @param int $user_id - Die Benutzer-ID
+ * @param string $content - Der neue Inhalt
+ * @param string|null $image_path - Der neue Bildpfad
+ * @param string|null $video_path - Der neue Videopfad
+ * @param string|null $old_image_path - Der alte Bildpfad
+ * @param string|null $old_video_path - Der alte Videopfad
  */
-function updatePost(PDO $conn, int $post_id, int $user_id, string $content, ?string $image_path, ?string $video_path): void {
+function updatePost(PDO $conn, int $post_id, int $user_id, string $content, ?string $image_path, ?string $video_path, ?string $old_image_path = null, ?string $old_video_path = null): void {
     $sql = "UPDATE posts SET content = :content";
 
     if ($image_path !== null) $sql .= ", image_path = :image_path";
@@ -60,6 +98,16 @@ function updatePost(PDO $conn, int $post_id, int $user_id, string $content, ?str
     if ($video_path !== null) $params[":video_path"] = $video_path;
 
     $stmt->execute($params);
+
+    // Alte Dateien löschen, wenn neue hochgeladen wurden
+    if ($image_path && $old_image_path) {
+        $oldPath = POSTS . '/' . $old_image_path;
+        deleteFileIfExists($oldPath);
+    }
+    if ($video_path && $old_video_path) {
+        $oldPath = POSTS . '/' . $old_video_path;
+        deleteFileIfExists($oldPath);
+    }
 }
 
 /**

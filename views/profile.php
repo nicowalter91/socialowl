@@ -48,7 +48,7 @@ $user = fetchUserInfo($_SESSION["username"]);
   </div>
 
   <script src="<?= BASE_URL ?>/assets/js/bootstrap.bundle.min.js"></script>
-  <script src="<?= BASE_URL ?>/assets/js/script.js"></script>
+  <script type="module" src="<?= BASE_URL ?>/assets/js/script.js"></script>
 </body>
 
 </html>

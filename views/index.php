@@ -53,8 +53,12 @@ $posts = fetchAllPostsWithComments($conn, $_SESSION["id"]);
   <?php include PARTIALS . '/modal-delete-posts.php'; ?>
 
   <!-- JS -->
+  <script>
+    // Globale Variablen für JavaScript
+    const BASE_URL = "<?= BASE_URL ?>";
+  </script>
   <script src="<?= BASE_URL ?>/assets/js/bootstrap.bundle.min.js"></script>
-  <script src="<?= BASE_URL ?>/assets/js/script.js"></script>
+  <script type="module" src="<?= BASE_URL ?>/assets/js/script.js"></script>
 
 </body>
 

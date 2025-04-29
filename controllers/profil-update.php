@@ -14,10 +14,16 @@ if (!$username) {
 
 $bio = trim($_POST["bio"] ?? '');
 
-$profileImg = handleImageUpload($_FILES["profile_img"], $username, "profile");
-$headerImg  = handleImageUpload($_FILES["header_img"], $username, "header");
+// Alte Dateinamen aus der Session holen
+$oldProfileImg = $_SESSION["profile_img"] ?? null;
+$oldHeaderImg = $_SESSION["header_img"] ?? null;
 
-updateUserProfile($conn, $username, $bio, $profileImg, $headerImg);
+// Neue Bilder hochladen
+$profileImg = handleImageUpload($_FILES["profile_img"], $username, "profile", $oldProfileImg);
+$headerImg  = handleImageUpload($_FILES["header_img"], $username, "header", $oldHeaderImg);
+
+// Profil aktualisieren
+updateUserProfile($conn, $username, $bio, $profileImg, $headerImg, $oldProfileImg, $oldHeaderImg);
 
 // Session aktualisieren
 $_SESSION["bio"] = $bio;

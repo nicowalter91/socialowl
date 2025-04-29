@@ -1,12 +1,44 @@
+/**
+ * Hauptskript für die Social App
+ * Initialisiert alle Module und Event-Listener
+ * Verwaltet die grundlegende Funktionalität der App
+ */
+
 // ============================
 // DOMContentLoaded Start
 // ============================
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
   console.log("✅ script.js geladen");
+
+  // Module importieren und initialisieren
+  try {
+    // Alle Module parallel laden für bessere Performance
+    const [liveUpdatesModule, postHandlerModule, commentHandlerModule, searchHandlerModule, emojiHandlerModule] = await Promise.all([
+      import('./modules/live-updates.js'),
+      import('./modules/post-handler.js'),
+      import('./modules/comment-handler.js'),
+      import('./modules/search-handler.js'),
+      import('./modules/emoji-handler.js')
+    ]);
+
+    // Module initialisieren und global verfügbar machen
+    window.liveUpdates = new liveUpdatesModule.LiveUpdates();
+    window.postHandler = new postHandlerModule.PostHandler();
+    window.commentHandler = new commentHandlerModule.CommentHandler();
+    window.searchHandler = new searchHandlerModule.SearchHandler();
+    window.emojiHandler = new emojiHandlerModule.EmojiHandler();
+
+    console.log("✅ Alle Module erfolgreich initialisiert");
+  } catch (error) {
+    console.error("❌ Fehler beim Laden der Module:", error);
+  }
+
+  // Timestamps für Live-Updates
   let lastPostTimestamp = null;
   let lastCommentTimestamp = null;
   initLastCommentTimestamp();
 
+  // Post-Card Events initialisieren
   initPostCardEvents();
 
   // ============================
@@ -31,7 +63,10 @@ document.addEventListener("DOMContentLoaded", () => {
   // ============================
   // Last Comment Timestamp automatisch setzen
   // ============================
-
+  /**
+   * Initialisiert den lastCommentTimestamp anhand aller vorhandenen Kommentare
+   * Wird für Live-Updates von Kommentaren benötigt
+   */
   function initLastCommentTimestamp() {
     const timestampElements = document.querySelectorAll(".comment-timestamp");
 
@@ -62,6 +97,7 @@ document.addEventListener("DOMContentLoaded", () => {
   /**
    * Initialisiert lastPostTimestamp anhand aller bereits
    * gerenderten Posts im HTML.
+   * Wird für Live-Updates von Posts benötigt
    */
   function initLastPostTimestamp() {
     const els = document.querySelectorAll(".post-timestamp");
@@ -91,6 +127,10 @@ document.addEventListener("DOMContentLoaded", () => {
   // ============================
   // Initialisierungen
   // ============================
+  /**
+   * Initialisiert die Event-Listener für Post-Cards
+   * Ermöglicht das Bearbeiten von Posts
+   */
   function initPostCardEvents() {
     document.querySelectorAll(".edit-post-btn").forEach((button) => {
       button.addEventListener("click", () => {
@@ -104,6 +144,11 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  /**
+   * Escaped HTML-Sonderzeichen für sichere Ausgabe
+   * @param {string} text - Der zu escapende Text
+   * @returns {string} - Der escapte Text
+   */
   function escapeHTML(text) {
     if (!text) return "";
     return text.replace(/[&<>"']/g, (match) => {
@@ -122,6 +167,10 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  /**
+   * Setzt das Post-Formular zurück
+   * Wird nach dem Absenden eines Posts oder beim Abbrechen der Bearbeitung aufgerufen
+   */
   function resetPostForm() {
     tweetInput.value = "";
     editPostIdInput.value = "";
@@ -131,407 +180,8 @@ document.addEventListener("DOMContentLoaded", () => {
     removeBtn.click();
   }
 
+  // Event-Listener für den Abbrechen-Button
   cancelEditBtn?.addEventListener("click", resetPostForm);
-
-  // ============================
-  // Kommentarformular toggeln
-  // ============================
-  document.addEventListener("click", (e) => {
-    const btn = e.target.closest(".toggle-comment-form");
-    if (!btn) return;
-    const form = document.getElementById(`comment-form-${btn.dataset.postId}`);
-    if (form) form.classList.toggle("show");
-  });
-
-  // ============================
-  // Beitrag absenden
-  // ============================
-  form?.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const formData = new FormData(form);
-    try {
-      const res = await fetch("/Social_App/controllers/create_post.php", {
-        method: "POST",
-        body: formData,
-      });
-      const raw = await res.text();
-      const data = JSON.parse(raw);
-      if (data.success && data.html) {
-        // 1) einfügen
-        feed.insertAdjacentHTML("afterbegin", data.html);
-  
-        // 2) lastPostTimestamp auf das Timestamp-Attribut des neuen Elements setzen:
-        const inserted = feed.firstElementChild;
-        const tsEl = inserted.querySelector(".post-timestamp");
-        if (tsEl) {
-          lastPostTimestamp = tsEl.dataset.timestamp;
-        }
-  
-        resetPostForm();
-        initPostCardEvents();
-      }
-    } catch (err) {
-      console.error("❌ Fehler beim Senden des Beitrags:", err);
-    }
-  });
-  
-  // ============================
-  // Emoji Picker für Posts
-  // ============================
-
-  const emojiNames = {
-    "😀": "grinsen",
-    "😂": "lachen",
-    "😍": "verliebt",
-    "😎": "cool",
-    "😭": "weinen",
-    "😡": "wütend",
-    "👍": "daumen hoch",
-    "❤️": "herz",
-    "🔥": "feuer",
-    "🎉": "feier",
-    "👏": "applaus",
-    "💯": "hundert",
-  };
-
-  const pickerBtn = document.getElementById("emoji-picker-btn");
-  const picker = document.getElementById("emoji-picker");
-  const tweetArea = document.querySelector(".tweet-input-box");
-
-  if (pickerBtn && picker && tweetArea) {
-    pickerBtn.addEventListener("click", (e) => {
-      e.stopPropagation();
-      picker.classList.toggle("d-none");
-    });
-
-    picker.querySelectorAll("button").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        const emoji = btn.textContent;
-        const start = tweetArea.selectionStart;
-        const end = tweetArea.selectionEnd;
-        const text = tweetArea.value;
-        tweetArea.value = text.slice(0, start) + emoji + text.slice(end);
-        tweetArea.focus();
-        tweetArea.selectionStart = tweetArea.selectionEnd =
-          start + emoji.length;
-        picker.classList.add("d-none");
-      });
-    });
-
-    const emojiSearch = document.getElementById("emoji-search");
-    emojiSearch?.addEventListener("input", () => {
-      const query = emojiSearch.value.toLowerCase();
-      picker.querySelectorAll("button").forEach((btn) => {
-        const emoji = btn.textContent;
-        const name = emojiNames[emoji] || "";
-        btn.style.display = name.includes(query) ? "inline-block" : "none";
-      });
-    });
-
-    document.addEventListener("click", (e) => {
-      if (!picker.contains(e.target) && !pickerBtn.contains(e.target)) {
-        picker.classList.add("d-none");
-      }
-    });
-  }
-
-  // ============================
-  // Emoji Picker für Kommentare
-  // ============================
-
-  document.querySelectorAll(".emoji-comment-btn").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      const form = btn.closest("form");
-      const picker = form.querySelector(".emoji-picker");
-      const textarea = form.querySelector("textarea");
-
-      picker.classList.toggle("d-none");
-
-      if (picker.childElementCount === 0) {
-        const grid = document.createElement("div");
-        grid.classList.add("emoji-grid");
-        Object.keys(emojiNames).forEach((emoji) => {
-          const button = document.createElement("button");
-          button.type = "button";
-          button.textContent = emoji;
-          button.addEventListener("click", () => {
-            textarea.value += emoji;
-            picker.classList.add("d-none");
-          });
-          grid.appendChild(button);
-        });
-        picker.appendChild(grid);
-      }
-    });
-  });
-
-  // ============================
-  // Kommentare  bearbeiten
-  // ============================
-
-  document.querySelectorAll(".edit-comment-btn").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      const form = btn
-        .closest(".tweet-card")
-        ?.querySelector(".comment-form-inner");
-      if (!form) return;
-      const textarea = form.querySelector("textarea");
-      const idInput = form.querySelector(".edit-comment-id");
-
-      textarea.value = btn.dataset.content;
-      idInput.value = btn.dataset.commentId;
-
-      form.closest(".comment-form")?.classList.add("show");
-    });
-  });
-
-  // ============================
-  // Kommentar löschen
-  // ============================
-
-  document.addEventListener("click", async (e) => {
-    const btn = e.target.closest(".delete-comment-btn");
-    if (!btn) return;
-
-    const formData = new FormData();
-    formData.append("comment_id", btn.dataset.commentId);
-
-    try {
-      const res = await fetch("/Social_App/controllers/delete_comment.php", {
-        method: "POST",
-        body: formData,
-      });
-
-      const result = await res.json();
-      if (result.success) {
-        btn.closest(".comment")?.remove();
-      } else {
-        alert("⚠️ Kommentar konnte nicht gelöscht werden.");
-      }
-    } catch (err) {
-      console.error("❌ Fehler beim Löschen des Kommentars:", err);
-    }
-  });
-
-  // ============================
-  // Kommentar liken
-  // ============================
-
-  document.addEventListener("click", async (e) => {
-    const button = e.target.closest(".like-comment-btn");
-    if (!button) return;
-
-    const formData = new FormData();
-    formData.append("comment_id", button.dataset.commentId);
-
-    try {
-      const res = await fetch("/Social_App/controllers/like_comment.php", {
-        method: "POST",
-        body: formData,
-      });
-
-      const result = await res.json();
-      if (result.success) {
-        button.classList.toggle("btn-outline-light", !result.liked);
-        button.classList.toggle("btn-light", result.liked);
-        button.classList.toggle("text-dark", result.liked);
-        button.querySelector(".like-count").textContent = result.like_count;
-      }
-    } catch (err) {
-      console.error("❌ Fehler beim Liken des Kommentars:", err);
-    }
-  });
-
-  // ============================
-  // Kommentare speichern / bearbeiten (richtig für Kommentarformulare!)
-  // ============================
-
-  document.querySelectorAll(".comment-form-inner").forEach((commentForm) => {
-    commentForm.addEventListener("submit", async (e) => {
-      e.preventDefault();
-
-      const formData = new FormData(commentForm);
-      const commentId =
-        commentForm.querySelector(".edit-comment-id")?.value || null;
-      const postId = commentForm.dataset.postId;
-      const url = commentId
-        ? "/Social_App/controllers/update_comment.php"
-        : "/Social_App/controllers/create_comment.php";
-
-      try {
-        const res = await fetch(url, { method: "POST", body: formData });
-        const result = await res.json();
-
-        if (result.success) {
-          // wenn ein neues Kommentar erzeugt wurde, von den JSON-Daten rendern
-          if (!commentId && result.comment) {
-            renderComment(result.comment);
-            lastCommentTimestamp = result.comment.created_at;
-          }
-          // zurücksetzen & Form schließen
-          commentForm.reset();
-          const wrapper = commentForm.closest(".comment-form");
-          if (wrapper) wrapper.classList.remove("show");
-        } else {
-          alert("⚠️ Fehler: " + result.message);
-        }
-      } catch (err) {
-        console.error("❌ Fehler beim Senden des Kommentars:", err);
-      }
-    });
-  });
-
-  function formatGermanDate(dateString) {
-    const d = new Date(dateString);
-    return (
-      `${String(d.getDate()).padStart(2, "0")}.${String(
-        d.getMonth() + 1
-      ).padStart(2, "0")}.${d.getFullYear()} ` +
-      `${String(d.getHours()).padStart(2, "0")}:${String(
-        d.getMinutes()
-      ).padStart(2, "0")}`
-    );
-  }
-
-  // ============================
-  // Live Update: Neue Posts abrufen
-  // ============================
-
-  async function fetchNewPosts() {
-    try {
-      const res = await fetch(
-        `/Social_App/controllers/api/posts_since.php?since=${
-          lastPostTimestamp || "1970-01-01 00:00:00"
-        }`
-      );
-      const data = await res.json();
-  
-      // API liefert „posts“ (Rohdaten) und parallel dazu „html“ (HTML-Fragmente)
-      if (data.success && Array.isArray(data.posts) && Array.isArray(data.html)) {
-        data.posts.forEach((post, i) => {
-          // nur wirklich neu einfügen
-          if (!document.getElementById(`post-${post.id}`)) {
-            feed.insertAdjacentHTML("afterbegin", data.html[i]);
-            lastPostTimestamp = post.created_at;
-            // neu hinzugefügte Buttons/Links initialisieren
-            initPostCardEvents();
-          }
-        });
-      }
-    } catch (err) {
-      console.error("❌ Fehler beim Abrufen neuer Posts:", err);
-    }
-  }
-  
-  
-
-  // ============================
-  // Live Update: Neue Kommentare abrufen
-  // ============================
-
-  function renderComment(comment) {
-    const commentsContainer = document.getElementById(
-      `comment-list-${comment.post_id}`
-    );
-    if (!commentsContainer || document.getElementById(`comment-${comment.id}`))
-      return;
-
-    const isOwn = comment.user_id === CURRENT_USER_ID;
-
-    const commentElement = document.createElement("div");
-    commentElement.className =
-      "comment d-flex align-items-start gap-2 mb-2 pt-3 pb-3 border-bottom border-secondary";
-    commentElement.id = `comment-${comment.id}`;
-    commentElement.dataset.commentId = comment.id;
-    commentElement.dataset.postId = comment.post_id;
-
-    commentElement.innerHTML = `
-      <img class="rounded-circle"
-           src="/Social_App/assets/uploads/${
-             comment.profile_img || "profil.png"
-           }"
-           alt="Profilbild"
-           style="width:32px;height:32px;">
-  
-      <div class="flex-grow-1">
-        <strong class="text-light">@${escapeHTML(comment.username)}</strong><br>
-        <small class="comment-timestamp text-light" data-timestamp="${escapeHTML(
-          comment.created_at
-        )}">
-          ${formatGermanDate(comment.created_at)}
-        </small>
-        <div class="mt-2">
-          <span class="text-light comment-content">${escapeHTML(
-            comment.content
-          )}</span>
-        </div>
-      </div>
-  
-      <div class="${
-        isOwn ? "mt-2 d-flex gap-2 align-items-center" : "ms-auto mt-2"
-      }">
-        ${
-          isOwn
-            ? `
-          <button type="button"
-                  class="btn btn-sm btn-outline-light edit-comment-btn"
-                  data-comment-id="${comment.id}"
-                  data-content="${escapeHTML(comment.content)}">
-            <i class="bi bi-pencil me-1"></i>Bearbeiten
-          </button>
-          <button type="button"
-                  class="btn btn-sm btn-outline-danger delete-comment-btn"
-                  data-comment-id="${comment.id}">
-            <i class="bi bi-trash me-1"></i>Löschen
-          </button>
-        `
-            : ""
-        }
-        <button type="button"
-                class="btn btn-sm like-comment-btn ${
-                  comment.liked ? "btn-light text-dark" : "btn-outline-light"
-                }"
-                data-comment-id="${comment.id}">
-          <i class="bi bi-hand-thumbs-up me-1"></i>
-          <span class="like-count">${comment.like_count || 0}</span>
-        </button>
-      </div>
-    `;
-
-    commentsContainer.appendChild(commentElement);
-  }
-
-  async function fetchNewComments() {
-    try {
-      const res = await fetch(
-        `/Social_App/controllers/api/comments_since.php?since=${
-          lastCommentTimestamp || "1970-01-01 00:00:00"
-        }`
-      );
-      const data = await res.json();
-
-      if (data.success && Array.isArray(data.comments)) {
-        data.comments.forEach((comment) => {
-          renderComment(comment);
-          lastCommentTimestamp = comment.created_at;
-        });
-      }
-    } catch (error) {
-      console.error("❌ Fehler beim Abrufen neuer Kommentare:", error);
-    }
-  }
-
-  // ============================
-  // Live Update Intervall starten
-  // ============================
-  setInterval(() => {
-    fetchNewPosts();
-    fetchNewComments();
-  }, 5000);
-
-  // Initialer Aufruf beim Laden
-  fetchNewPosts();
-  fetchNewComments();
 
   // ============================
   // Beitrag löschen (Post)
@@ -630,84 +280,103 @@ document.addEventListener("DOMContentLoaded", () => {
   // Suchleiste Navbar
   // ============================
 
-  function performSearch() {
-    const input = document.getElementById("post-search");
-    const query = input.value.toLowerCase();
-    const posts = document.querySelectorAll(".tweet-card");
-    const resultsContainer = document.getElementById("search-results");
-
-    resultsContainer.innerHTML = "";
-    let found = 0;
-
-    if (query.length === 0) {
-      resultsContainer.classList.add("d-none");
-      return;
-    }
-
-    posts.forEach((post) => {
-      let textElement =
-        post.querySelector(".post-text") || post.querySelector(".text-light");
-      let text = textElement ? textElement.textContent.toLowerCase() : "";
-      let username = post.dataset.username || "@unknown";
-
-      if (text.includes(query)) {
-        const postId = post.getAttribute("data-post-id");
-
-        const card = document.createElement("div");
-        card.className = "bg-dark rounded p-2 mb-2 search-result-card";
-
-        const link = document.createElement("a");
-        link.href = `#post-${postId}`;
-        link.className = "text-light text-decoration-none d-block";
-
-        const title = document.createElement("div");
-        title.className = "fw-bold";
-        title.textContent = username;
-
-        const snippet = document.createElement("small");
-        snippet.className = "d-block text-light";
-        snippet.textContent =
-          text.substring(0, 80) + (text.length > 80 ? "..." : "");
-
-        link.appendChild(title);
-        link.appendChild(snippet);
-        card.appendChild(link);
-
-        // Smooth Scroll und Highlight Effekt bei Klick
-        link.addEventListener("click", (e) => {
-          e.preventDefault();
-          const target = document.getElementById(`post-${postId}`);
-          if (target) {
-            target.scrollIntoView({ behavior: "smooth", block: "start" });
-
-            // Highlight-Effekt
-            target.classList.add("highlight-post");
-            setTimeout(() => {
-              target.classList.remove("highlight-post");
-            }, 2000);
-          }
-          resultsContainer.classList.add("d-none"); // Ergebnisse ausblenden
-        });
-
-        resultsContainer.appendChild(card);
-        found++;
+  // Suchfunktion
+  async function performSearch(query) {
+    try {
+      const response = await fetch(`${BASE_URL}/controllers/api/search.php?q=${encodeURIComponent(query)}`);
+      if (!response.ok) throw new Error('Netzwerkfehler');
+      const data = await response.json();
+      
+      if (data.success) {
+        const resultsContainer = document.getElementById('search-results');
+        if (resultsContainer) {
+          resultsContainer.innerHTML = data.html || '<p>Keine Ergebnisse gefunden</p>';
+        }
+      } else {
+        console.error('Suche fehlgeschlagen:', data.error);
       }
-    });
-
-    if (found > 0) {
-      const info = document.createElement("div");
-      info.className = "text-light mb-2";
-      info.textContent = `${found} Treffer gefunden:`;
-      resultsContainer.prepend(info);
-
-      resultsContainer.classList.remove("d-none");
-    } else {
-      resultsContainer.innerHTML =
-        "<div class='text-danger'><i class='bi bi-exclamation-circle mb-1'></i> Keine Treffer gefunden.</div>";
-      resultsContainer.classList.remove("d-none");
+    } catch (error) {
+      console.error('Fehler bei der Suche:', error);
     }
+  }
 
-    input.value = ""; // Eingabefeld nach Suche leeren
+  // Debouncing für die Suchfunktion
+  function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+      const later = () => {
+        clearTimeout(timeout);
+        func(...args);
+      };
+      clearTimeout(timeout);
+      timeout = setTimeout(later, wait);
+    };
+  }
+
+  const debouncedSearch = debounce(performSearch, 300);
+
+  // Event-Listener für Live-Updates zentralisieren
+  function initLiveUpdateListeners() {
+    try {
+      // Deletion Events
+      const deleteEventSource = new EventSource(`${BASE_URL}/controllers/api/deletion_stream.php`);
+      
+      deleteEventSource.onmessage = (event) => {
+        try {
+          const data = JSON.parse(event.data);
+          if (data.type === 'heartbeat') return;
+          notifyDeletion(data.type, data.id);
+        } catch (err) {
+          console.error("❌ Fehler beim Verarbeiten der Löschungsnachricht:", err);
+        }
+      };
+      
+      // Edit Events
+      const editEventSource = new EventSource(`${BASE_URL}/controllers/api/edit_stream.php`);
+      editEventSource.onmessage = (event) => {
+        try {
+          const data = JSON.parse(event.data);
+          if (data.type === 'heartbeat') return;
+          
+          // Prüfen ob der Post bereits aktualisiert wurde
+          const postElement = document.querySelector(`.tweet-card[data-post-id="${data.id}"]`);
+          if (data.type === 'post' && postElement?.dataset.lastUpdate === data.timestamp) {
+            return; // Überspringe Update, wenn bereits aktualisiert
+          }
+          
+          notifyEdit(data.type, data.id);
+        } catch (err) {
+          console.error("❌ Fehler beim Verarbeiten der Bearbeitungsnachricht:", err);
+        }
+      };
+      
+      // Error Handling und Reconnect-Logik für beide Streams
+      const handleStreamError = (stream, type) => {
+        return (error) => {
+          console.error(`Fehler bei ${type}-Stream:`, error);
+          stream.close();
+          
+          // Reconnect nach 5 Sekunden
+          setTimeout(() => {
+            initLiveUpdateListeners();
+          }, 5000);
+        };
+      };
+      
+      deleteEventSource.onerror = handleStreamError(deleteEventSource, 'Deletion');
+      editEventSource.onerror = handleStreamError(editEventSource, 'Edit');
+      
+      // Verbindungsstatus überwachen
+      deleteEventSource.onopen = () => {
+        console.log("✅ Deletion-Stream verbunden");
+      };
+      
+      editEventSource.onopen = () => {
+        console.log("✅ Edit-Stream verbunden");
+      };
+    } catch (error) {
+      console.error("Fehler bei der Initialisierung der Event Streams:", error);
+    }
   }
 
   // Eventlistener für Button-Klick
@@ -747,4 +416,83 @@ document.addEventListener("DOMContentLoaded", () => {
       resultsContainer.classList.add("d-none");
     }
   });
+
+  // Live-Update-Listener initialisieren
+  initLiveUpdateListeners();
 });
+
+// ============================
+// Live Deletion of Posts and Comments (Fixed)
+// ============================
+async function notifyDeletion(type, id) {
+  try {
+    const res = await fetch(`/Social_App/controllers/api/notify_deletion.php?type=${type}&id=${id}`);
+    const data = await res.json();
+
+    if (data.success) {
+      if (type === "post") {
+        const postElement = document.querySelector(`.tweet-card[data-post-id="${id}"]`);
+        if (postElement) {
+          postElement.remove();
+          showNotification(`Ein Post wurde gelöscht`, 'info');
+        }
+      } else if (type === "comment") {
+        const commentElement = document.querySelector(`.comment[data-comment-id="${id}"]`);
+        if (commentElement) {
+          commentElement.remove();
+          showNotification(`Ein Kommentar wurde gelöscht`, 'info');
+        }
+      }
+    }
+  } catch (err) {
+    console.error("❌ Fehler beim Benachrichtigen der Löschung:", err);
+    showNotification('Fehler beim Aktualisieren der Löschung', 'danger');
+  }
+}
+
+// ============================
+// Live Update After Editing Posts or Comments (Fixed)
+// ============================
+async function notifyEdit(type, id) {
+  try {
+    const res = await fetch(`/Social_App/controllers/api/notify_edit.php?type=${type}&id=${id}`);
+    const data = await res.json();
+
+    if (data.success && data.html) {
+      const tempDiv = document.createElement("div");
+      tempDiv.innerHTML = data.html;
+
+      if (type === "post") {
+        const updatedPost = tempDiv.querySelector(`.tweet-card[data-post-id="${id}"]`);
+        const existingPost = document.querySelector(`.tweet-card[data-post-id="${id}"]`);
+        if (existingPost && updatedPost) {
+          // Setze den Timestamp für die Aktualisierung
+          updatedPost.dataset.lastUpdate = new Date().toISOString();
+          existingPost.replaceWith(updatedPost);
+          showNotification(`Ein Post wurde bearbeitet`, 'info');
+        }
+      } else if (type === "comment") {
+        const updatedComment = tempDiv.querySelector(`.comment[data-comment-id="${id}"]`);
+        const existingComment = document.querySelector(`.comment[data-comment-id="${id}"]`);
+        if (existingComment && updatedComment) {
+          existingComment.replaceWith(updatedComment);
+          showNotification(`Ein Kommentar wurde bearbeitet`, 'info');
+        }
+      }
+    }
+  } catch (err) {
+    console.error("❌ Fehler beim Benachrichtigen der Bearbeitung:", err);
+    showNotification('Fehler beim Aktualisieren der Bearbeitung', 'danger');
+  }
+}
+
+function showNotification(message, type = 'info') {
+  const notification = document.createElement('div');
+  notification.className = `alert alert-${type} notification`;
+  notification.textContent = message;
+  document.body.appendChild(notification);
+  
+  setTimeout(() => {
+    notification.remove();
+  }, 3000);
+}
