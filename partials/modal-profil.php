@@ -46,7 +46,7 @@ $headerImg = isset($_SESSION["header_img"]) && file_exists(UPLOADS . '/' . $_SES
           <!-- Bio -->
           <div class="mb-3">
             <label for="bio" class="form-label fw-bold">Bio</label>
-            <textarea name="bio" id="bio" class="form-control bg-dark text-light border-secondary pe-5" maxlength="150" rows="3"><?= htmlspecialchars($_SESSION["bio"] ?? '') ?></textarea>
+            <textarea name="bio" id="bio" class="form-control bg-dark text-light border-secondary pe-5" style="white-space: pre-wrap;" maxlength="150" rows="3"><?= htmlspecialchars($_SESSION["bio"] ?? '') ?></textarea>
             <div class="text-end mt-1">
               <small class="text-light"><span id="bioCounter">0</span>/150 Zeichen</small>
             </div>

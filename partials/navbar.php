@@ -24,7 +24,7 @@
     </div>
 
     <!-- Container für Suchergebnisse -->
-    <div id="search-results" class="p-2 rounded d-none mt-2 w-100" style="background-color: #28353e; position: absolute; top: 100%; left: 0; z-index: 1000;">
+    <div id="search-results" class="p-2 rounded d-none mt-2 w-100" style="background-color: #28353e; position: absolute; top: 100%; left: 0; z-index: 1000;" placeholder="Suche nach Text, @Benutzer oder #Hashtags...">
       <!-- Ergebnisse erscheinen hier -->
     </div>
   </form>

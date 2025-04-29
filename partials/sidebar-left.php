@@ -21,7 +21,9 @@ $followingCount = countFollowing($conn, $userId);
     <img class="profile-image" src="/Social_App/assets/uploads/<?php echo $_SESSION["profile_img"] ?>" alt="Profilbild">
     <h3 class="text-light mt-3"><?php echo $_SESSION["firstname"] . " " . $_SESSION["lastname"] ?></h3>
     <p class="username text-light">@<?php echo $_SESSION["username"] ?></p>
-    <p class="bio text-light"><?php echo $_SESSION["bio"] ?></p>
+    <div class="bio-container px-3 w-100">
+      <p class="bio text-light text-center"><?php echo $_SESSION["bio"] ?></p>
+    </div>
   </div>
 
   <!-- 📊 Statistiken -->
