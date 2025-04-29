@@ -68,28 +68,13 @@
 
       <!-- Emoji Button + Picker -->
       <div class="position-relative">
-        <button type="button" class="btn btn-sm btn-outline-light" id="emoji-picker-btn"><i class="bi bi-emoji-smile me-1"></i>Emoji
+        <button
+          type="button"
+          id="emoji-picker-btn"
+          class="btn btn-sm btn-outline-light">
+          <i class="bi bi-emoji-smile me-1"></i>Emoji
         </button>
-
-        <div id="emoji-picker" class="emoji-picker d-none position-absolute p-3 shadow-lg rounded-4 bg-dark text-light">
-          <input type="text" id="emoji-search" class="form-control bg-light form-control-sm mb-2 text-dark" placeholder="Suchen...">
-
-          <div id="emoji-list" class="emoji-grid">
-            <button type="button">😀</button>
-            <button type="button">😂</button>
-            <button type="button">😍</button>
-            <button type="button">😎</button>
-            <button type="button">😭</button>
-            <button type="button">😡</button>
-            <button type="button">👍</button>
-            <button type="button">❤️</button>
-            <button type="button">🔥</button>
-            <button type="button">🎉</button>
-            <button type="button">👏</button>
-            <button type="button">💯</button>
-          </div>
-        </div>
-
+        <div class="emoji-picker d-none position-absolute p-3 shadow-lg rounded-4 bg-dark text-light"></div>
       </div>
 
 
@@ -117,3 +102,11 @@
   </div>
 
 </form>
+
+<!-- EmojiHandler laden und initialisieren -->
+<script src="<?= BASE_URL ?>/assets/js/EmojiHandler.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    new EmojiHandler();
+  });
+</script>
