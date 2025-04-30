@@ -5,40 +5,45 @@ $errorMessage = "";
 $successMessage = "";
 
 // E-Mail und Token aus der URL holen
+$tokenValid = false;
 if (isset($_GET['email']) && isset($_GET['reset_token'])) {
     $email = $_GET["email"];
     $reset_token = $_GET['reset_token'];
+    // Token-Validierung aus DB
+    $stmt = $conn->prepare("SELECT reset_token FROM users WHERE email = :email");
+    $stmt->bindParam(":email", $email);
+    $stmt->execute();
+    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+    if ($row && $row['reset_token'] === $reset_token && !empty($reset_token)) {
+        $tokenValid = true;
+    }
 }
 
 // Wenn das Formular abgesendet wird
 if (isset($_POST['reset'])) {
-
-    // E-Mail und Passwörter aus dem Formular holen
     $email = $_POST["email"];
     $password = $_POST["password"];
     $passwordRepeat = $_POST["passwordRepeat"];
-
-
-    // Überprüfen, ob die Passwörter übereinstimmen
-    if ($password !== $passwordRepeat) {
+    $reset_token = $_POST["reset_token"];
+    // Token-Validierung aus DB
+    $stmt = $conn->prepare("SELECT reset_token FROM users WHERE email = :email");
+    $stmt->bindParam(":email", $email);
+    $stmt->execute();
+    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+    if (!$row || $row['reset_token'] !== $reset_token || empty($reset_token)) {
+        $errorMessage = "Ungültiger oder abgelaufener Reset-Link.";
+    } else if ($password !== $passwordRepeat) {
         $errorMessage = "Die Passwörter stimmen nicht überein.";
     } else {
         $passwordHash = PASSWORD_HASH($password, PASSWORD_DEFAULT);
-
         try {
-            // Passwort in der Datenbank aktualisieren und reset_token auf NULL setzen
             $result = updatePassword($passwordHash, $email);
-
-            // Überprüfen, ob das Update erfolgreich war
             if ($result) {
                 $successMessage = "Passwort erfolgreich geändert";
-                // header("Location: login.php"); 
-                // exit();
             } else {
                 $errorMessage = "Fehler beim Zurücksetzen des Passworts. Möglicherweise existiert der Token nicht oder ist ungültig.";
             }
         } catch (PDOException $e) {
-            // Fehlerbehandlung im Falle eines Datenbankfehlers
             $errorMessage = "Datenbankfehler: " . $e->getMessage();
         }
     }
@@ -99,8 +104,8 @@ function updatePassword($password, $email)
                 <label for="passwordRepeat" class="form-label">Neues Passwort wiederholen</label>
                 <input type="password" class="form-control bg-dark text-light border-0 rounded-3" id="passwordRepeat" placeholder="Neues Passwort wiederholen" name="passwordRepeat" required oninput="checkPasswords()" style="background: var(--color-input-bg); color: var(--color-input-text);">
                 <small id="passwordMessage" style="display:none;"></small>
-                <input type="hidden" value="<?php echo $email ?>" name="email">
-                <input type="hidden" value="<?php echo $reset_token ?>" name="reset_token">
+                <input type="hidden" value="<?php echo htmlspecialchars($email ?? '', ENT_QUOTES); ?>" name="email">
+                <input type="hidden" value="<?php echo htmlspecialchars($reset_token ?? '', ENT_QUOTES); ?>" name="reset_token">
             </div>
             <button type="submit" class="btn btn-primary w-100 rounded-3" name="reset">Speichern</button>
             <div class="mt-3 text-center">

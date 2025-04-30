@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../includes/config.php';
 require_once INCLUDES . '/connection.php';
+$conn = getDatabaseConnection();
 $errorMessage = "";
 
 if (isset($_POST["reset"])) {
@@ -9,12 +10,14 @@ if (isset($_POST["reset"])) {
     $stmt = $conn->prepare("UPDATE users SET reset_token=:reset_token WHERE email=:email");
     $stmt->bindParam(":reset_token", $reset_token);
     $stmt->bindParam(":email", $email);
-    $stmt->execute();
     if ($stmt->execute()) {
-        $reset_link = "http://localhost:8080/Social_App/reset_pwd.php";
-        $reset_link .= "?email=" . $email;
-        $reset_link .= "&reset_token=" . $reset_token;
-        $errorMessage = "Mail wurde verschickt! ";
+        $reset_link = "http://localhost:8080/Social_App/controllers/reset_pwd.php";
+        $reset_link .= "?email=" . urlencode($email);
+        $reset_link .= "&reset_token=" . urlencode($reset_token);
+        echo "<script>alert('Zurücksetzen-Link: $reset_link');</script>";
+        $errorMessage = "Der Link zum Zurücksetzen wurde als Alert angezeigt.";
+    } else {
+        $errorMessage = "Fehler beim Erstellen des Reset-Links.";
     }
 }
 ?>
@@ -51,11 +54,6 @@ if (isset($_POST["reset"])) {
                 <input type="email" class="form-control bg-dark text-light border-0 rounded-3" id="email" placeholder="E-Mail eingeben" name="email" required style="background: var(--color-input-bg); color: var(--color-input-text);">
             </div>
             <button type="submit" class="btn btn-primary w-100 rounded-3" name="reset">Senden</button>
-            <?php if (isset($reset_link)): ?>
-                <div class="alert alert-light mt-4" role="alert">
-                    <a href="<?php echo $reset_link; ?>">Passwort zurücksetzen</a>
-                </div>
-            <?php endif; ?>
         </form>
     </div>
     <script src="<?= BASE_URL ?>/assets/js/bootstrap.bundle.min.js"></script>
