@@ -590,6 +590,13 @@ body {
     box-shadow: 0 1px 4px rgba(0,0,0,0.10);
 }
 
+.notification-badge, .notification-badge * {
+  color: #fff !important;
+}
+body:not(.dark-mode) .notification-badge, body:not(.dark-mode) .notification-badge * {
+  color: #fff !important;
+}
+
 #post-search::placeholder {
   color: rgba(183, 200, 210, 0.8) !important;
   opacity: 1;
@@ -922,6 +929,12 @@ body:not(.dark-mode) .btn-outline-secondary:hover {
   color: #fff !important;
   background: #495057 !important;
   border-color: #495057 !important;
+}
+body:not(.dark-mode) .btn.btn-primary .text-light {
+  color: #fff !important;
+}
+body:not(.dark-mode) .btn.btn-primary .text-dark {
+  color: #fff !important;
 }
 
 

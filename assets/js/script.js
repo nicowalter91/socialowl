@@ -498,7 +498,13 @@ document.addEventListener("DOMContentLoaded", async () => {
       const badge = document.getElementById('chat-badge');
       if (badge) {
         badge.textContent = data.unread > 0 ? data.unread : '';
-        badge.style.display = data.unread > 0 ? 'inline-flex' : 'none';
+        if (data.unread > 0) {
+          badge.classList.remove('d-none');
+          badge.style.display = 'inline-flex';
+        } else {
+          badge.classList.add('d-none');
+          badge.style.display = 'none';
+        }
       }
     } catch (e) {}
   }

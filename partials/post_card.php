@@ -125,7 +125,7 @@ if (!isset($post) || empty($post["id"])) return;
         <i class="bi bi-hand-thumbs-up me-1"></i>
         <?= !empty($post["liked_by_me"]) ? 'Gefällt' : 'Gefällt mir' ?>
         <?php if (!empty($post["like_count"])): ?>
-          <span class="ms-2 text-light"><?= $post["like_count"] ?></span>
+          <span class="ms-2 <?= !empty($post["liked_by_me"]) ? 'text-dark' : 'text-light' ?>"><?= $post["like_count"] ?></span>
         <?php endif; ?>
       </button>
     </form>
