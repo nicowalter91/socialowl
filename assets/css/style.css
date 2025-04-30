@@ -937,4 +937,14 @@ body:not(.dark-mode) .btn.btn-primary .text-dark {
   color: #fff !important;
 }
 
+/* Light Mode: Chat-Nachrichten im Chatfenster */
+body:not(.dark-mode) #chat-messages .bg-primary.text-white {
+  background: #e9ecef !important;
+  color: #212529 !important;
+}
+body:not(.dark-mode) #chat-messages .bg-secondary.text-light {
+  background: #f8f9fa !important;
+  color: #212529 !important;
+}
+
 
