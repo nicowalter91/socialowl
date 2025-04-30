@@ -1,3 +1,9 @@
+<!--
+  Partial: Chat-Modal
+  Stellt das Chat-Fenster als Bootstrap-Modal bereit.
+  Userliste und Nachrichten werden per JavaScript geladen.
+-->
+
 <!-- Chat Modal -->
 <div class="modal fade" id="chatModal" tabindex="-1" aria-labelledby="chatModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-dialog-centered">

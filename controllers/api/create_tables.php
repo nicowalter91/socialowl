@@ -1,4 +1,10 @@
 <?php
+/**
+ * API-Controller: Tabellen anlegen
+ * Legt spezielle Log-Tabellen (z.B. für Lösch- und Edit-Logs) in der Datenbank an.
+ * Antwortet mit JSON (success/message).
+ */
+
 require_once "../includes/config.php";
 require_once '../../includes/connection.php';
 
@@ -29,4 +35,4 @@ try {
         'success' => false,
         'message' => 'Fehler beim Erstellen der Tabellen: ' . $e->getMessage()
     ]);
-} 
+}

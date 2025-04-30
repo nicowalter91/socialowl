@@ -1,4 +1,10 @@
 <?php
+/**
+ * View: Profilseite
+ * Zeigt das Profil eines Nutzers inkl. Posts, Follower, Headerbild und Bio an.
+ * Erwartet: $user (Array), $posts (Array)
+ */
+
 require "connection.php";
 require_once "auth.php";
 require_once "user.php";

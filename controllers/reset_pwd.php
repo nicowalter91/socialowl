@@ -1,4 +1,8 @@
 <?php
+/**
+ * Controller: Passwort zurücksetzen
+ * Prüft Token, setzt neues Passwort und zeigt Statusmeldungen an.
+ */
 require_once __DIR__ . '/../includes/config.php';
 require_once INCLUDES . '/connection.php';
 $errorMessage = "";
@@ -35,7 +39,7 @@ if (isset($_POST['reset'])) {
     } else if ($password !== $passwordRepeat) {
         $errorMessage = "Die Passwörter stimmen nicht überein.";
     } else {
-        $passwordHash = PASSWORD_HASH($password, PASSWORD_DEFAULT);
+        $passwordHash = password_hash($password, PASSWORD_DEFAULT);
         try {
             $result = updatePassword($passwordHash, $email);
             if ($result) {
@@ -49,7 +53,6 @@ if (isset($_POST['reset'])) {
     }
 }
 
-
 function updatePassword($password, $email)
 {
     global $conn;
@@ -60,7 +63,6 @@ function updatePassword($password, $email)
     $stmt->bindParam(":reset", $null, PDO::PARAM_NULL);  // Übergabe von NULL
     return $stmt->execute();
 }
-
 ?>
 
 <!DOCTYPE html>

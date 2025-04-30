@@ -1,4 +1,8 @@
 <?php
+/**
+ * View: Startseite
+ * Zeigt den Einstiegspunkt der App (Feed, Sidebar, Navigation etc.).
+ */
 require_once __DIR__ . '/../includes/config.php';
 require_once INCLUDES . '/connection.php';
 require_once INCLUDES . '/auth.php';

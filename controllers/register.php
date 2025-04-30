@@ -1,4 +1,9 @@
 <?php
+/**
+ * Controller: Registrierung
+ * Verarbeitet die Registrierung eines neuen Nutzers und prüft Eingaben.
+ * Leitet nach erfolgreicher Registrierung zum Login weiter.
+ */
 require_once __DIR__ . '/../includes/config.php';
 require_once INCLUDES . '/connection.php';
 

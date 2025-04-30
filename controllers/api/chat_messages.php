@@ -1,4 +1,10 @@
 <?php
+/**
+ * API-Controller: Chat-Nachrichten
+ * Gibt alle Nachrichten eines Chats zwischen zwei Nutzern zurück (JSON).
+ * Legt den Chat an, falls er noch nicht existiert.
+ */
+
 require_once __DIR__ . '/../../includes/connection.php';
 require_once __DIR__ . '/../../includes/auth.php';
 
@@ -43,6 +49,17 @@ try {
         ORDER BY m.created_at ASC');
     $stmt->execute([$chatId]);
     $messages = $stmt->fetchAll();
+    // Nachrichten entschlüsseln
+    foreach ($messages as &$msg) {
+        $decrypted = openssl_decrypt(
+            $msg['message'],
+            'AES-256-CBC',
+            CHAT_ENCRYPT_KEY,
+            0,
+            CHAT_ENCRYPT_IV
+        );
+        $msg['message'] = $decrypted !== false ? $decrypted : '[Entschlüsselung fehlgeschlagen]';
+    }
     // Alle Nachrichten als gelesen markieren, die an den aktuellen User gingen
     $stmt = $pdo->prepare('UPDATE messages SET is_read = 1 WHERE chat_id = ? AND sender_id != ?');
     $stmt->execute([$chatId, $userId]);

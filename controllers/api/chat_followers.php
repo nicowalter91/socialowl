@@ -1,4 +1,8 @@
 <?php
+/**
+ * API-Controller: Chat-Follower-Liste
+ * Gibt alle akzeptierten Follower des eingeloggten Nutzers für den Chat zurück (JSON).
+ */
 require_once __DIR__ . '/../../includes/connection.php';
 require_once __DIR__ . '/../../includes/auth.php';
 

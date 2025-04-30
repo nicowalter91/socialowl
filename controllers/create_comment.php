@@ -1,4 +1,9 @@
 <?php
+/**
+ * Controller: Kommentar erstellen
+ * Verarbeitet das Absenden eines neuen Kommentars zu einem Post.
+ * Gibt eine JSON-Antwort mit HTML-Partial und Rohdaten zurück.
+ */
 require_once "../includes/config.php";
 require_once INCLUDES . "/connection.php";
 require_once INCLUDES . "/auth.php";
@@ -13,6 +18,7 @@ $userId  = $_SESSION["id"];
 $postId  = $_POST["post_id"]  ?? null;
 $content = trim($_POST["comment"] ?? '');
 
+// Eingabe validieren
 if (!$postId || $content === '') {
   echo json_encode([
     "success" => false,
@@ -50,13 +56,11 @@ if ($post['user_id'] != $userId) {
     $stmt2 = $conn->prepare("SELECT username FROM users WHERE id = :user_id");
     $stmt2->execute([":user_id" => $userId]);
     $commenter = $stmt2->fetch(PDO::FETCH_ASSOC);
-    
     // Benachrichtigung einfügen
     $stmt = $conn->prepare("
         INSERT INTO notifications (user_id, type, content, post_id) 
         VALUES (:user_id, 'comment', :content, :post_id)
     ");
-    
     $content = "@{$commenter['username']} hat deinen Post kommentiert";
     $stmt->execute([
         ":user_id" => $post['user_id'],

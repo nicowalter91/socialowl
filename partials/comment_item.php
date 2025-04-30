@@ -1,4 +1,10 @@
-<?php if (!isset($comment)) return; ?>
+<?php
+/**
+ * Partial: Kommentar-Item
+ * Stellt die Darstellung eines einzelnen Kommentars inkl. Bearbeiten/Löschen/Like-Button dar.
+ * Erwartet: $comment (assoziatives Array)
+ */
+if (!isset($comment)) return; ?>
 
 <div class="comment d-flex align-items-start gap-2 mb-2 pt-3 pb-3 border-bottom border-secondary" 
      id="comment-<?= $comment["id"] ?>" 

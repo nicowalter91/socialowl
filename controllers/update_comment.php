@@ -1,4 +1,9 @@
 <?php
+/**
+ * Controller: Kommentar aktualisieren
+ * Aktualisiert einen Kommentar, gibt aktualisierte Daten und HTML als JSON zurück.
+ */
+
 require_once __DIR__ . '/../includes/config.php';
 require_once __DIR__ . '/../includes/connection.php';
 require_once __DIR__ . '/../includes/auth.php';

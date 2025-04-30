@@ -1,3 +1,8 @@
+/**
+ * Modul: search-handler.js
+ * Steuert die Live-Suche nach Posts, Nutzern und Hashtags im Suchfeld der Navigation.
+ */
+
 export class SearchHandler {
     constructor() {
         this.searchInput = document.getElementById("post-search");

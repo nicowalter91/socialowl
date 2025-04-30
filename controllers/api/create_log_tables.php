@@ -1,6 +1,9 @@
 <?php
-require_once __DIR__ . '/../../includes/config.php';
-require_once __DIR__ . '/../../includes/connection.php';
+/**
+ * API-Controller: Log-Tabellen anlegen
+ * Legt die benötigten Log-Tabellen in der Datenbank an (z.B. für Aktivitäten- oder Fehler-Logs).
+ * Antwortet mit JSON (success/message).
+ */
 
 // Fehlerbehandlung aktivieren
 error_reporting(E_ALL);
@@ -35,4 +38,4 @@ try {
         'message' => 'Fehler beim Erstellen der Log-Tabellen',
         'error' => DEBUG_MODE ? $e->getMessage() : null
     ]);
-} 
+}

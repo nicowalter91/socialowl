@@ -1,4 +1,9 @@
 <?php
+/**
+ * API-Controller: Chat löschen
+ * Löscht einen Chat und alle zugehörigen Nachrichten zwischen zwei Nutzern (JSON).
+ */
+
 require_once __DIR__ . '/../../includes/connection.php';
 require_once __DIR__ . '/../../includes/auth.php';
 

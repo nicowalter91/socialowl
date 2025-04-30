@@ -1,4 +1,10 @@
 <?php
+/**
+ * Controller: Kommentar hinzufügen
+ * Fügt einen neuen Kommentar zu einem Post hinzu und erstellt ggf. eine Benachrichtigung.
+ * Leitet zurück auf die vorherige Seite.
+ */
+
 require_once __DIR__ . '/../includes/config.php';
 require_once __DIR__ . '/../includes/connection.php';
 require_once __DIR__ . '/../models/comment.php';
@@ -54,4 +60,4 @@ try {
 } catch (Exception $e) {
     $_SESSION['error'] = $e->getMessage();
     header('Location: ' . $_SERVER['HTTP_REFERER']);
-} 
+}

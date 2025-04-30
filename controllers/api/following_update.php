@@ -1,4 +1,9 @@
 <?php
+/**
+ * API-Controller: Following-Update
+ * Gibt aktualisierte Follower-/Following-Zahlen und das HTML für den neu gefolgten Nutzer zurück (JSON).
+ */
+
 require_once "../../includes/config.php";
 require_once "../../includes/connection.php";
 require_once "../../models/follow.php";

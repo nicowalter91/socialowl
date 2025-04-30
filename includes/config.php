@@ -39,4 +39,8 @@ if (DEBUG_MODE) {
   ini_set("display_errors", 0);
   error_reporting(0);
 }
+
+// Verschlüsselungsschlüssel für Chat-Nachrichten (32 Zeichen für AES-256)
+define('CHAT_ENCRYPT_KEY', '12345678901234567890123456789012'); // 32 Zeichen!
+define('CHAT_ENCRYPT_IV', '1234567890abcdef'); // 16 Zeichen für AES-256-CBC
 ?>

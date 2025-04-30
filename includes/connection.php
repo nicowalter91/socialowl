@@ -1,6 +1,13 @@
 <?php
+// Stellt die zentrale Datenbankverbindung bereit
 require_once __DIR__ . '/../includes/config.php';
 
+/**
+ * Erstellt und liefert eine PDO-Datenbankverbindung.
+ * Gibt bei Fehlern eine verständliche Fehlermeldung aus (im Debug-Modus als JSON).
+ *
+ * @return PDO
+ */
 function getDatabaseConnection(): PDO {
     try {
         $dsn = "mysql:host=" . DB_HOST . ";dbname=" . DB_NAME . ";charset=utf8mb4";
@@ -24,4 +31,3 @@ function getDatabaseConnection(): PDO {
         }
     }
 }
-?>

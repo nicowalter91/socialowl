@@ -1,4 +1,9 @@
 <?php
+/**
+ * Partial: Post-Card
+ * Stellt die Darstellung eines einzelnen Posts inkl. Medien, Like, Kommentar und Optionen dar.
+ * Erwartet: $post (assoziatives Array)
+ */
 if (!isset($post) || empty($post["id"])) return;
 ?>
 

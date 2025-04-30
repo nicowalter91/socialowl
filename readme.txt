@@ -14,7 +14,7 @@
 --------------------------------------------------
 Social Owl ist eine moderne, schlanke Social-Media-Plattform mit Fokus auf 
 Benutzerfreundlichkeit, saubere Struktur (MVC) und vielen Social Features.  
-Nutzer können Inhalte posten, liken, kommentieren, folgen und ihr Profil pflegen.
+Nutzer können Inhalte posten, liken, kommentieren, folgen, chatten und ihr Profil pflegen.
 
 ✅ Features
 --------------------------------------------------
@@ -24,10 +24,10 @@ Nutzer können Inhalte posten, liken, kommentieren, folgen und ihr Profil pflege
 ✔️ Kommentare mit Bearbeiten, Löschen & Likes  
 ✔️ Like-System für Beiträge und Kommentare  
 ✔️ Benutzerprofil mit Profil- & Headerbild  
-✔️ Folgen/Entfolgen von anderen Usern  
-✔️ Live-Feed für neue Posts und Kommentare (Polling)  
+✔️ Folgen/Entfolgen von anderen Usern inkl. Follow-Requests  
+✔️ Live-Feed für neue Posts und Kommentare (SSE & Polling)  
 ✔️ Responsives Dark-Theme (Bootstrap 5)  
-✔️ Emoji-Picker für Posts & Kommentare  
+✔️ Emoji-Picker für Posts, Kommentare & Chat  
 ✔️ Sidebar mit Follow-Vorschlägen & Trends  
 ✔️ Scrollbarer Feed mit unsichtbarem Scrollbalken  
 ✔️ Kommentare & Beiträge nur sichtbar von gefolgten Usern  
@@ -37,8 +37,10 @@ Nutzer können Inhalte posten, liken, kommentieren, folgen und ihr Profil pflege
 ✔️ Saubere UI-Komponenten & Layout mit Bootstrap  
 ✔️ Datenbank vollständig in 3. Normalform
 ✔️ Suchleiste für Posts, Hashtags und Usern
-✔️ Notification für Likes, Kommentare und gefolgten Usern
-
+✔️ Notification-System für Likes, Kommentare, Follows & Follow-Requests (inkl. Live-Update)
+✔️ Integriertes 1:1-Chat-System (verschlüsselt, Modal, Live-Badge, Chat-Löschung)
+✔️ API-Endpunkte für Live-Updates, Chat, Notifications, Follows
+✔️ Automatisierte Tests für Kernfunktionen (PHP)
 
 🧰 Technologien
 --------------------------------------------------
@@ -46,25 +48,26 @@ Nutzer können Inhalte posten, liken, kommentieren, folgen und ihr Profil pflege
 - HTML5, CSS3, JavaScript (ES6)
 - Bootstrap 5.3 + Bootstrap Icons (lokal Eingebunden)
 - MySQL / MariaDB
-- UniServerZ (lokale Entwicklungsumgebung)
+- UniServerZ oder XAMPP (lokale Entwicklungsumgebung)
 
 📁 Projektstruktur (nach MVC)
 --------------------------------------------------
-├── controllers/      → Business-Logik (z. B. create_post.php)
+├── controllers/      → Business-Logik & API (z. B. create_post.php, api/)
 ├── models/           → Datenbankabfragen (z. B. user.php, follow.php)
 ├── views/            → Hauptseiten wie index.php, login.view.php
 ├── partials/         → Wiederverwendbare UI-Elemente (Sidebar, Modals)
-├── includes/         → Konfiguration, Auth, DB-Verbindung
+├── includes/         → Konfiguration, Auth, DB-Verbindung, Chat-Logik
 ├── assets/
 │   ├── css/          → style.css, bootstrap.min.css
-|   ├── fonts/        → bootstrap icons (woff-Dateien)
-│   ├── js/           → script.js (Emoji, Feed, Vorschau etc.)
-|       ├── modules/  → handler für comments, emoji, live, post, search 
+│   ├── fonts/        → Bootstrap Icons (woff-Dateien)
+│   ├── js/           → script.js (App-Logik), notifications.js 
+│   │   └── modules/  → JS-Handler für comments, emoji, live, post, search
 │   ├── img/          → Logos & Default-Bilder
 │   ├── posts/        → Medien aus Beiträgen
 │   └── uploads/      → Profil- und Headerbilder
 ├── trash/            → Alte/temporäre Dateien (nicht produktiv)
 ├── tests/            → PHP Skripte für automatisierte Tests
+├── sql/              → SQL-Dumps & Migrationen
 
 🛠 Einrichtung / Setup
 --------------------------------------------------
@@ -91,13 +94,15 @@ Nutzer können Inhalte posten, liken, kommentieren, folgen und ihr Profil pflege
 - `post_likes`     → Likes für Beiträge
 - `comment_likes`  → Likes für Kommentare
 - `followers`      → Wer folgt wem
+- `notifications`  → System-Benachrichtigungen
+- `chats` & `messages` → Chat-System
 
 📚 Features Backlog
 ---------------------------------------------------
+- Erweiterte Suche (z.B. nach Medien)
+- Gruppenchat
+- Mobile App
 
 
-- Live Update (Polling)
-
-
-📅 Letzter Stand: 29. April 2025
+📅 Letzter Stand: 30. April 2025
 ==================================================

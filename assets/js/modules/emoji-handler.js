@@ -1,7 +1,6 @@
 /**
- * Emoji-Funktionalität
- * Verwaltet die Emoji-Picker für Posts, Kommentare und Bio
- * Ermöglicht das Einfügen von Emojis in Textfelder
+ * Modul: emoji-handler.js
+ * Stellt Emoji-Picker und Emoji-Einfügen für Posts, Kommentare und Chat bereit.
  */
 export class EmojiHandler {
     constructor() {

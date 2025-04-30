@@ -466,12 +466,21 @@ document.addEventListener("DOMContentLoaded", async () => {
       if (!input || !chatCurrentUserId || !input.value.trim()) return;
       const msg = input.value.trim();
       input.value = '';
-      await fetch('/Social_App/controllers/api/chat_send.php', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ user_id: chatCurrentUserId, message: msg })
-      });
-      await loadChatMessages();
+      try {
+        const response = await fetch('/Social_App/controllers/api/chat_send.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ user_id: chatCurrentUserId, message: msg })
+        });
+        const data = await response.json();
+        if (!data.success) {
+          alert('Fehler beim Senden: ' + (data.message || 'Unbekannter Fehler'));
+          return;
+        }
+        await loadChatMessages();
+      } catch (err) {
+        alert('Netzwerkfehler beim Senden der Nachricht!');
+      }
     });
   }
 

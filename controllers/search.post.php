@@ -1,4 +1,8 @@
 <?php
+/**
+ * Controller: Post-Suche
+ * Sucht nach Posts anhand eines Suchbegriffs oder Hashtags und zeigt die Ergebnisse an.
+ */
 require_once __DIR__ . '/../includes/config.php';
 require_once INCLUDES . '/connection.php';
 require_once INCLUDES . '/auth.php';

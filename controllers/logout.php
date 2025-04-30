@@ -1,4 +1,9 @@
 <?php
+/**
+ * Controller: Logout
+ * Beendet die Session und löscht das Remember-Me-Cookie.
+ * Leitet zur Login-Seite weiter.
+ */
 require_once __DIR__ . '/../includes/config.php';
 
 session_start();

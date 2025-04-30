@@ -1,4 +1,9 @@
 <?php
+/**
+ * Controller: Kommentar liken/entliken
+ * Schaltet den Like-Status für einen Kommentar um und gibt die neue Like-Anzahl zurück.
+ * Antwortet mit JSON (success/liked/like_count).
+ */
 require_once "../includes/config.php";
 require_once "../includes/connection.php";
 require_once "../includes/auth.php";
@@ -22,7 +27,6 @@ $stmt->execute([
   ":cid" => $commentId,
   ":uid" => $userId
 ]);
-
 $like = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if ($like) {

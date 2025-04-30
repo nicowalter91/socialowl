@@ -1,6 +1,7 @@
-<!-- ============================
-       Navigation Bar
-  ============================ -->
+<!--
+  Partial: Navigation Bar
+  Stellt die Hauptnavigation inkl. Suchfeld, Benachrichtigungen, Chat-Icon und Profil-Dropdown bereit.
+-->
 
 <div class="nav fixed-top d-flex justify-content-between align-items-center px-3">
   <!-- Linke Seite: Logo + Titel -->
@@ -30,9 +31,6 @@
   </form>
 </div>
 
-
-
-
   <!-- Rechte Seite: Notifications + Dropdown -->
   <div class="d-flex align-items-center gap-3">
     <!-- Messaging Icon -->
@@ -45,7 +43,7 @@
     <div class="notification-container position-relative d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
       <button class="notification-bell-btn text-light p-0 position-relative" type="button" data-bs-toggle="dropdown" aria-expanded="false">
         <i class="bi bi-bell-fill fs-4"></i>
-        <span class="notification-badge position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="notification-badge"></span>
+        <span class="notification-badge position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="notification-badge">1</span>
       </button>
       <div class="dropdown-menu dropdown-menu-end bg-dark border border-secondary" style="width: 300px;">
         <h6 class="dropdown-header text-light border-bottom border-secondary">Benachrichtigungen</h6>

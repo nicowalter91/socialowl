@@ -1,4 +1,10 @@
 <?php
+/**
+ * Partial: Modal Profil bearbeiten
+ * Stellt ein Modal zur Bearbeitung von Profilbild, Headerbild und Bio bereit.
+ * Erwartet: $_SESSION mit Profilinfos
+ */
+
 require_once __DIR__ . '/../includes/config.php';
 
 // Pfade auflösen

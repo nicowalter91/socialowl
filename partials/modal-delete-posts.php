@@ -1,6 +1,7 @@
-<!-- ============================
-      Modal zum löschen von Posts
-  ==============================-->
+<!--
+  Partial: Modal zum Löschen von Posts
+  Zeigt ein Bestätigungs-Modal zum endgültigen Löschen eines Beitrags an.
+-->
 
 
 <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">

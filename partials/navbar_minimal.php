@@ -1,4 +1,7 @@
-<!-- Minimalistische Navbar für Auth-Seiten -->
+<!--
+  Partial: Minimale Navigation Bar
+  Stellt eine reduzierte Navigationsleiste für Login/Registrierung/Reset bereit.
+-->
 <nav id="minimal-navbar" class="navbar navbar-expand-lg" style="background: #f8fafc; color: #23272b; position: absolute; top: 0; left: 0; z-index: 10;">
     <div class="container-fluid justify-content-between">
         <div class="d-flex align-items-center gap-2">

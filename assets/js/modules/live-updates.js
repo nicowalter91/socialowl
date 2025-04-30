@@ -1,3 +1,8 @@
+/**
+ * Modul: live-updates.js
+ * Steuert Live-Updates für Posts, Kommentare, Follows und Benachrichtigungen per SSE oder Polling.
+ */
+
 // Live-Update Funktionalität
 export class LiveUpdates {
     constructor() {

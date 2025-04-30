@@ -1,9 +1,11 @@
 <?php
-require_once __DIR__ . '/../../includes/connection.php';
+// API-Endpunkt zum Senden einer Chat-Nachricht
 require_once __DIR__ . '/../../includes/auth.php';
+require_once __DIR__ . '/../../includes/chat_service.php';
 
 header('Content-Type: application/json');
 
+// Session prüfen
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -21,25 +23,10 @@ if (!$otherUserId || $message === '') {
     exit;
 }
 
-try {
-    $pdo = getDatabaseConnection();
-    // Chat-ID suchen oder anlegen
-    $user1 = min($userId, $otherUserId);
-    $user2 = max($userId, $otherUserId);
-    $stmt = $pdo->prepare('SELECT id FROM chats WHERE user1_id = ? AND user2_id = ?');
-    $stmt->execute([$user1, $user2]);
-    $chat = $stmt->fetch();
-    if (!$chat) {
-        $stmt = $pdo->prepare('INSERT INTO chats (user1_id, user2_id) VALUES (?, ?)');
-        $stmt->execute([$user1, $user2]);
-        $chatId = $pdo->lastInsertId();
-    } else {
-        $chatId = $chat['id'];
-    }
-    // Nachricht speichern
-    $stmt = $pdo->prepare('INSERT INTO messages (chat_id, sender_id, message) VALUES (?, ?, ?)');
-    $stmt->execute([$chatId, $userId, $message]);
+// Chat-Nachricht senden (Logik ausgelagert)
+$result = sendChatMessage($userId, $otherUserId, $message);
+if ($result === true) {
     echo json_encode(['success' => true]);
-} catch (Exception $e) {
-    echo json_encode(['success' => false, 'message' => 'Fehler: ' . $e->getMessage()]);
+} else {
+    echo json_encode(['success' => false, 'message' => $result]);
 }

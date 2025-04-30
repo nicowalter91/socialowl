@@ -1,4 +1,8 @@
 <?php
+/**
+ * Controller: Passwort-Reset-Link anfordern
+ * Erstellt einen Reset-Token und zeigt den Link als Alert an (Demo-Zweck).
+ */
 require_once __DIR__ . '/../includes/config.php';
 require_once INCLUDES . '/connection.php';
 $conn = getDatabaseConnection();

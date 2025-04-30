@@ -1,4 +1,9 @@
 <?php
+/**
+ * Controller: Post liken/entliken
+ * Schaltet den Like-Status für einen Post um und erstellt ggf. eine Benachrichtigung.
+ * Leitet zurück auf die vorherige Seite.
+ */
 require_once __DIR__ . '/../includes/config.php';
 require_once INCLUDES . '/connection.php';
 require_once MODELS . '/like.php';
@@ -34,14 +39,12 @@ if ($isLiked) {
         ":post_id" => $postId
     ]);
     $data = $stmt->fetch(PDO::FETCH_ASSOC);
-
     // Benachrichtigung nur erstellen, wenn man nicht seinen eigenen Post liked
     if ($data && $data['user_id'] != $userId) {
         $stmt = $conn->prepare("
             INSERT INTO notifications (user_id, type, content, post_id) 
             VALUES (:user_id, 'like', :content, :post_id)
         ");
-        
         $content = "@{$data['username']} gefällt dein Post";
         $stmt->execute([
             ":user_id" => $data['user_id'],

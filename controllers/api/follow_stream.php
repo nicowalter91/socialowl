@@ -1,4 +1,10 @@
 <?php
+/**
+ * API-Controller: Follow Stream (SSE)
+ * Sendet neue und aktualisierte Follow-Anfragen per Server-Sent Events an den Client.
+ * Wird für Live-Updates im Frontend genutzt.
+ */
+
 require_once __DIR__ . '/../../includes/config.php';
 require_once __DIR__ . '/../../includes/connection.php';
 

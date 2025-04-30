@@ -1,4 +1,8 @@
 <?php
+/**
+ * View: Login
+ * Zeigt das Login-Formular für die Anmeldung an.
+ */
 require_once __DIR__ . '/../includes/config.php';
 ?>
 

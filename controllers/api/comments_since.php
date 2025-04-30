@@ -1,4 +1,9 @@
 <?php
+/**
+ * API-Controller: Kommentare seit Zeitstempel
+ * Gibt alle Kommentare zurück, die nach einem bestimmten Zeitpunkt erstellt wurden (JSON).
+ */
+
 require_once '../../includes/connection.php';
 
 header('Content-Type: application/json');

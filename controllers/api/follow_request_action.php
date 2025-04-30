@@ -1,4 +1,9 @@
 <?php
+/**
+ * API-Controller: Follow-Request annehmen/ablehnen
+ * Akzeptiert oder lehnt eine Follow-Anfrage ab und aktualisiert die Datenbank entsprechend (JSON).
+ */
+
 session_start();
 require_once __DIR__ . '/../../includes/config.php';
 require_once __DIR__ . '/../../includes/connection.php';

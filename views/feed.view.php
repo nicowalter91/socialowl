@@ -1,4 +1,11 @@
-<?php if (isset($_GET["q"])): ?>
+<?php
+/**
+ * View: Feed
+ * Zeigt den Haupt-Feed mit allen Posts, Kommentarformular und Sidebar an.
+ * Erwartet: $posts (Array mit Postdaten)
+ */
+
+if (isset($_GET["q"])): ?>
   <div class="alert alert-secondary text-dark fw-bold rounded-4 p-3">
     🔍 Ergebnisse für „<span class="text-primary"><?= htmlspecialchars($_GET["q"]) ?></span>“
   </div>

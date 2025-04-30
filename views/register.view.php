@@ -1,4 +1,10 @@
-<?php require_once __DIR__ . '/../includes/config.php'; ?>
+<?php
+/**
+ * View: Registrierung
+ * Zeigt das Registrierungsformular für neue Nutzer an.
+ */
+
+require_once __DIR__ . '/../includes/config.php'; ?>
 
 <!DOCTYPE html>
 <html lang="de">

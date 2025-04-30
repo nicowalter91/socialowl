@@ -1,4 +1,9 @@
 <?php
+/**
+ * API-Controller: Ungelesene Chat-Nachrichten
+ * Gibt die Anzahl aller ungelesenen Nachrichten für den eingeloggten Nutzer zurück (JSON).
+ */
+
 require_once __DIR__ . '/../../includes/connection.php';
 require_once __DIR__ . '/../../includes/auth.php';
 

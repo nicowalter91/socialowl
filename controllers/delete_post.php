@@ -1,4 +1,10 @@
 <?php
+/**
+ * Controller: Post löschen
+ * Löscht einen Post, sofern der aktuelle Nutzer der Besitzer ist.
+ * Löscht ggf. zugehörige Medien-Dateien.
+ * Antwortet mit JSON (success/message).
+ */
 require_once "../includes/config.php";
 require_once INCLUDES . "/connection.php";
 require_once INCLUDES . "/auth.php";
@@ -23,7 +29,6 @@ $stmt->execute([
   ":id" => $postId,
   ":uid" => $currentUserId
 ]);
-
 $post = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if (!$post) {
@@ -38,7 +43,6 @@ if (!empty($post["image_path"])) {
     unlink($imagePath);
   }
 }
-
 if (!empty($post["video_path"])) {
   $videoPath = __DIR__ . "/../assets/posts/" . $post["video_path"];
   if (file_exists($videoPath)) {

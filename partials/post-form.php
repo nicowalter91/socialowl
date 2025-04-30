@@ -1,5 +1,12 @@
+<?php
+/**
+ * Partial: Post-Formular
+ * Stellt das Formular zum Erstellen oder Bearbeiten eines Posts bereit.
+ * Erwartet: ggf. $post (assoziatives Array) für Bearbeitung.
+ */
+?>
 <!-- ============================
-       Post Formular Posts
+     Post Formular Posts
   ============================ -->
 
 <form action="<?= BASE_URL ?>/controllers/create_post.php" method="POST" enctype="multipart/form-data" class="tweet-box p-3 d-flex flex-column">

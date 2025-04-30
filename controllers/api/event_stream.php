@@ -1,6 +1,9 @@
 <?php
-require_once __DIR__ . '/../../includes/config.php';
-require_once __DIR__ . '/../../includes/connection.php';
+/**
+ * API-Controller: Event Stream (SSE)
+ * Sendet neue Events (z.B. Systemereignisse) per Server-Sent Events an den Client.
+ * Wird für Live-Updates im Frontend genutzt.
+ */
 
 // Fehlerbehandlung aktivieren
 error_reporting(E_ALL);
@@ -60,4 +63,4 @@ try {
 // Verbindung schließen
 if (function_exists('fastcgi_finish_request')) {
     fastcgi_finish_request();
-} 
+}

@@ -1,4 +1,10 @@
-<?php if (empty($results)): ?>
+<?php
+/**
+ * View: Suche
+ * Zeigt die Suchergebnisse für Posts und Nutzer an.
+ * Erwartet: $results (Array mit Suchergebnissen)
+ */
+if (empty($results)): ?>
   <div class="text-center mt-4 text-light">
     <p>🔍 Keine Ergebnisse gefunden für „<?= htmlspecialchars($query) ?>“</p>
   </div>

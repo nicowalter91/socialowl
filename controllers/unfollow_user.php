@@ -1,4 +1,9 @@
 <?php
+/**
+ * Controller: Nutzer entfolgen
+ * Entfernt eine Follower-Beziehung und leitet zum Index weiter.
+ */
+
 require_once "../includes/connection.php";
 require_once "../includes/auth.php";
 

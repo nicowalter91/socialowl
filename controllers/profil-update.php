@@ -1,4 +1,9 @@
 <?php
+/**
+ * Controller: Profil aktualisieren
+ * Aktualisiert Bio und Profil-/Headerbild eines Nutzers.
+ * Leitet nach erfolgreicher Änderung zum Index weiter.
+ */
 require_once __DIR__ . '/../includes/config.php';
 require_once INCLUDES . '/connection.php';
 require_once INCLUDES . '/profile.helper.php';

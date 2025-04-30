@@ -1,3 +1,8 @@
+/**
+ * Modul: post-handler.js
+ * Steuert das Erstellen, Bearbeiten und Löschen von Posts im Frontend.
+ */
+
 // Post-Verwaltung
 export class PostHandler {
     constructor() {
@@ -115,4 +120,4 @@ export class PostHandler {
         this.editBtnWrapper.classList.add("d-none");
         this.removeBtn.click();
     }
-} 
+}

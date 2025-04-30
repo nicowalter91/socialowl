@@ -1,4 +1,9 @@
 <?php
+/**
+ * API-Controller: Benachrichtigungen
+ * Gibt die letzten Benachrichtigungen und die Anzahl ungelesener für den eingeloggten Nutzer zurück (JSON).
+ */
+
 require_once __DIR__ . '/../../includes/config.php';
 require_once __DIR__ . '/../../includes/connection.php';
 

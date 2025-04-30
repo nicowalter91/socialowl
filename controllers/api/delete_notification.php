@@ -1,4 +1,9 @@
 <?php
+/**
+ * API-Controller: Benachrichtigung(en) löschen
+ * Löscht eine oder alle Benachrichtigungen des eingeloggten Nutzers (JSON).
+ */
+
 session_start();
 require_once __DIR__ . '/../../includes/config.php';
 require_once __DIR__ . '/../../includes/connection.php';
