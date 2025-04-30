@@ -48,3 +48,10 @@ function ensureLogin(PDO $conn): void {
     }
 }
 
+// Online-Status aktualisieren (für Chat)
+if (isset($_SESSION['id'])) {
+    $pdo = getDatabaseConnection();
+    $stmt = $pdo->prepare("UPDATE users SET last_active = NOW() WHERE id = ?");
+    $stmt->execute([$_SESSION['id']]);
+}
+

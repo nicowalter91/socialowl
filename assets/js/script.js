@@ -56,6 +56,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const videoPreview = document.getElementById("video-preview");
   const removeBtn = document.getElementById("remove-preview");
   const CURRENT_USER_ID = parseInt(document.body.dataset.currentUserId, 10) || null;
+  let chatPartnerName = '';
 
   // ============================
   // Last Comment Timestamp automatisch setzen
@@ -276,6 +277,224 @@ document.addEventListener("DOMContentLoaded", async () => {
   // ============================
   // Live-Update-Listener initialisieren
   // initLiveUpdateListeners(); // ENTFERNT, da dies bereits durch LiveUpdates-Instanz erfolgt
+
+  // ============================
+  // Chat-Modal & Chat-Funktionen
+  // ============================
+  let chatCurrentUserId = null;
+  let chatCurrentChatId = null;
+  let chatPollingInterval = null;
+  let chatEmojiHandler = null;
+
+  // EmojiHandler importieren und für Chat initialisieren
+  import('./modules/emoji-handler.js').then(module => {
+    chatEmojiHandler = new module.EmojiHandler();
+    // Chat-spezifischer Picker
+    const emojiBtn = document.getElementById('emoji-btn');
+    const chatInput = document.getElementById('chat-message-input');
+    const pickerContainer = document.getElementById('emoji-picker-container');
+    if (emojiBtn && chatInput && pickerContainer) {
+      // Picker-Container als .emoji-picker für Handler
+      pickerContainer.classList.add('emoji-picker', 'd-none', 'position-absolute');
+      emojiBtn.classList.add('position-relative');
+      chatEmojiHandler.initCommonEmojiPicker(emojiBtn, chatInput);
+    }
+  });
+
+  // Chat-Modal öffnen: Userliste laden
+  const chatModal = document.getElementById('chatModal');
+  if (chatModal) {
+    chatModal.addEventListener('show.bs.modal', async () => {
+      await loadChatUserList();
+      clearChatWindow();
+    });
+  }
+
+  async function loadChatUserList() {
+    const list = document.getElementById('chat-user-list');
+    if (!list) return;
+    list.innerHTML = '<li class="text-center text-secondary py-2">Lade...</li>';
+    try {
+      const res = await fetch('/Social_App/controllers/api/chat_followers.php');
+      const data = await res.json();
+      if (data.success && data.followers.length) {
+        list.innerHTML = '';
+        data.followers.forEach(user => {
+          const isOnline = user.last_active && (new Date(user.last_active).getTime() > Date.now() - 5 * 60 * 1000); // 5 Minuten
+          const li = document.createElement('li');
+          li.className = 'list-group-item list-group-item-action d-flex align-items-center gap-2 cursor-pointer rounded-4 bg-dark text-light border-0 mb-1';
+          li.innerHTML = `
+            <span class="me-2 align-self-center">
+              <span class="rounded-circle d-inline-block" style="width:12px;height:12px; background:${isOnline ? '#28a745' : '#dc3545'}"></span>
+            </span>
+            <img src="/Social_App/assets/uploads/${user.profile_img || 'profil.png'}" class="rounded-circle" width="36" height="36" alt="Profil">
+            <span>@${user.username}</span>
+            <button class="btn btn-sm btn-link text-danger ms-auto delete-chat-user-btn" title="Chat mit @${user.username} löschen" style="opacity:0.7;">
+              <i class="bi bi-trash"></i>
+            </button>
+          `;
+          li.style.cursor = 'pointer';
+          li.tabIndex = 0;
+          // ...Highlighting und Chat öffnen wie gehabt...
+          li.addEventListener('click', (e) => {
+            // Verhindere, dass Klick auf den Papierkorb den Chat öffnet
+            if (e.target.closest('.delete-chat-user-btn')) return;
+            document.querySelectorAll('#chat-user-list .list-group-item').forEach(el => {
+              el.classList.remove('active', 'bg-secondary', 'text-light');
+              el.classList.add('bg-dark', 'text-light');
+            });
+            li.classList.add('active', 'bg-secondary', 'text-light');
+            li.classList.remove('bg-dark');
+            chatPartnerName = user.username;
+            openChatWithUser(user.id);
+          });
+          li.addEventListener('keydown', (e) => { if ((e.key === 'Enter' || e.key === ' ') && !e.target.closest('.delete-chat-user-btn')) {
+            document.querySelectorAll('#chat-user-list .list-group-item').forEach(el => {
+              el.classList.remove('active', 'bg-secondary', 'text-light');
+              el.classList.add('bg-dark', 'text-light');
+            });
+            li.classList.add('active', 'bg-secondary', 'text-light');
+            li.classList.remove('bg-dark');
+            chatPartnerName = user.username;
+            openChatWithUser(user.id);
+          }});
+          // Chat löschen Button für diesen User
+          li.querySelector('.delete-chat-user-btn').addEventListener('click', async (e) => {
+            e.stopPropagation();
+            if (!confirm(`Diesen Chat mit @${user.username} wirklich löschen?`)) return;
+            await fetch('/Social_App/controllers/api/chat_delete.php', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ user_id: user.id })
+            });
+            clearChatWindow();
+            await loadChatUserList();
+            const partnerNameEl = document.getElementById('chat-partner-name');
+            if (partnerNameEl) partnerNameEl.textContent = '';
+          });
+          list.appendChild(li);
+        });
+      } else {
+        list.innerHTML = '<li class="text-center text-secondary py-2">Keine Follower gefunden.</li>';
+      }
+    } catch (e) {
+      list.innerHTML = '<li class="text-center text-danger py-2">Fehler beim Laden.</li>';
+    }
+  }
+
+  function clearChatWindow() {
+    const msgBox = document.getElementById('chat-messages');
+    if (msgBox) msgBox.innerHTML = '<div class="text-center text-secondary mt-5">Wähle einen Nutzer aus der Liste.</div>';
+    chatCurrentUserId = null;
+    chatCurrentChatId = null;
+    if (chatPollingInterval) clearInterval(chatPollingInterval);
+    // Eingabefeld und Senden-Button deaktivieren
+    const input = document.getElementById('chat-message-input');
+    const sendBtn = document.querySelector('#chat-send-form button[type="submit"]');
+    if (input) input.disabled = true;
+    if (sendBtn) sendBtn.disabled = true;
+  }
+
+  async function openChatWithUser(userId) {
+    chatCurrentUserId = userId;
+    // Eingabefeld und Senden-Button aktivieren
+    const input = document.getElementById('chat-message-input');
+    const sendBtn = document.querySelector('#chat-send-form button[type="submit"]');
+    if (input) input.disabled = false;
+    if (sendBtn) sendBtn.disabled = false;
+    // Username anzeigen
+    const partnerNameEl = document.getElementById('chat-partner-name');
+    if (partnerNameEl) partnerNameEl.textContent = '@' + chatPartnerName;
+    // Chat löschen Button-Event immer neu binden
+    const deleteChatBtn = document.getElementById('delete-chat-btn');
+    if (deleteChatBtn) {
+      deleteChatBtn.onclick = async () => {
+        if (!chatCurrentUserId) return;
+        if (!confirm('Diesen Chat wirklich löschen?')) return;
+        await fetch('/Social_App/controllers/api/chat_delete.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ user_id: chatCurrentUserId })
+        });
+        clearChatWindow();
+        await loadChatUserList();
+        if (partnerNameEl) partnerNameEl.textContent = '';
+      };
+    }
+    await loadChatMessages();
+    if (chatPollingInterval) clearInterval(chatPollingInterval);
+    chatPollingInterval = setInterval(loadChatMessages, 3000);
+    setTimeout(() => {
+      if (input) input.focus();
+    }, 100);
+  }
+
+  async function loadChatMessages() {
+    if (!chatCurrentUserId) return;
+    const msgBox = document.getElementById('chat-messages');
+    if (!msgBox) return;
+    try {
+      const res = await fetch(`/Social_App/controllers/api/chat_messages.php?user_id=${chatCurrentUserId}`);
+      const data = await res.json();
+      if (data.success) {
+        chatCurrentChatId = data.chat_id;
+        msgBox.innerHTML = '';
+        if (data.messages.length === 0) {
+          msgBox.innerHTML = '<div class="text-center text-secondary mt-5">Noch keine Nachrichten. Schreibe die erste Nachricht!</div>';
+        } else {
+          data.messages.forEach(msg => {
+            const isMe = msg.sender_id == CURRENT_USER_ID;
+            const msgDiv = document.createElement('div');
+            msgDiv.className = `d-flex mb-2 ${isMe ? 'justify-content-end' : 'justify-content-start'}`;
+            msgDiv.innerHTML = `<div class="p-2 rounded-4 ${isMe ? 'bg-primary text-white' : 'bg-secondary text-light'}" style="max-width:70%;word-break:break-word;">${escapeHTML(msg.message)}<div class="small text-end text-light mt-1" style="font-size:0.8em;">${formatChatTime(msg.created_at)}</div></div>`;
+            msgBox.appendChild(msgDiv);
+          });
+        }
+        msgBox.scrollTop = msgBox.scrollHeight;
+      }
+    } catch (e) {
+      // Fehler ignorieren
+    }
+  }
+
+  // Nachricht absenden
+  const chatSendForm = document.getElementById('chat-send-form');
+  if (chatSendForm) {
+    chatSendForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const input = document.getElementById('chat-message-input');
+      if (!input || !chatCurrentUserId || !input.value.trim()) return;
+      const msg = input.value.trim();
+      input.value = '';
+      await fetch('/Social_App/controllers/api/chat_send.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ user_id: chatCurrentUserId, message: msg })
+      });
+      await loadChatMessages();
+    });
+  }
+
+  // Zeitformat für Chat
+  function formatChatTime(ts) {
+    const d = new Date(ts.replace(' ', 'T'));
+    return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  }
+
+  // Badge für ungelesene Nachrichten in Navbar
+  async function updateChatBadge() {
+    try {
+      const res = await fetch('/Social_App/controllers/api/chat_unread.php');
+      const data = await res.json();
+      const badge = document.getElementById('chat-badge');
+      if (badge) {
+        badge.textContent = data.unread > 0 ? data.unread : '';
+        badge.style.display = data.unread > 0 ? 'inline-flex' : 'none';
+      }
+    } catch (e) {}
+  }
+  setInterval(updateChatBadge, 5000);
+  updateChatBadge();
 });
 
 // ============================

@@ -36,12 +36,12 @@
   <!-- Rechte Seite: Notifications + Dropdown -->
   <div class="d-flex align-items-center gap-3">
     <!-- Messaging Icon -->
-    <div class="message-container position-relative me-2">
-      <a href="/Social_App/messages/" class="btn btn-link text-light p-0" title="Nachrichten">
-        <i class="bi bi-envelope-fill fs-4"></i>
-        <span class="message-badge position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger d-none" id="message-badge"></span>
-      </a>
-    </div>
+    <li class="nav-item position-relative">
+  <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#chatModal" title="Chat">
+    <i class="bi bi-envelope-fill fs-4 text-white"></i>
+    <span id="chat-badge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="display:none; font-size:0.8em;"></span>
+  </a>
+</li>
     <div class="notification-container position-relative">
       <button class="btn btn-link text-light p-0" type="button" data-bs-toggle="dropdown" aria-expanded="false">
         <i class="bi bi-bell-fill fs-4"></i>

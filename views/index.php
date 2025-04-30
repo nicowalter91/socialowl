@@ -51,6 +51,7 @@ $posts = fetchAllPostsWithComments($conn, $_SESSION["id"]);
   <!-- Modals -->
   <?php include PARTIALS . '/modal-profil.php'; ?>
   <?php include PARTIALS . '/modal-delete-posts.php'; ?>
+  <?php include PARTIALS . '/modal-chat.php'; ?>
 
   <!-- JS -->
   <script>
