@@ -37,15 +37,15 @@
   <div class="d-flex align-items-center gap-3">
     <!-- Messaging Icon -->
     <div class="nav-item position-relative d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
-      <a class="nav-link p-0" href="#" data-bs-toggle="modal" data-bs-target="#chatModal" title="Chat">
+      <a class="nav-link p-0 position-relative" href="#" data-bs-toggle="modal" data-bs-target="#chatModal" title="Chat">
         <i class="bi bi-envelope-fill fs-4 text-white"></i>
-        <span id="chat-badge" class="notification-badge" style="display:none;"></span>
+        <span id="chat-badge" class="notification-badge position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger d-none"></span>
       </a>
     </div>
     <div class="notification-container position-relative d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
       <button class="notification-bell-btn text-light p-0 position-relative" type="button" data-bs-toggle="dropdown" aria-expanded="false">
         <i class="bi bi-bell-fill fs-4"></i>
-        <span class="notification-badge" id="notification-badge"></span>
+        <span class="notification-badge position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="notification-badge"></span>
       </button>
       <div class="dropdown-menu dropdown-menu-end bg-dark border border-secondary" style="width: 300px;">
         <h6 class="dropdown-header text-light border-bottom border-secondary">Benachrichtigungen</h6>
