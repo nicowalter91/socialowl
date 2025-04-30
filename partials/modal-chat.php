@@ -14,8 +14,11 @@
       </div>
       <div style="height: 16px;"></div>
       <div class="modal-body d-flex p-0 bg-dark" style="height: 500px;">
-        <!-- Userliste -->
+        <!-- Userliste mit Suchleiste -->
         <div class="bg-dark" style="width: 250px; overflow-y: auto;">
+          <div class="p-2 pb-0 bg-dark">
+            <input type="text" id="chat-user-search" class="form-control form-control-sm bg-light text-dark border-secondary mb-2" placeholder="Nutzer suchen..." autocomplete="off" />
+          </div>
           <ul class="list-group p-2 gap-2" id="chat-user-list" style="background:transparent;">
             <!-- User werden per JS geladen -->
           </ul>

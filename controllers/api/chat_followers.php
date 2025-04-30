@@ -30,6 +30,24 @@ try {
     ');
     $stmt->execute([$userId]);
     $followers = $stmt->fetchAll();
+    // Für jeden Follower die Anzahl ungelesener Nachrichten berechnen
+    foreach ($followers as &$follower) {
+        // Chat-ID bestimmen (unabhängig von Reihenfolge)
+        $user1 = min($userId, $follower['id']);
+        $user2 = max($userId, $follower['id']);
+        $stmtChat = $pdo->prepare('SELECT id FROM chats WHERE user1_id = ? AND user2_id = ?');
+        $stmtChat->execute([$user1, $user2]);
+        $chat = $stmtChat->fetch();
+        $unread = 0;
+        if ($chat) {
+            $chatId = $chat['id'];
+            // Ungelesene Nachrichten zählen, die von diesem Follower an den eingeloggten User gingen
+            $stmtUnread = $pdo->prepare('SELECT COUNT(*) FROM messages WHERE chat_id = ? AND sender_id = ? AND is_read = 0');
+            $stmtUnread->execute([$chatId, $follower['id']]);
+            $unread = (int)$stmtUnread->fetchColumn();
+        }
+        $follower['unread_count'] = $unread;
+    }
     echo json_encode(['success' => true, 'followers' => $followers]);
 } catch (Exception $e) {
     echo json_encode(['success' => false, 'message' => 'Fehler: ' . $e->getMessage(), 'trace' => $e->getTraceAsString()]);
