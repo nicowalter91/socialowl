@@ -1,4 +1,110 @@
 /* ============================
+   Farbvariablen für Light/Dark Mode
+============================ */
+:root {
+  --color-bg: #f8f9fa;
+  --color-bg-secondary: #e9ecef;
+  --color-card: #fff;
+  --color-text: #212529;
+  --color-text-secondary: #495057;
+  --color-border: #dee2e6;
+  --color-primary: #0d6efd;
+  --color-accent: #1da1f2;
+  --color-danger: #dc3545;
+  --color-sidebar: #f4f6f8;
+  --color-dropdown: #fff;
+  --color-dropdown-hover: #e9ecef;
+  --color-input-bg: #fff;
+  --color-input-text: #212529;
+  --color-placeholder: #adb5bd;
+  --color-icon: #495057;
+  --color-icon-active: #0d6efd;
+}
+
+body.dark-mode {
+  --color-bg: #05141c;
+  --color-bg-secondary: #1b2730;
+  --color-card: #28353e;
+  --color-text: #f8f9fa;
+  --color-text-secondary: #b7c8d2;
+  --color-border: #2c3e50;
+  --color-primary: #0d6efd;
+  --color-accent: #1da1f2;
+  --color-danger: #ff4d4f;
+  --color-sidebar: #1b2730;
+  --color-dropdown: #1b2730;
+  --color-dropdown-hover: #28353e;
+  --color-input-bg: #28353e;
+  --color-input-text: #f8f9fa;
+  --color-placeholder: #b7c8d2;
+  --color-icon: #b7c8d2;
+  --color-icon-active: #0d6efd;
+}
+
+body, .parent {
+  background-color: var(--color-bg) !important;
+  color: var(--color-text);
+}
+
+.nav, .tweet-card, .feed, .right-top-sidebar, .left-top-sidebar, .tweet-box, .profile, .follow, .suggestions {
+  background-color: var(--color-bg-secondary) !important;
+  color: var(--color-text);
+}
+
+.tweet-input-box, .tweet-comment-box, .emoji-picker, .emoji-search-container input, .emoji-container, .emoji-category-tab, .emoji-category-tab.active, .emoji-category-tab:hover {
+  background-color: var(--color-card) !important;
+  color: var(--color-text);
+}
+
+.dropdown-menu {
+  background: var(--color-dropdown) !important;
+  color: var(--color-text);
+  border: 1px solid var(--color-border) !important;
+}
+
+.dropdown-menu .dropdown-item {
+  color: var(--color-text-secondary) !important;
+}
+
+.dropdown-menu .dropdown-item:hover, .dropdown-menu .dropdown-item:focus {
+  background: var(--color-dropdown-hover) !important;
+  color: var(--color-text) !important;
+}
+
+.dropdown-menu .dropdown-item.active, .dropdown-menu .dropdown-item:active {
+  background: var(--color-primary) !important;
+  color: #fff !important;
+}
+
+input, textarea, .form-control.bg-dark {
+  background-color: var(--color-input-bg) !important;
+  color: var(--color-input-text) !important;
+}
+
+input::placeholder, textarea::placeholder, .form-control.bg-dark::placeholder {
+  color: var(--color-placeholder) !important;
+}
+
+.text-light { color: var(--color-text) !important; }
+.text-secondary { color: var(--color-text-secondary) !important; }
+.bg-dark { background-color: var(--color-bg-secondary) !important; }
+.bg-primary { background-color: var(--color-primary) !important; }
+.bg-danger { background-color: var(--color-danger) !important; }
+
+/* Toggle-Button: Kein Rahmen, kein Hintergrund */
+#theme-toggle {
+  border: none !important;
+  background: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+  padding: 0.25rem 0.5rem;
+}
+#theme-toggle:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* ============================
    Global Settings
 ============================ */
 * {
@@ -31,7 +137,7 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #05141c;
+  background-color: var(--color-bg) !important;
   height: 80px;
   width: 100%;
   z-index: 1050;
@@ -592,6 +698,141 @@ body {
 .dropdown-menu .dropdown-item:not(.text-danger):not(.delete):not([data-action="delete"]):hover,
 .dropdown-menu .dropdown-item:not(.text-danger):not(.delete):not([data-action="delete"]):focus {
   color: #fff !important;
+}
+
+/* Buttons im Light-Mode anpassen */
+.btn, .btn.btn-outline-light, .btn.btn-outline-secondary, .btn.btn-outline-danger {
+  background-color: var(--color-card) !important;
+  color: var(--color-text) !important;
+  border-color: var(--color-border) !important;
+}
+.btn:hover, .btn:focus {
+  background-color: var(--color-bg-secondary) !important;
+  color: var(--color-text) !important;
+  border-color: var(--color-primary) !important;
+}
+.btn.btn-primary {
+  background-color: var(--color-primary) !important;
+  color: #fff !important;
+  border-color: var(--color-primary) !important;
+}
+.btn.btn-danger {
+  background-color: var(--color-danger) !important;
+  color: #fff !important;
+  border-color: var(--color-danger) !important;
+}
+
+/* Sidebar Follower/Following Container im Light-Mode (fix: wirklich hell) */
+body:not(.dark-mode) .left-top-sidebar .profile,
+body:not(.dark-mode) .left-top-sidebar .trending-hashtags,
+body:not(.dark-mode) .left-top-sidebar .follow {
+  background: var(--color-card) !important;
+  color: var(--color-text) !important;
+  border-radius: 16px;
+  border: 1px solid var(--color-border);
+}
+
+/* Sidebar Follower/Following Container im Dark-Mode */
+body.dark-mode .left-top-sidebar .profile, 
+body.dark-mode .left-top-sidebar .trending-hashtags, 
+body.dark-mode .left-top-sidebar .follow {
+  background: var(--color-card) !important;
+  color: var(--color-text) !important;
+  border-radius: 16px;
+  border: 1px solid var(--color-border);
+}
+
+/* Entferne stat-card Hintergrund */
+.stat-card {
+  background: none !important;
+  background-color: transparent !important;
+  box-shadow: none !important;
+  border: none !important;
+}
+
+/* Navbar Icons und Dropdowns: Light/Dark optimiert */
+.nav .bi,
+.nav-link .bi,
+.nav .dropdown-toggle .bi,
+.nav .notification-badge {
+  color: var(--color-icon) !important;
+  transition: color 0.2s;
+}
+.nav .bi.active,
+.nav-link.active .bi,
+.nav .dropdown-toggle.active .bi {
+  color: var(--color-icon-active) !important;
+}
+
+/* Navbar Dropdown-Menü Farben */
+.nav .dropdown-menu {
+  background: var(--color-dropdown) !important;
+  color: var(--color-text) !important;
+  border: 1px solid var(--color-border) !important;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.12), 0 1.5px 6px rgba(0,0,0,0.06);
+}
+.nav .dropdown-menu .dropdown-item {
+  color: var(--color-text-secondary) !important;
+  background: transparent !important;
+}
+.nav .dropdown-menu .dropdown-item:hover,
+.nav .dropdown-menu .dropdown-item:focus {
+  background: var(--color-dropdown-hover) !important;
+  color: var(--color-text) !important;
+}
+.nav .dropdown-menu .dropdown-item.active,
+.nav .dropdown-menu .dropdown-item:active {
+  background: var(--color-primary) !important;
+  color: #fff !important;
+}
+.nav .dropdown-menu .dropdown-divider {
+  border-top: 1px solid var(--color-border);
+}
+
+/* Profilbild in Navbar: Rahmen für bessere Sichtbarkeit */
+.nav .dropdown-toggle img {
+  border: 2px solid var(--color-border);
+  background: var(--color-card);
+}
+
+/* Darkmode: Notification Badge besser sichtbar */
+body.dark-mode .nav .notification-badge {
+  background: var(--color-danger) !important;
+  color: #fff !important;
+}
+
+/* Chat Modal: Schließen-X im Light-Mode dunkel */
+body:not(.dark-mode) .modal-header .btn-close {
+  filter: invert(0.7) grayscale(1) brightness(0.5);
+  opacity: 1;
+}
+body.dark-mode .modal-header .btn-close {
+  filter: none;
+  opacity: 1;
+}
+
+/* Notification Bell Button: Kein Button-Stil */
+.notification-bell-btn {
+  background: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  min-width: unset !important;
+  min-height: unset !important;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+.notification-bell-btn:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+.notification-bell-btn:hover,
+.notification-bell-btn:active {
+  background: none !important;
+  color: var(--color-icon-active) !important;
 }
 
 

@@ -495,6 +495,42 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
   setInterval(updateChatBadge, 5000);
   updateChatBadge();
+
+  // ============================
+  // Light/Dark Mode Umschaltung
+  // ============================
+  const themeToggle = document.getElementById('theme-toggle');
+  const themeToggleIcon = document.getElementById('theme-toggle-icon');
+
+  function setTheme(mode) {
+    if (mode === 'dark') {
+      document.body.classList.add('dark-mode');
+      themeToggleIcon.classList.remove('bi-sun-fill');
+      themeToggleIcon.classList.add('bi-moon-stars-fill');
+    } else {
+      document.body.classList.remove('dark-mode');
+      themeToggleIcon.classList.remove('bi-moon-stars-fill');
+      themeToggleIcon.classList.add('bi-sun-fill');
+    }
+  }
+
+  function getPreferredTheme() {
+    return localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  }
+
+  function toggleDarkMode() {
+    const current = document.body.classList.contains('dark-mode') ? 'dark' : 'light';
+    const next = current === 'dark' ? 'light' : 'dark';
+    setTheme(next);
+    localStorage.setItem('theme', next);
+  }
+
+  if (themeToggle) {
+    setTheme(getPreferredTheme());
+    themeToggle.addEventListener('click', () => {
+      toggleDarkMode();
+    });
+  }
 });
 
 // ============================

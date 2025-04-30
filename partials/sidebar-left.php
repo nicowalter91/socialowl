@@ -45,7 +45,8 @@ $topHashtags = getTopHashtags($conn, 3);
       <ul class="list-unstyled mb-0 ps-2">
         <?php foreach ($topHashtags as $tag => $count): ?>
           <li class="mb-2 d-flex align-items-center">
-            <a href="/Social_App/controllers/search.post.php?q=%23<?= urlencode($tag) ?>&type=hashtag" class="badge bg-primary bg-opacity-75 text-light hashtag px-2 py-1 rounded-pill text-decoration-none">#<?= htmlspecialchars($tag) ?> <span class="text-light-50 small ms-1">(<?= $count ?>)</span></a>
+            <span class="text-primary hashtag fw-semibold" style="font-size:1em;">#<?= htmlspecialchars($tag) ?></span>
+            <span class="text-light small ms-2">(<?= $count ?>)</span>
           </li>
         <?php endforeach; ?>
       </ul>

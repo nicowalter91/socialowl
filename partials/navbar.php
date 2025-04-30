@@ -43,7 +43,7 @@
   </a>
 </li>
     <div class="notification-container position-relative">
-      <button class="btn btn-link text-light p-0" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+      <button class="notification-bell-btn text-light p-0" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="background:none;border:none;box-shadow:none;outline:none;">
         <i class="bi bi-bell-fill fs-4"></i>
         <span class="notification-badge" id="notification-badge"></span>
       </button>
@@ -69,5 +69,9 @@
         <li><a class="dropdown-item text-danger" href="<?= BASE_URL ?>/controllers/logout.php"><i class="bi bi-box-arrow-right me-2"></i>Abmelden</a></li>
       </ul>
     </div>
+    <!-- Dark/Light Mode Toggle Button -->
+    <button id="theme-toggle" class="btn btn-link text-light ms-2" title="Dark/Light Mode umschalten" aria-label="Dark/Light Mode">
+      <i id="theme-toggle-icon" class="bi bi-moon-stars-fill fs-4"></i>
+    </button>
   </div>
 </div>
