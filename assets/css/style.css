@@ -114,7 +114,16 @@ input::placeholder, textarea::placeholder, .form-control.bg-dark::placeholder {
 }
 
 body {
-  background-color: #05141c;
+  background: var(--color-bg) !important;
+  color: var(--color-text);
+  transition: background 0.2s, color 0.2s;
+}
+.theme-card {
+  background: var(--color-card) !important;
+  color: var(--color-text) !important;
+  border-radius: 20px;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.12);
+  transition: background 0.2s, color 0.2s;
 }
 
 /* ============================
