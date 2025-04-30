@@ -250,13 +250,13 @@ export class CommentHandler {
                     <button type="button"
                             class="btn btn-sm btn-outline-danger delete-comment-btn"
                             data-comment-id="${comment.id}">
-                        <i class="bi bi-trash me-1"></i>Löschen
+                        <i class="bi bi-trash icon-danger me-1"></i>Löschen
                     </button>
                 ` : ""}
                 <button type="button"
                         class="btn btn-sm like-comment-btn ${comment.liked ? "btn-light text-dark" : "btn-outline-light"}"
                         data-comment-id="${comment.id}">
-                    <i class="bi bi-hand-thumbs-up me-1"></i>
+                    <i class="bi bi-hand-thumbs-up icon-primary me-1"></i>
                     <span class="like-count">${comment.like_count || 0}</span>
                 </button>
             </div>
@@ -294,4 +294,4 @@ export class CommentHandler {
         return `${String(d.getDate()).padStart(2, "0")}.${String(d.getMonth() + 1).padStart(2, "0")}.${d.getFullYear()} ` +
                `${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
     }
-} 
+}

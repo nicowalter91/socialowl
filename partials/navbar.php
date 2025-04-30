@@ -36,14 +36,14 @@
   <!-- Rechte Seite: Notifications + Dropdown -->
   <div class="d-flex align-items-center gap-3">
     <!-- Messaging Icon -->
-    <li class="nav-item position-relative">
-  <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#chatModal" title="Chat">
-    <i class="bi bi-envelope-fill fs-4 text-white"></i>
-    <span id="chat-badge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="display:none; font-size:0.8em;"></span>
-  </a>
-</li>
-    <div class="notification-container position-relative">
-      <button class="notification-bell-btn text-light p-0" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="background:none;border:none;box-shadow:none;outline:none;">
+    <div class="nav-item position-relative d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
+      <a class="nav-link p-0" href="#" data-bs-toggle="modal" data-bs-target="#chatModal" title="Chat">
+        <i class="bi bi-envelope-fill fs-4 text-white"></i>
+        <span id="chat-badge" class="notification-badge" style="display:none;"></span>
+      </a>
+    </div>
+    <div class="notification-container position-relative d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
+      <button class="notification-bell-btn text-light p-0 position-relative" type="button" data-bs-toggle="dropdown" aria-expanded="false">
         <i class="bi bi-bell-fill fs-4"></i>
         <span class="notification-badge" id="notification-badge"></span>
       </button>
@@ -66,7 +66,7 @@
           </a></li>
         <hr class="dropdown-divider border-light opacity-75">
         </li>
-        <li><a class="dropdown-item text-danger" href="<?= BASE_URL ?>/controllers/logout.php"><i class="bi bi-box-arrow-right me-2"></i>Abmelden</a></li>
+        <li><a class="dropdown-item text-danger" href="<?= BASE_URL ?>/controllers/logout.php"><i class="bi bi-box-arrow-right text-danger me-2"></i>Abmelden</a></li>
       </ul>
     </div>
     <!-- Dark/Light Mode Toggle Button -->

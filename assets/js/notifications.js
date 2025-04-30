@@ -189,7 +189,7 @@ function updateNotificationsList(notifications) {
     const deleteAllButton = document.createElement('button');
     deleteAllButton.className = 'btn text-danger mx-3 mt-2 d-flex align-items-center gap-1';
     deleteAllButton.style.fontWeight = '300';
-    deleteAllButton.innerHTML = '<i class="bi bi-trash-fill"></i> Alle Benachrichtigungen löschen';
+    deleteAllButton.innerHTML = 'Alle Benachrichtigungen löschen';
     list.appendChild(deleteAllButton);
 
     // Event-Listener für "Alle löschen" Button

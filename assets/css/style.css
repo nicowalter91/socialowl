@@ -348,20 +348,11 @@ body {
   display: block !important;
 }
 
-
 /* ============================
    Emoji Picker
 ============================ */
 .emoji-picker {
-  background: #1b2730;
-  border: 1px solid #444;
-  border-radius: 10px;
-  width: 320px;
-  height: 350px;
-  z-index: 1050;
-  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.5);
-  display: flex;
-  flex-direction: column;
+  z-index: 9999 !important;
 }
 
 .emoji-picker-content {
@@ -513,7 +504,6 @@ body {
   z-index: 1060;
 }
 
-
 /* ============================
    Follow 
 ============================ */
@@ -574,18 +564,21 @@ body {
 
 .notification-badge {
     position: absolute;
-    top: -5px;
-    right: -5px;
-    background-color: var(--bs-danger);
-    color: white;
+    top: 8px;
+    right: 8px;
+    background-color: var(--bs-danger, #dc3545);
+    color: #fff !important;
     border-radius: 50%;
-    width: 18px;
-    height: 18px;
-    font-size: 11px;
+    width: 20px;
+    height: 20px;
+    font-size: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
     font-weight: bold;
+    z-index: 2;
+    pointer-events: none;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.10);
 }
 
 #post-search::placeholder {
@@ -681,45 +674,25 @@ body {
   opacity: 0.8;
 }
 
-/* Dropdown: Löschen-Elemente rot, andere Hover light */
-.dropdown-menu .dropdown-item.text-danger,
-.dropdown-menu .dropdown-item.delete,
-.dropdown-menu .dropdown-item[data-action="delete"] {
-  color: #ff4d4f !important;
+/* Navbar Dropdown: text-danger und Trash-Icons immer rot */
+.nav .dropdown-menu .dropdown-item.text-danger,
+.nav .dropdown-menu .dropdown-item.text-danger .bi,
+.nav .dropdown-menu .dropdown-item .bi-trash,
+.nav .dropdown-menu .dropdown-item .bi-trash-fill {
+  color: #dc3545 !important;
 }
 
-.dropdown-menu .dropdown-item.text-danger:hover,
-.dropdown-menu .dropdown-item.delete:hover,
-.dropdown-menu .dropdown-item[data-action="delete"]:hover {
-  background: rgba(255,77,79,0.12) !important;
-  color: #fff !important;
-}
-
-.dropdown-menu .dropdown-item:not(.text-danger):not(.delete):not([data-action="delete"]):hover,
-.dropdown-menu .dropdown-item:not(.text-danger):not(.delete):not([data-action="delete"]):focus {
+.nav .dropdown-menu .dropdown-item.text-danger:hover,
+.nav .dropdown-menu .dropdown-item.text-danger:focus {
+  background: rgba(220,53,69,0.12) !important;
   color: #fff !important;
 }
 
-/* Buttons im Light-Mode anpassen */
-.btn, .btn.btn-outline-light, .btn.btn-outline-secondary, .btn.btn-outline-danger {
-  background-color: var(--color-card) !important;
-  color: var(--color-text) !important;
-  border-color: var(--color-border) !important;
-}
-.btn:hover, .btn:focus {
-  background-color: var(--color-bg-secondary) !important;
-  color: var(--color-text) !important;
-  border-color: var(--color-primary) !important;
-}
-.btn.btn-primary {
-  background-color: var(--color-primary) !important;
+.nav .dropdown-menu .dropdown-item.text-danger:hover .bi,
+.nav .dropdown-menu .dropdown-item.text-danger:focus .bi,
+.nav .dropdown-menu .dropdown-item:hover .bi-trash,
+.nav .dropdown-menu .dropdown-item:focus .bi-trash {
   color: #fff !important;
-  border-color: var(--color-primary) !important;
-}
-.btn.btn-danger {
-  background-color: var(--color-danger) !important;
-  color: #fff !important;
-  border-color: var(--color-danger) !important;
 }
 
 /* Sidebar Follower/Following Container im Light-Mode (fix: wirklich hell) */
@@ -833,6 +806,63 @@ body.dark-mode .modal-header .btn-close {
 .notification-bell-btn:active {
   background: none !important;
   color: var(--color-icon-active) !important;
+}
+
+/* Emoji-Picker Light/Dark Mode Anpassung */
+.emoji-search.bg-light,
+.emoji-category-tab.bg-light {
+  background: #f8f9fa !important;
+}
+
+.emoji-search.bg-dark,
+.emoji-category-tab.bg-dark {
+  background: #23272b !important;
+}
+
+/* Light-Mode: Emoji Picker Suchleiste und Kategorie-Leiste */
+body:not(.dark-mode) .emoji-picker,
+body:not(.dark-mode) .emoji-search-container,
+body:not(.dark-mode) .emoji-tabs,
+body:not(.dark-mode) .emoji-category-tabs {
+  background: #fff !important;
+  border-color: #dee2e6 !important;
+}
+body:not(.dark-mode) .emoji-search-container input {
+  background: #f8f9fa !important;
+  color: #212529 !important;
+  border-color: #dee2e6 !important;
+}
+body:not(.dark-mode) .emoji-search-container input::placeholder {
+  color: #adb5bd !important;
+}
+body:not(.dark-mode) .emoji-category-tab,
+body:not(.dark-mode) .emoji-category-tab.active,
+body:not(.dark-mode) .emoji-category-tab:hover {
+  background: #f8f9fa !important;
+  color: #212529 !important;
+  opacity: 1;
+}
+body:not(.dark-mode) .emoji-category-tab {
+  border: 1px solid #dee2e6 !important;
+}
+body:not(.dark-mode) .emoji-category-tab.active::after {
+  background: #0d6efd;
+}
+body:not(.dark-mode) .emoji-category-title {
+  color: #495057 !important;
+  border-bottom: 1px solid #dee2e6;
+}
+
+/* ============================
+   Icon Farbklassen für Aktionen
+============================ */
+.icon-danger { color: var(--color-danger) !important; }
+.icon-success { color: var(--color-success, #28a745) !important; }
+.icon-primary { color: var(--color-primary) !important; }
+
+/* Beispiel: Wenn ein Icon disabled ist, etwas blasser */
+.icon-danger[disabled], .icon-success[disabled], .icon-primary[disabled] {
+  opacity: 0.5;
 }
 
 

@@ -289,26 +289,26 @@ document.addEventListener("DOMContentLoaded", async () => {
   // EmojiHandler importieren und für Chat initialisieren
   import('./modules/emoji-handler.js').then(module => {
     chatEmojiHandler = new module.EmojiHandler();
-    // Chat-spezifischer Picker
-    const emojiBtn = document.getElementById('emoji-btn');
-    const chatInput = document.getElementById('chat-message-input');
-    const pickerContainer = document.getElementById('emoji-picker-container');
-    if (emojiBtn && chatInput && pickerContainer) {
-      // Picker-Container als .emoji-picker für Handler
-      pickerContainer.classList.add('emoji-picker', 'd-none', 'position-absolute');
-      emojiBtn.classList.add('position-relative');
-      chatEmojiHandler.initCommonEmojiPicker(emojiBtn, chatInput);
+    // Chat-Modal öffnen: Userliste laden und Emoji Picker initialisieren
+    const chatModal = document.getElementById('chatModal');
+    if (chatModal) {
+      chatModal.addEventListener('show.bs.modal', async () => {
+        await loadChatUserList();
+        clearChatWindow();
+        // Emoji Picker für Chat-Input immer neu initialisieren
+        const emojiBtn = document.getElementById('emoji-btn');
+        const chatInput = document.getElementById('chat-message-input');
+        const pickerContainer = document.getElementById('emoji-picker-container');
+        if (emojiBtn && chatInput && pickerContainer) {
+          pickerContainer.classList.add('emoji-picker', 'd-none', 'position-absolute');
+          emojiBtn.classList.add('position-relative');
+          // Picker-Inhalt leeren, damit keine doppelten Picker entstehen
+          pickerContainer.innerHTML = '';
+          chatEmojiHandler.initCommonEmojiPicker(emojiBtn, chatInput);
+        }
+      });
     }
   });
-
-  // Chat-Modal öffnen: Userliste laden
-  const chatModal = document.getElementById('chatModal');
-  if (chatModal) {
-    chatModal.addEventListener('show.bs.modal', async () => {
-      await loadChatUserList();
-      clearChatWindow();
-    });
-  }
 
   async function loadChatUserList() {
     const list = document.getElementById('chat-user-list');
@@ -512,6 +512,35 @@ document.addEventListener("DOMContentLoaded", async () => {
       themeToggleIcon.classList.remove('bi-moon-stars-fill');
       themeToggleIcon.classList.add('bi-sun-fill');
     }
+    // Emoji Picker Theme anpassen
+    document.querySelectorAll('.emoji-picker').forEach(picker => {
+      if (mode === 'dark') {
+        picker.classList.add('emoji-picker-dark');
+        picker.classList.remove('emoji-picker-light');
+      } else {
+        picker.classList.add('emoji-picker-light');
+        picker.classList.remove('emoji-picker-dark');
+      }
+    });
+    // Emoji-Search und Emoji-Category-Tab Hintergrund anpassen
+    document.querySelectorAll('.emoji-search').forEach(el => {
+      if (mode === 'dark') {
+        el.classList.add('bg-dark');
+        el.classList.remove('bg-light');
+      } else {
+        el.classList.add('bg-light');
+        el.classList.remove('bg-dark');
+      }
+    });
+    document.querySelectorAll('.emoji-category-tab').forEach(el => {
+      if (mode === 'dark') {
+        el.classList.add('bg-dark');
+        el.classList.remove('bg-light');
+      } else {
+        el.classList.add('bg-light');
+        el.classList.remove('bg-dark');
+      }
+    });
   }
 
   function getPreferredTheme() {
@@ -531,6 +560,18 @@ document.addEventListener("DOMContentLoaded", async () => {
       toggleDarkMode();
     });
   }
+
+  // Emoji Picker Theme beim Initialisieren setzen
+  const initialTheme = getPreferredTheme();
+  document.querySelectorAll('.emoji-picker').forEach(picker => {
+    if (initialTheme === 'dark') {
+      picker.classList.add('emoji-picker-dark');
+      picker.classList.remove('emoji-picker-light');
+    } else {
+      picker.classList.add('emoji-picker-light');
+      picker.classList.remove('emoji-picker-dark');
+    }
+  });
 });
 
 // ============================
@@ -601,9 +642,13 @@ async function notifyEdit(type, id) {
 function showNotification(message, type = 'info') {
   const notification = document.createElement('div');
   notification.className = `alert alert-${type} notification`;
-  notification.textContent = message;
+  // Trash-Icon für "danger"-Benachrichtigungen rot einfärben
+  if (type === 'danger' && message.includes('trash')) {
+    notification.innerHTML = `<i class='bi bi-trash-fill' style='color:#dc3545; margin-right:0.5em;'></i>${message.replace('trash', '')}`;
+  } else {
+    notification.textContent = message;
+  }
   document.body.appendChild(notification);
-  
   setTimeout(() => {
     notification.remove();
   }, 3000);

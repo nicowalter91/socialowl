@@ -173,7 +173,7 @@ if (!isset($post) || empty($post["id"])) return;
               <i class="bi bi-emoji-smile me-1"></i>Emoji
             </button>
             <div
-              class="emoji-picker d-none position-absolute bottom-100 end-0 mb-2 rounded-4 p-3 shadow-lg bg-dark text-light"
+              class="emoji-picker d-none position-absolute top-100 end-0 mt-2 rounded-4 p-3 shadow-lg bg-dark text-light"
             ></div>
           </div>
 
