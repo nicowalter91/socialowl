@@ -227,46 +227,39 @@ export class EmojiHandler {
         const picker = btnElement.closest('.position-relative')?.querySelector('.emoji-picker');
         if (!picker || !textarea) return;
 
-        btnElement.addEventListener('click', (e) => {
-            e.stopPropagation();
-            
-            // Andere Picker schließen
-            document.querySelectorAll('.emoji-picker').forEach(p => {
-                if (p !== picker) p.classList.add('d-none');
-            });
-
-            picker.classList.toggle('d-none');
-
-            // Picker-Inhalt erstellen, wenn noch nicht vorhanden
-            if (picker.childElementCount === 0) {
-                const { container, searchInput } = this.createEmojiPicker();
-                picker.appendChild(container);
-
-                // Event-Handler für Emoji-Buttons
-                container.querySelectorAll('.emoji-grid button').forEach(btn => {
-                    btn.addEventListener('click', () => {
-                        const emoji = btn.textContent;
-                        const start = textarea.selectionStart;
-                        const end = textarea.selectionEnd;
-                        const text = textarea.value;
-                        textarea.value = text.slice(0, start) + emoji + text.slice(end);
-                        textarea.focus();
-                        textarea.selectionStart = textarea.selectionEnd = start + emoji.length;
-                        picker.classList.add('d-none');
-                        if (onEmojiSelect) onEmojiSelect();
-                    });
+        // Nur einen Klick-Handler pro Button zulassen
+        if (!btnElement._emojiClickHandlerSet) {
+            btnElement.addEventListener('click', (e) => {
+                e.stopPropagation();
+                // Andere Picker schließen
+                document.querySelectorAll('.emoji-picker').forEach(p => {
+                    if (p !== picker) p.classList.add('d-none');
                 });
-
-                this.initEmojiPickerEvents(container, searchInput, textarea);
-            }
-        });
+                let wasHidden = picker.classList.contains('d-none');
+                // Picker-Inhalt erstellen, wenn noch nicht vorhanden
+                if (picker.childElementCount === 0) {
+                    const { container, searchInput } = this.createEmojiPicker();
+                    picker.appendChild(container);
+                    this.initEmojiPickerEvents(container, searchInput, textarea);
+                    // Nach dem Erstellen: Picker anzeigen
+                    picker.classList.remove('d-none');
+                    wasHidden = false;
+                } else {
+                    picker.classList.toggle('d-none');
+                }
+            });
+            btnElement._emojiClickHandlerSet = true;
+        }
 
         // Schließen beim Klick außerhalb
-        document.addEventListener('click', (e) => {
-            if (!picker.contains(e.target) && !btnElement.contains(e.target)) {
-                picker.classList.add('d-none');
-            }
-        });
+        if (!picker._emojiOutsideHandlerSet) {
+            document.addEventListener('click', (e) => {
+                if (!picker.contains(e.target) && !btnElement.contains(e.target)) {
+                    picker.classList.add('d-none');
+                }
+            });
+            picker._emojiOutsideHandlerSet = true;
+        }
     }
 
     initPostEmojiPicker() {

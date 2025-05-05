@@ -94,7 +94,7 @@
 
     <!-- Posten -->
     <div id="post-btn-wrapper" class="d-flex gap-2">
-      <button type="submit" id="create-post-btn" class="btn btn-sm btn-primary px-4"><i class="bi bi-send me-2"></i>Posten</button>
+      <button type="submit" id="create-post-btn" class="btn btn-sm btn-primary px-4"style="color:rgb(255, 255, 255); border: none;"><i class="bi bi-send me-2"></i>Posten</button>
     </div>
 
     <!-- Update & Abbrechen -->

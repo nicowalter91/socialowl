@@ -6,7 +6,7 @@
 <div class="nav fixed-top d-flex justify-content-between align-items-center px-3">
   <!-- Linke Seite: Logo + Titel -->
   <div class="d-flex align-items-center gap-2" style="min-width: 200px;">
-    <img class="logo" src="/Social_App/assets/img/Owl_logo.svg" alt="Owl Logo">
+    <img class="logo" src="/Social_App/assets/img/Owl_logo.svg" alt="Owl Logo" style="background: none; border: none; border-radius: 0; padding: 0;">
     <h3 class="text-light mb-0">Social Owl</h3>
   </div>
 

@@ -1,0 +1,17 @@
+{
+    "name": "nicow/social_app",
+    "autoload": {
+        "psr-4": {
+            "Nicow\\SocialApp\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "nicowalter91",
+            "email": "nbierwolf@web.de"
+        }
+    ],
+    "require": {
+        "phpmailer/phpmailer": "^6.10"
+    }
+}
