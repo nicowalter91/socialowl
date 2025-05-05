@@ -25,6 +25,17 @@ try {
         `timestamp` datetime NOT NULL,
         PRIMARY KEY (`id`)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;");
+    
+    $pdo->exec("CREATE TABLE IF NOT EXISTS `follow_requests` (
+        `id` int(11) NOT NULL AUTO_INCREMENT,
+        `requester_id` int(11) NOT NULL,
+        `receiver_id` int(11) NOT NULL,
+        `status` enum('pending', 'accepted', 'rejected') NOT NULL DEFAULT 'pending',
+        `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        PRIMARY KEY (`id`),
+        UNIQUE KEY `unique_follow_request` (`requester_id`, `receiver_id`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;");
 
     echo json_encode([
         'success' => true,

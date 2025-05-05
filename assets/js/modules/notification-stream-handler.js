@@ -7,28 +7,29 @@ export class NotificationStreamHandler {
   constructor() {
     this.followStream = null;
     this.notificationCheckInterval = null;
-    
+
+    console.log('✅ NotificationStreamHandler initialisiert');
     this.init();
   }
-  
+
   init() {
     // EventSource für Follower-Anfragen initialisieren
     this.initFollowStream();
-    
+
     // Benachrichtigungen alle 30 Sekunden aktualisieren
     this.notificationCheckInterval = setInterval(() => this.loadNotifications(), 30000);
-    
+
     // Initial Benachrichtigungen laden
     this.loadNotifications();
   }
-  
+
   initFollowStream() {
     if (window.EventSource) {
       this.followStream = new EventSource('/Social_App/controllers/api/follow_stream.php');
-      
+
       this.followStream.onmessage = (event) => {
         if (!event.data || event.data === 'heartbeat') return;
-        
+
         try {
           const data = JSON.parse(event.data);
           if (data.event === 'new_follow_request' || data.event === 'follow_request_update') {
@@ -41,22 +42,23 @@ export class NotificationStreamHandler {
           // ignore parse errors for heartbeats etc.
         }
       };
-      
+
       this.followStream.onerror = () => {
         // Optional: reconnect Logik oder Fehlermeldung
         // Wir könnten hier eine automatische Reconnect-Strategie implementieren
       };
     }
   }
-  
+
   async loadNotifications() {
+    console.log('🔄 Lade Benachrichtigungen...');
     try {
       const response = await fetch('/Social_App/controllers/api/notifications.php');
-      
+
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-      
+
       const data = await response.json();
 
       if (data.success) {
@@ -74,7 +76,7 @@ export class NotificationStreamHandler {
   updateNotificationBadge(count) {
     const badge = document.getElementById('notification-badge');
     if (!badge) return;
-    
+
     if (count > 0) {
       badge.textContent = count;
       badge.style.display = 'block';
@@ -86,7 +88,7 @@ export class NotificationStreamHandler {
   updateNotificationsList(notifications) {
     const list = document.getElementById('notifications-list');
     if (!list) return;
-    
+
     list.innerHTML = '';
 
     if (!notifications || notifications.length === 0) {
@@ -99,10 +101,10 @@ export class NotificationStreamHandler {
       const item = document.createElement('div');
       item.className = `notification-item p-3 border-bottom border-secondary ${notification.is_read ? '' : 'bg-dark'}`;
       item.dataset.notificationId = notification.id;
-      
+
       // Icon und Farbe je nach Typ
       let icon, color;
-      switch(notification.type) {
+      switch (notification.type) {
         case 'follow':
           icon = 'bi-person-plus-fill';
           color = 'text-primary';
@@ -155,7 +157,7 @@ export class NotificationStreamHandler {
           </div>
         </div>
       `;
-      
+
       list.appendChild(item);
 
       // Event-Listener für Löschen-Button
@@ -223,6 +225,7 @@ export class NotificationStreamHandler {
   }
 
   async deleteNotification(notificationId) {
+    console.log(`🗑️ Lösche Benachrichtigung mit ID: ${notificationId}`);
     try {
       const formData = new FormData();
       formData.append('notification_id', notificationId);
@@ -246,6 +249,7 @@ export class NotificationStreamHandler {
   }
 
   async deleteAllNotifications() {
+    console.log('🗑️ Lösche alle Benachrichtigungen...');
     try {
       const formData = new FormData();
       formData.append('delete_all', 'true');
@@ -267,9 +271,9 @@ export class NotificationStreamHandler {
       console.error('Fehler beim Löschen aller Benachrichtigungen:', error);
     }
   }
-  
+
   formatDate(dateString) {
-    const options = { 
+    const options = {
       day: '2-digit',
       month: '2-digit',
       year: 'numeric',
@@ -278,8 +282,9 @@ export class NotificationStreamHandler {
     };
     return new Date(dateString).toLocaleString('de-DE', options);
   }
-  
+
   async handleFollowRequest(notificationId, accept) {
+    console.log(`🔄 Bearbeite Follow-Anfrage: ID=${notificationId}, akzeptiert=${accept}`);
     try {
       const formData = new FormData();
       formData.append('notification_id', notificationId);
@@ -299,14 +304,14 @@ export class NotificationStreamHandler {
       alert('Fehler beim Bearbeiten der Anfrage');
     }
   }
-  
+
   // Cleanup Methode für Garbage Collection
   destroy() {
     if (this.followStream) {
       this.followStream.close();
       this.followStream = null;
     }
-    
+
     if (this.notificationCheckInterval) {
       clearInterval(this.notificationCheckInterval);
       this.notificationCheckInterval = null;

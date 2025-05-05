@@ -22,7 +22,14 @@ if (empty($query)) {
 try {
     $stmt = $conn->prepare("
         SELECT u.id, u.username, u.profile_img, u.bio,
-               EXISTS(SELECT 1 FROM followers WHERE follower_id = :current_user AND followed_id = u.id) as is_following
+               EXISTS(SELECT 1 FROM followers 
+                      WHERE follower_id = :current_user1 
+                      AND followed_id = u.id 
+                      AND status = 'accepted') as is_following,
+               (SELECT status FROM followers 
+                WHERE follower_id = :current_user2 
+                AND followed_id = u.id 
+                LIMIT 1) as follow_request_status
         FROM users u
         WHERE u.username LIKE :query
         ORDER BY 
@@ -39,7 +46,8 @@ try {
         ':query' => '%' . $query . '%',
         ':exact_query' => $query,
         ':start_query' => $query . '%',
-        ':current_user' => $currentUserId
+        ':current_user1' => $currentUserId,
+        ':current_user2' => $currentUserId
     ]);
     
     $users = $stmt->fetchAll(PDO::FETCH_ASSOC);

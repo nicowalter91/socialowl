@@ -40,8 +40,8 @@ $user = fetchUserInfo($_SESSION["username"]);
         <textarea name="bio" id="bio" class="form-control bg-dark text-light border-0 rounded-3" maxlength="160" rows="3" style="background: var(--color-input-bg); color: var(--color-input-text);"><?= htmlspecialchars($user['bio'] ?? '') ?></textarea>
         <small class="text-secondary">Max. 160 Zeichen</small>
       </div>
-      <button type="submit" class="btn btn-primary"><i class="bi bi-save me-1"></i>Speichern</button>
-      <a href="./index.php" class="btn btn-outline-light ms-2">Zurück</a>
+      <button type="submit" class="btn btn-sm btn-outline-light rounded-pill"><i class="bi bi-save me-1"></i>Speichern</button>
+      <a href="./index.php" class="btn btn-sm btn-outline-light rounded-pill ms-2">Zurück</a>
     </form>
   </div>
   <script src="<?= BASE_URL ?>/assets/js/bootstrap.bundle.min.js"></script>

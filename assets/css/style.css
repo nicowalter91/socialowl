@@ -199,6 +199,74 @@ body {
   gap: 16px;
 }
 
+/* Add styles for light and dark mode compatibility */
+
+/* Light Mode Styles */
+body.light-mode {
+  background-color: #f8f9fa;
+  color: #212529;
+}
+
+.navbar.light-mode {
+  background-color: #ffffff;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.navbar.light-mode .text-light {
+  color: #212529 !important;
+}
+
+.navbar.light-mode .btn-primary {
+  background-color: #007bff;
+  border-color: #007bff;
+}
+
+.navbar.light-mode .dropdown-menu {
+  background-color: #ffffff;
+  border-color: #dee2e6;
+}
+
+.navbar.light-mode .dropdown-item {
+  color: #212529;
+}
+
+.navbar.light-mode .dropdown-item:hover {
+  background-color: #f8f9fa;
+}
+
+/* Dark Mode Styles */
+body.dark-mode {
+  background-color: #121212;
+  color: #e0e0e0;
+}
+
+.navbar.dark-mode {
+  background-color: #1c1f26;
+  border-bottom: 1px solid #343a40;
+}
+
+.navbar.dark-mode .text-light {
+  color: #e0e0e0 !important;
+}
+
+.navbar.dark-mode .btn-primary {
+  background-color: #0d6efd;
+  border-color: #0d6efd;
+}
+
+.navbar.dark-mode .dropdown-menu {
+  background-color: #1c1f26;
+  border-color: #343a40;
+}
+
+.navbar.dark-mode .dropdown-item {
+  color: #e0e0e0;
+}
+
+.navbar.dark-mode .dropdown-item:hover {
+  background-color: #343a40;
+}
+
 /* ============================
    User Info
 ============================ */

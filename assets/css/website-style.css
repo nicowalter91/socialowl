@@ -1,0 +1,81 @@
+/* Modern Style for Social Owl */
+
+:root {
+  --primary-color: #1E90FF; /* Dodger Blue */
+  --secondary-color: #4682B4; /* Steel Blue */
+  --background-color: #F0F8FF; /* Alice Blue */
+  --text-color: #333;
+  --light-color: #FFFFFF;
+  --dark-color: #232946;
+}
+
+body {
+  background-color: var(--background-color);
+  color: var(--text-color);
+  font-family: 'Arial', sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+.navbar {
+  background-color: var(--primary-color);
+}
+
+.navbar-brand {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.nav-link {
+  color: var(--light-color) !important;
+}
+
+.nav-link:hover {
+  color: var(--secondary-color) !important;
+}
+
+.btn-primary {
+  background-color: var(--secondary-color);
+  border: none;
+}
+
+.btn-primary:hover {
+  background-color: #5A9BD4; /* Lighter Steel Blue */
+}
+
+.hero {
+  background: linear-gradient(120deg, var(--primary-color) 60%, var(--secondary-color) 100%);
+  color: var(--light-color);
+  text-align: center;
+  padding: 5rem 0;
+}
+
+.hero img {
+  max-width: 80%;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.features {
+  padding: 4rem 0;
+}
+
+.features .feature {
+  background-color: var(--light-color);
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+  text-align: center;
+}
+
+.gallery img {
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+footer {
+  background-color: var(--primary-color);
+  color: var(--light-color);
+  padding: 2rem 0;
+  text-align: center;
+}

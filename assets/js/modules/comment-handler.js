@@ -83,7 +83,7 @@ export class CommentHandler {
                         console.log("✅ Kommentar erfolgreich gesendet");
                         if (commentId) {
                             // Kommentar aktualisieren
-                            const commentElement = document.querySelector(`.comment[data-comment-id="${commentId}"]`);
+                            const commentElement = document.querySelector(`.comment-item[data-comment-id="${commentId}"]`);
                             if (commentElement && result.html) {
                                 const tempDiv = document.createElement("div");
                                 tempDiv.innerHTML = result.html;
@@ -157,7 +157,7 @@ export class CommentHandler {
 
                     const result = await res.json();
                     if (result.success) {
-                        deleteBtn.closest(".comment")?.remove();
+                        deleteBtn.closest(".comment-item")?.remove();
                     } else {
                         alert("⚠️ Kommentar konnte nicht gelöscht werden.");
                     }
@@ -202,7 +202,7 @@ export class CommentHandler {
      */
     initCommentActions() {
         // Event-Listener für alle existierenden Kommentare
-        document.querySelectorAll(".comment").forEach(commentElement => {
+        document.querySelectorAll(".comment-item").forEach(commentElement => {
             this.initCommentActionsForElement(commentElement);
         });
     }
@@ -218,47 +218,57 @@ export class CommentHandler {
         const isOwn = comment.user_id === this.CURRENT_USER_ID;
 
         const commentElement = document.createElement("div");
-        commentElement.className = "comment d-flex align-items-start gap-2 mb-2 pt-3 pb-3 border-bottom border-secondary";
+        commentElement.className = "comment-item px-2 py-2 mb-2 position-relative border-bottom border-secondary";
         commentElement.id = `comment-${comment.id}`;
         commentElement.dataset.commentId = comment.id;
         commentElement.dataset.postId = comment.post_id;
 
         commentElement.innerHTML = `
-            <img class="rounded-circle"
-                 src="/Social_App/assets/uploads/${comment.profile_img || "profil.png"}"
-                 alt="Profilbild"
-                 style="width:32px;height:32px;">
-    
-            <div class="flex-grow-1">
-                <strong class="text-light">@${this.escapeHTML(comment.username)}</strong><br>
-                <small class="comment-timestamp text-light" data-timestamp="${this.escapeHTML(comment.created_at)}">
-                    ${this.formatGermanDate(comment.created_at)}
-                </small>
-                <div class="mt-2">
-                    <span class="text-light comment-content">${this.escapeHTML(comment.content)}</span>
+            <div class="d-flex align-items-center gap-2">
+                <img class="rounded-circle border border-2 border-secondary"
+                     src="/Social_App/assets/uploads/${comment.profile_img || "profil.png"}"
+                     alt="Profilbild"
+                     width="32" height="32">
+
+                <div class="flex-grow-1">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <a href="/Social_App/views/profile.php?username=${this.escapeHTML(comment.username)}" 
+                           class="text-decoration-none hover-underline">
+                            <span class="fw-semibold text-light mb-0">@${this.escapeHTML(comment.username)}</span>
+                        </a>
+                    </div>
+
+                    <small class="text-light opacity-75 comment-timestamp"
+                           data-timestamp="${this.escapeHTML(comment.created_at)}">
+                        ${this.formatGermanDate(comment.created_at)}
+                    </small>
+
+                    <div class="mt-1">
+                        <span class="text-light comment-content d-block">${this.escapeHTML(comment.content)}</span>
+                    </div>
                 </div>
-            </div>
-    
-            <div class="${isOwn ? "mt-2 d-flex gap-2 align-items-center" : "ms-auto mt-2"}">
-                ${isOwn ? `
+
+                <div class="d-flex gap-2 align-items-center">
+                    ${isOwn ? `
+                        <button type="button"
+                                class="btn btn-sm btn-outline-light rounded-pill transition-all edit-comment-btn"
+                                data-comment-id="${comment.id}"
+                                data-content="${this.escapeHTML(comment.content)}">
+                            <i class="bi bi-pencil"></i>
+                        </button>
+                        <button type="button"
+                                class="btn btn-sm btn-outline-danger rounded-pill transition-all delete-comment-btn"
+                                data-comment-id="${comment.id}">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    ` : ""}
                     <button type="button"
-                            class="btn btn-sm btn-outline-light edit-comment-btn"
-                            data-comment-id="${comment.id}"
-                            data-content="${this.escapeHTML(comment.content)}">
-                        <i class="bi bi-pencil me-1"></i>Bearbeiten
-                    </button>
-                    <button type="button"
-                            class="btn btn-sm btn-outline-danger delete-comment-btn"
+                            class="btn btn-sm rounded-pill transition-all like-comment-btn ${comment.liked ? "btn-light text-dark" : "btn-outline-light"}"
                             data-comment-id="${comment.id}">
-                        <i class="bi bi-trash icon-danger me-1"></i>Löschen
+                        <i class="bi ${comment.liked ? 'bi-hand-thumbs-up-fill' : 'bi-hand-thumbs-up'}"></i>
+                        <span class="like-count ${comment.liked ? 'text-dark' : ''}">${comment.like_count || 0}</span>
                     </button>
-                ` : ""}
-                <button type="button"
-                        class="btn btn-sm like-comment-btn ${comment.liked ? "btn-light text-dark" : "btn-outline-light"}"
-                        data-comment-id="${comment.id}">
-                    <i class="bi bi-hand-thumbs-up icon-primary me-1"></i>
-                    <span class="like-count">${comment.like_count || 0}</span>
-                </button>
+                </div>
             </div>
         `;
 

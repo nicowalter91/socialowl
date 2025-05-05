@@ -3,11 +3,12 @@
 ==================================================
 
 📦 Projektname:   Social Owl  
-📁 Version:       1.2 (April 2025)  
+📁 Version:       1.3 (May 2025)  
 👤 Entwickler:    Nico Walter,
                   Georg Diesendorf,
                   Andreas Wiegand,
-                  Florian Prottengeier
+                  Florian Prottengeier,
+                  Alexander Rahn
 ==================================================
 
 📌 Projektübersicht
@@ -41,6 +42,9 @@ Nutzer können Inhalte posten, liken, kommentieren, folgen, chatten und ihr Prof
 ✔️ Integriertes 1:1-Chat-System (verschlüsselt, Modal, Live-Badge, Chat-Löschung)
 ✔️ API-Endpunkte für Live-Updates, Chat, Notifications, Follows
 ✔️ Automatisierte Tests für Kernfunktionen (PHP)
+✔️ Erweiterte Suche (z.B. nach Medien)
+✔️ Gruppenchat
+✔️ Mobile App
 
 🧰 Technologien
 --------------------------------------------------
@@ -58,7 +62,7 @@ Nutzer können Inhalte posten, liken, kommentieren, folgen, chatten und ihr Prof
 ├── partials/         → Wiederverwendbare UI-Elemente (Sidebar, Modals)
 ├── includes/         → Konfiguration, Auth, DB-Verbindung, Chat-Logik
 ├── assets/
-│   ├── css/          → style.css, bootstrap.min.css
+│   ├── css/          → style.css, bootstrap.min.css, website-style.css
 │   ├── fonts/        → Bootstrap Icons (woff-Dateien)
 │   ├── js/           → script.js (App-Logik), notifications.js 
 │   │   └── modules/  → JS-Handler für comments, emoji, live, post, search
@@ -68,6 +72,8 @@ Nutzer können Inhalte posten, liken, kommentieren, folgen, chatten und ihr Prof
 ├── trash/            → Alte/temporäre Dateien (nicht produktiv)
 ├── tests/            → PHP Skripte für automatisierte Tests
 ├── sql/              → SQL-Dumps & Migrationen
+├── src/              → Zusätzliche Quellcode-Dateien
+├── vendor/           → Abhängigkeiten (Composer)
 
 🛠 Einrichtung / Setup
 --------------------------------------------------
@@ -99,10 +105,6 @@ Nutzer können Inhalte posten, liken, kommentieren, folgen, chatten und ihr Prof
 
 📚 Features Backlog
 ---------------------------------------------------
-- Erweiterte Suche (z.B. nach Medien)
-- Gruppenchat
-- Mobile App
-
 
 📅 Letzter Stand: 30. April 2025
 ==================================================

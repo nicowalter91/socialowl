@@ -17,11 +17,30 @@ export class SearchHandler {
     }
 
     initSearchEvents() {
-        this.searchButton.addEventListener("click", () => this.performSearch());
+        this.searchButton.addEventListener("click", () => {
+            const query = this.searchInput.value.trim();
+            
+            if (query.startsWith("@")) {
+                this.performUserSearch(query.substring(1));
+            } else if (query.startsWith("#")) {
+                this.performHashtagSearch(query);
+            } else {
+                this.performSearch();
+            }
+        });
+        
         this.searchInput.addEventListener("keypress", (event) => {
             if (event.key === "Enter") {
                 event.preventDefault();
-                this.performSearch();
+                const query = this.searchInput.value.trim();
+                
+                if (query.startsWith("@")) {
+                    this.performUserSearch(query.substring(1));
+                } else if (query.startsWith("#")) {
+                    this.performHashtagSearch(query);
+                } else {
+                    this.performSearch();
+                }
             }
         });
 
@@ -91,24 +110,64 @@ export class SearchHandler {
 
     async performUserSearch(query) {
         try {
-            const response = await fetch(`${this.BASE_URL}/controllers/api/search_users.php?q=${encodeURIComponent(query)}`);
-            if (!response.ok) throw new Error('Netzwerkfehler');
-            const data = await response.json();
+            // Debugmeldung anzeigen
+            console.log(`Suche nach Benutzer mit Query: ${query}`);
+            
+            // API-URL mit vollständigem Pfad
+            const apiUrl = `${this.BASE_URL}/controllers/api/search_users.php?q=${encodeURIComponent(query)}`;
+            console.log(`API-URL: ${apiUrl}`);
+            
+            // Feedback für User zeigen
+            this.resultsContainer.innerHTML = "<div class='text-light p-2'><i class='bi bi-hourglass-split mb-1'></i> Suche läuft...</div>";
+            this.resultsContainer.classList.remove("d-none");
+            
+            const response = await fetch(apiUrl);
+            
+            if (!response.ok) {
+                console.error(`Netzwerkfehler: ${response.status} ${response.statusText}`);
+                throw new Error(`Netzwerkfehler: ${response.status}`);
+            }
+            
+            const responseText = await response.text();
+            console.log("API-Antwort (Text):", responseText);
+            
+            let data;
+            try {
+                data = JSON.parse(responseText);
+                console.log("API-Antwort (JSON):", data);
+            } catch (e) {
+                console.error("JSON Parse Error:", e);
+                throw new Error(`Fehler beim Parsen der Antwort: ${e.message}`);
+            }
             
             this.resultsContainer.innerHTML = "";
             
             if (data.success && data.users && data.users.length > 0) {
+                const info = document.createElement("div");
+                info.className = "text-light mb-2";
+                info.textContent = `${data.users.length} Benutzer gefunden:`;
+                this.resultsContainer.appendChild(info);
+                
                 data.users.forEach(user => {
                     this.createUserResultCard(user);
                 });
                 this.resultsContainer.classList.remove("d-none");
             } else {
-                this.resultsContainer.innerHTML = "<div class='text-danger p-2'><i class='bi bi-exclamation-circle mb-1'></i> Keine Benutzer gefunden.</div>";
+                this.resultsContainer.innerHTML = `
+                    <div class='text-danger p-2'>
+                        <i class='bi bi-exclamation-circle mb-1'></i> 
+                        Keine Benutzer für "${query}" gefunden.
+                    </div>`;
                 this.resultsContainer.classList.remove("d-none");
+                console.log("Keine Benutzer gefunden oder data.success ist false", data);
             }
         } catch (error) {
             console.error('Fehler bei der Benutzersuche:', error);
-            this.resultsContainer.innerHTML = "<div class='text-danger p-2'><i class='bi bi-exclamation-circle mb-1'></i> Fehler bei der Suche.</div>";
+            this.resultsContainer.innerHTML = `
+                <div class='text-danger p-2'>
+                    <i class='bi bi-exclamation-circle mb-1'></i> 
+                    Fehler bei der Suche: ${error.message}
+                </div>`;
             this.resultsContainer.classList.remove("d-none");
         }
     }
@@ -135,6 +194,26 @@ export class SearchHandler {
         userInfo.appendChild(profileImg);
         userInfo.appendChild(userText);
         
+        // Rechte Seite mit Follow-Button und Status
+        const rightSection = document.createElement("div");
+        rightSection.className = "d-flex align-items-center gap-2";
+        
+        // Status-Badge für Follower-Anfragen
+        if (user.follow_request_status) {
+            const statusBadge = document.createElement("div");
+            
+            if (user.follow_request_status === 'accepted') {
+                statusBadge.className = "badge bg-success d-flex align-items-center";
+                statusBadge.innerHTML = '<i class="bi bi-check-circle me-1"></i> Akzeptiert';
+            } else if (user.follow_request_status === 'pending') {
+                statusBadge.className = "badge bg-warning text-dark d-flex align-items-center";
+                statusBadge.innerHTML = '<i class="bi bi-hourglass-split me-1"></i> Ausstehend';
+            }
+            
+            rightSection.appendChild(statusBadge);
+        }
+        
+        // Follow/Unfollow Button
         const followButton = document.createElement("button");
         followButton.className = `btn btn-sm ${user.is_following ? 'btn-outline-danger' : 'btn-outline-light'}`;
         followButton.innerHTML = `<i class="bi bi-person-${user.is_following ? 'x' : 'plus'}-fill"></i>`;
@@ -155,16 +234,43 @@ export class SearchHandler {
                     followButton.className = `btn btn-sm ${user.is_following ? 'btn-outline-danger' : 'btn-outline-light'}`;
                     followButton.innerHTML = `<i class="bi bi-person-${user.is_following ? 'x' : 'plus'}-fill"></i>`;
                     
+                    // Wenn der Benutzer jetzt folgt, Status auf "ausstehend" setzen
+                    if (user.is_following) {
+                        user.follow_request_status = 'pending';
+                        
+                        // Status-Badge hinzufügen oder aktualisieren
+                        let statusBadge = rightSection.querySelector(".badge");
+                        if (!statusBadge) {
+                            statusBadge = document.createElement("div");
+                            statusBadge.className = "badge bg-warning text-dark d-flex align-items-center";
+                            statusBadge.innerHTML = '<i class="bi bi-hourglass-split me-1"></i> Ausstehend';
+                            rightSection.insertBefore(statusBadge, followButton);
+                        } else {
+                            statusBadge.className = "badge bg-warning text-dark d-flex align-items-center";
+                            statusBadge.innerHTML = '<i class="bi bi-hourglass-split me-1"></i> Ausstehend';
+                        }
+                    } else {
+                        // Wenn entfolgt wird, Status-Badge entfernen
+                        user.follow_request_status = null;
+                        const statusBadge = rightSection.querySelector(".badge");
+                        if (statusBadge) {
+                            rightSection.removeChild(statusBadge);
+                        }
+                    }
+                    
                     // Update sidebar and stats
-                    window.liveUpdates.updateFollowingSidebar(user.id);
+                    if (window.liveUpdates) {
+                        window.liveUpdates.updateFollowingSidebar(user.id);
+                    }
                 }
             } catch (error) {
                 console.error('Fehler beim Folgen/Entfolgen:', error);
             }
         });
         
+        rightSection.appendChild(followButton);
         card.appendChild(userInfo);
-        card.appendChild(followButton);
+        card.appendChild(rightSection);
         this.resultsContainer.appendChild(card);
     }
 
