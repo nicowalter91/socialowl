@@ -189,8 +189,8 @@ require_once __DIR__ . '/../includes/config.php';
 
         .login-link a {
             color: var(--primary);
-            text-decoration: none;
-            font-weight: 500;
+            text-decoration: underline;
+            
         }
 
         .login-link a:hover {

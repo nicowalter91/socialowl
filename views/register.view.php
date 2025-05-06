@@ -474,9 +474,11 @@ require_once __DIR__ . '/../includes/config.php';
     
     <div class="page-wrapper">
         <div class="register-container">
-            <a href="login.view.php" class="btn btn-link text-primary position-absolute" style="top: 1rem; left: 1rem;">
-                <i class="bi bi-chevron-left"></i> Zurück zum Login
-            </a>
+            <div class="d-flex align-items-center position-absolute" style="top: 1rem; left: 1rem;">
+                <p class="mb-0 me-1">Bereits ein Konto?</p>
+                <a href="login.view.php" class="btn btn-link text-primary p-0"> Zurück zum Login
+                </a>
+            </div>
             <div class="register-header">
                 <h2>Dein Konto erstellen</h2>
                 <p>Tritt der Social Owl Community bei und bleibe mit deinen Freunden verbunden</p>
