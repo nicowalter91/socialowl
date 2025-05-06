@@ -85,7 +85,8 @@ export class SearchHandler {
             const posts = tempDiv.querySelectorAll('.tweet-card');
             if (posts.length > 0) {
                 const info = document.createElement("div");
-                info.className = "text-light mb-2";
+                // Änderung: text-light entfernt für Theme-Support
+                info.className = "mb-2";
                 info.textContent = `${posts.length} Posts mit ${query} gefunden:`;
                 this.resultsContainer.appendChild(info);
                 
@@ -98,7 +99,7 @@ export class SearchHandler {
                 });
                 this.resultsContainer.classList.remove("d-none");
             } else {
-                this.resultsContainer.innerHTML = `<div class='text-danger p-2'><i class='bi bi-exclamation-circle mb-1'></i> Keine Posts mit ${query} gefunden.</div>`;
+                this.resultsContainer.innerHTML = `<div class='p-2'><i class='bi bi-exclamation-circle mb-1'></i> Keine Posts mit ${query} gefunden.</div>`;
                 this.resultsContainer.classList.remove("d-none");
             }
         } catch (error) {
@@ -117,8 +118,8 @@ export class SearchHandler {
             const apiUrl = `${this.BASE_URL}/controllers/api/search_users.php?q=${encodeURIComponent(query)}`;
             console.log(`API-URL: ${apiUrl}`);
             
-            // Feedback für User zeigen
-            this.resultsContainer.innerHTML = "<div class='text-light p-2'><i class='bi bi-hourglass-split mb-1'></i> Suche läuft...</div>";
+            // Feedback für User zeigen - Änderung: text-light entfernt
+            this.resultsContainer.innerHTML = "<div class='p-2'><i class='bi bi-hourglass-split mb-1'></i> Suche läuft...</div>";
             this.resultsContainer.classList.remove("d-none");
             
             const response = await fetch(apiUrl);
@@ -144,7 +145,8 @@ export class SearchHandler {
             
             if (data.success && data.users && data.users.length > 0) {
                 const info = document.createElement("div");
-                info.className = "text-light mb-2";
+                // Änderung: text-light entfernt
+                info.className = "mb-2";
                 info.textContent = `${data.users.length} Benutzer gefunden:`;
                 this.resultsContainer.appendChild(info);
                 
@@ -174,21 +176,21 @@ export class SearchHandler {
 
     createUserResultCard(user) {
         const card = document.createElement("div");
-        card.className = "bg-dark rounded p-2 mb-2 search-result-card d-flex justify-content-between align-items-center";
+        card.className = "theme-card rounded p-2 mb-2 search-result-card d-flex justify-content-between align-items-center";
         
         const userInfo = document.createElement("div");
         userInfo.className = "d-flex align-items-center";
         
         const profileImg = document.createElement("img");
         profileImg.src = `${this.BASE_URL}/assets/uploads/${user.profile_img}`;
-        profileImg.className = "rounded-circle me-2";
+        profileImg.className = "rounded-circle me-2 border border-secondary";
         profileImg.width = 40;
         profileImg.height = 40;
         
         const userText = document.createElement("div");
         userText.innerHTML = `
-            <strong class="text-light">@${user.username}</strong>
-            ${user.bio ? `<p class="mb-0 text-light small">${user.bio}</p>` : ''}
+            <strong>@${user.username}</strong>
+            ${user.bio ? `<p class="mb-0 small">${user.bio}</p>` : ''}
         `;
         
         userInfo.appendChild(profileImg);
@@ -215,7 +217,7 @@ export class SearchHandler {
         
         // Follow/Unfollow Button
         const followButton = document.createElement("button");
-        followButton.className = `btn btn-sm ${user.is_following ? 'btn-outline-danger' : 'btn-outline-light'}`;
+        followButton.className = `btn btn-sm ${user.is_following ? 'btn-outline-danger' : 'btn-outline-success'} rounded-pill d-flex align-items-center`;
         followButton.innerHTML = `<i class="bi bi-person-${user.is_following ? 'x' : 'plus'}-fill"></i>`;
         
         followButton.addEventListener("click", async () => {
@@ -231,7 +233,7 @@ export class SearchHandler {
                 
                 if (response.ok) {
                     user.is_following = !user.is_following;
-                    followButton.className = `btn btn-sm ${user.is_following ? 'btn-outline-danger' : 'btn-outline-light'}`;
+                    followButton.className = `btn btn-sm ${user.is_following ? 'btn-outline-danger' : 'btn-outline-success'} rounded-pill d-flex align-items-center`;
                     followButton.innerHTML = `<i class="bi bi-person-${user.is_following ? 'x' : 'plus'}-fill"></i>`;
                     
                     // Wenn der Benutzer jetzt folgt, Status auf "ausstehend" setzen
@@ -300,30 +302,32 @@ export class SearchHandler {
 
         if (found > 0) {
             const info = document.createElement("div");
-            info.className = "text-light mb-2";
+            // Änderung: text-light entfernt für Theme-Support
+            info.className = "mb-2";
             info.textContent = `${found} Treffer gefunden:`;
             this.resultsContainer.prepend(info);
             this.resultsContainer.classList.remove("d-none");
         } else {
-            this.resultsContainer.innerHTML = "<div class='text-danger'><i class='bi bi-exclamation-circle mb-1'></i> Keine Treffer gefunden.</div>";
+            // Der Fehler kann rot bleiben zur besseren Sichtbarkeit
+            this.resultsContainer.innerHTML = "<div class='text-danger p-2'><i class='bi bi-exclamation-circle mb-1'></i> Keine Treffer gefunden.</div>";
             this.resultsContainer.classList.remove("d-none");
         }
     }
 
     createSearchResultCard(postId, username, text) {
         const card = document.createElement("div");
-        card.className = "bg-dark rounded p-2 mb-2 search-result-card";
+        card.className = "theme-card rounded p-2 mb-2 search-result-card";
 
         const link = document.createElement("a");
         link.href = `#post-${postId}`;
-        link.className = "text-light text-decoration-none d-block";
+        link.className = "text-decoration-none d-block";
 
         const title = document.createElement("div");
         title.className = "fw-bold";
         title.textContent = username;
 
         const snippet = document.createElement("small");
-        snippet.className = "d-block text-light";
+        snippet.className = "d-block";
         snippet.textContent = text.substring(0, 80) + (text.length > 80 ? "..." : "");
 
         link.appendChild(title);

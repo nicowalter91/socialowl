@@ -4,16 +4,19 @@
 -->
 
 <!-- Updated Navigation Bar with modern UI/UX design -->
-<div class="nav fixed-top d-flex justify-content-between align-items-center px-3" style="background-color: #1c1f26;">
+<div class="nav fixed-top d-flex align-items-center px-3" style="background-color: #1c1f26; height: 80px;">
   <!-- Left Section: Logo + Title -->
   <div class="d-flex align-items-center gap-3" style="min-width: 200px;">
     <img class="logo" src="/Social_App/assets/img/Owl_logo.svg" alt="Owl Logo" style="width: 50px; height: 50px;">
     <h3 class="text-light mb-0 fw-bold">Social Owl</h3>
   </div>
-
+  
+  <!-- Spacer to push search to center -->
+  <div class="flex-grow-1"></div>
+  
   <!-- Center Section: Search Field -->
-  <div class="flex-grow-1 mx-4 position-relative">
-    <form id="post-search-form" class="d-flex justify-content-center" onsubmit="return false;" style="max-width: 500px; width: 100%;">
+  <div class="d-flex justify-content-center" style="width: 500px;">
+    <form id="post-search-form" class="w-100" onsubmit="return false;">
       <div class="input-group">
         <input class="form-control bg-dark text-light border-secondary rounded-start-pill shadow-sm" 
                id="post-search" 
@@ -26,14 +29,18 @@
       </div>
 
       <!-- Search Results Container -->
-      <div id="search-results" class="p-2 rounded d-none mt-2 w-100 shadow-lg" style="background-color: #28353e; position: absolute; top: 100%; left: 0; z-index: 1050;">
+       
+      <div id="search-results" class="p-2 rounded theme-card d-none mt-2 w-50 shadow-lg" style="position: absolute; z-index: 1050;">
         <!-- Results will appear here -->
       </div>
     </form>
   </div>
+  
+  <!-- Spacer to push icons to right -->
+  <div class="flex-grow-1"></div>
 
   <!-- Right Section: Notifications + Dropdown -->
-  <div class="d-flex align-items-center gap-4">
+  <div class="d-flex align-items-center gap-4" style="min-width: 200px;">
     <!-- Messaging Icon -->
     <div class="nav-item position-relative d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
       <a class="nav-link p-0 position-relative" href="#" data-bs-toggle="modal" data-bs-target="#chatModal" title="Chat">
