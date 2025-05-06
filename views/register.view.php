@@ -34,21 +34,20 @@ require_once __DIR__ . '/../includes/config.php';
         }
         
         body {
-            min-height: 100vh;
-            background: linear-gradient(135deg, var(--accent) 0%, #d4a5af 50%, var(--primary) 100%);
             display: flex;
-            flex-direction: column; /* Geändert zu column für richtige Platzierung */
-            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
-            overflow-x: hidden;
-            position: relative;
-            padding: 0;
+            flex-direction: column;
+            
+            min-height: 100vh;
             margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, var(--accent) 0%, #d4a5af 50%, var(--primary) 100%);
+            overflow: hidden;
         }
         
         .register-container {
             width: 100%;
             max-width: 900px; /* Breite erhöht für 2-Spalten-Layout */
-            margin: 0 auto; /* Horizontale Zentrierung */
+            margin: 2rem auto; /* Abstand oben und unten hinzugefügt */
             background: white;
             color: var(--text);
             border-radius: 20px;
@@ -475,6 +474,9 @@ require_once __DIR__ . '/../includes/config.php';
     
     <div class="page-wrapper">
         <div class="register-container">
+            <a href="login.view.php" class="btn btn-link text-primary position-absolute" style="top: 1rem; left: 1rem;">
+                <i class="bi bi-chevron-left"></i> Zurück zum Login
+            </a>
             <div class="register-header">
                 <h2>Dein Konto erstellen</h2>
                 <p>Tritt der Social Owl Community bei und bleibe mit deinen Freunden verbunden</p>
@@ -507,7 +509,7 @@ require_once __DIR__ . '/../includes/config.php';
                 </div>
             <?php endif; ?>
             
-            <form method="post" class="needs-validation" id="registrationForm" enctype="multipart/form-data" novalidate>
+            <form method="post" action="<?= BASE_URL ?>/controllers/register.php" class="needs-validation" id="registrationForm" enctype="multipart/form-data" novalidate>
                 <input type="hidden" name="current_step" id="current_step" value="1">
                 
                 <!-- Schritt 1: Grundlegende Benutzerdaten -->
@@ -614,11 +616,6 @@ require_once __DIR__ . '/../includes/config.php';
                         <button type="button" class="btn btn-register next-step" data-step="2">
                             Weiter <i class="bi bi-arrow-right ms-2"></i>
                         </button>
-                    </div>
-                    
-                    <!-- Zurück zum Login -->
-                    <div class="login-link">
-                        <p>Bereits registriert? <a class="fw-bold"href="<?= BASE_URL ?>/views/login.view.php">Zurück zum Login</a></p>
                     </div>
                 </div>
                 

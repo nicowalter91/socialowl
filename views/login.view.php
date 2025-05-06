@@ -35,22 +35,23 @@ require_once __DIR__ . '/../includes/config.php';
 
         body {
             display: flex;
-            justify-content: center;
+            flex-direction: column;
+            justify-content: flex-start;
             align-items: center;
-            height: 100vh;
+            min-height: 100vh;
             margin: 0;
-            overflow: hidden;
+            padding: 0;
             background: linear-gradient(135deg, var(--accent) 0%, #d4a5af 50%, var(--primary) 100%);
+            overflow: hidden;
         }
 
         .page-wrapper {
-            height: auto;
             display: flex;
             justify-content: center;
             align-items: center;
             flex-grow: 1;
             width: 100%;
-            padding-top: 0;
+            padding-top: 80px; /* Ensures the container is below the navbar */
         }
 
         .login-container {
