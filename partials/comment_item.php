@@ -52,7 +52,7 @@ if (!isset($comment)) return; ?>
     <?php endif; ?>
     <!-- Like (immer gleich) -->
     <button type="button"
-            class="btn btn-sm rounded-pill like-comment-btn <?= $comment["liked"] ? 'btn-light text-dark' : 'btn-outline-dark' ?>"
+            class="btn btn-sm rounded-pill like-comment-btn <?= $comment["liked"] ? 'btn-light text-dark' : 'btn-outline-primary' ?>"
             data-comment-id="<?= $comment["id"] ?>">
       <i class="bi bi-hand-thumbs-up me-1"></i>
       <span class="like-count <?= $comment["liked"] ? 'text-dark' : '' ?>"><?= $comment["like_count"] ?></span>
