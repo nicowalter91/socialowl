@@ -3,7 +3,7 @@
 ==================================================
 
 📦 Projektname:   Social Owl  
-📁 Version:       1.3 (May 2025)  
+📁 Version:       1.3.1 (May 6, 2025)  
 👤 Entwickler:    Nico Walter,
                   Georg Diesendorf,
                   Andreas Wiegand,
@@ -34,30 +34,30 @@ Nutzer können Inhalte posten, liken, kommentieren, folgen, chatten und ihr Prof
 ✔️ Kommentare & Beiträge nur sichtbar von gefolgten Usern  
 ✔️ Sidebar zeigt aktuelle Follower- & Following-Anzahl  
 ✔️ Modal-Interface für Beitrag löschen & Profil bearbeiten  
-✔️ Live-Kommentar- und Postanzeige (nur bei dir)  
+✔️ Live-Kommentar- und Postanzeige  
 ✔️ Saubere UI-Komponenten & Layout mit Bootstrap  
 ✔️ Datenbank vollständig in 3. Normalform
 ✔️ Suchleiste für Posts, Hashtags und Usern
 ✔️ Notification-System für Likes, Kommentare, Follows & Follow-Requests (inkl. Live-Update)
-✔️ Integriertes 1:1-Chat-System (verschlüsselt, Modal, Live-Badge, Chat-Löschung)
+✔️ Integriertes 1:1-Chat-System 
 ✔️ API-Endpunkte für Live-Updates, Chat, Notifications, Follows
 ✔️ Automatisierte Tests für Kernfunktionen (PHP)
-✔️ Erweiterte Suche (z.B. nach Medien)
-✔️ Gruppenchat
-✔️ Mobile App
+✔️ Erweiterte Suche
 
 🧰 Technologien
 --------------------------------------------------
-- PHP (strukturierter MVC-Ansatz)
-- HTML5, CSS3, JavaScript (ES6)
+- PHP 8.2+ (strukturierter MVC-Ansatz)
+- HTML5, CSS3, JavaScript (ES6+)
 - Bootstrap 5.3 + Bootstrap Icons (lokal Eingebunden)
-- MySQL / MariaDB
+- MySQL 8.0 / MariaDB 10.6+
 - UniServerZ oder XAMPP (lokale Entwicklungsumgebung)
+- PHPMailer für E-Mail-Funktionalität
+- Server-Sent Events (SSE) für Live-Updates
 
 📁 Projektstruktur (nach MVC)
 --------------------------------------------------
-├── controllers/      → Business-Logik & API (z. B. create_post.php, api/)
-├── models/           → Datenbankabfragen (z. B. user.php, follow.php)
+├── controllers/      → Business-Logik & API (z. B. create_post.php, api/)
+├── models/           → Datenbankabfragen (z. B. user.php, follow.php)
 ├── views/            → Hauptseiten wie index.php, login.view.php
 ├── partials/         → Wiederverwendbare UI-Elemente (Sidebar, Modals)
 ├── includes/         → Konfiguration, Auth, DB-Verbindung, Chat-Logik
@@ -79,9 +79,10 @@ Nutzer können Inhalte posten, liken, kommentieren, folgen, chatten und ihr Prof
 --------------------------------------------------
 1. UniServerZ oder XAMPP starten
 2. Datenbank `social_owl` anlegen
-3. SQL-Dump importieren (`social_owl_migration.sql`)
+3. SQL-Dump importieren (`sql/social_owl.sql`)
 4. Zugangsdaten in `includes/config.php` eintragen
-5. Projekt starten: http://localhost/Social_App/
+5. Composer-Abhängigkeiten installieren: `composer install`
+6. Projekt starten: http://localhost/Social_App/
 
 🧾 Konfigurationsdatei (`config.php`)
 --------------------------------------------------
@@ -105,6 +106,11 @@ Nutzer können Inhalte posten, liken, kommentieren, folgen, chatten und ihr Prof
 
 📚 Features Backlog
 ---------------------------------------------------
+- API-Erweiterung für externe Anwendungen
+- Beitragsbewertungen (Sterne/Punktesystem)
+- Benachrichtigungen per E-Mail
+- Themenwechsel (Light/Dark Mode Toggle)
+- Story-Funktion (temporäre Posts)
 
-📅 Letzter Stand: 30. April 2025
+📅 Letzter Stand: 6. Mai 2025
 ==================================================
