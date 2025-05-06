@@ -24,7 +24,7 @@
                placeholder="Search for text, @users, or #hashtags..." 
                aria-label="Search">
         <button class="btn btn-primary border-secondary rounded-end-pill shadow-sm" id="search-button" type="button">
-          <i class="bi bi-search"></i>
+          <i class="bi bi-search" style="color: #ffffff !important;"></i>
         </button>
       </div>
 
@@ -53,8 +53,8 @@
         <i class="bi bi-bell-fill fs-4"></i>
         <span class="notification-badge position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="notification-badge">1</span>
       </button>
-      <div class="dropdown-menu dropdown-menu-end bg-dark border border-secondary shadow-lg" style="width: 320px;">
-        <h6 class="dropdown-header text-light border-bottom border-secondary">Notifications</h6>
+      <div class="dropdown-menu dropdown-menu-end post-card-dropdown shadow-lg" style="width: 320px;">
+        <h6 class="dropdown-header border-bottom">Notifications</h6>
         <div id="notifications-list" class="notifications-list" style="max-height: 400px; overflow-y: auto;">
           <!-- Notifications will be dynamically inserted here -->
         </div>
@@ -66,13 +66,16 @@
         <img src="/Social_App/assets/uploads/<?php echo $_SESSION["profile_img"] ?>" alt="Profile Picture" width="36" height="36" class="rounded-circle me-2">
         <strong class="text-light fw-semibold"> <?php echo $_SESSION["username"] ?> </strong>
       </a>
-      <ul class="dropdown-menu bg-dark dropdown-menu-end shadow-lg">
-        <li><a class="dropdown-item text-light" href="#" data-bs-toggle="modal" data-bs-target="#profilModal">
+      <ul class="dropdown-menu dropdown-menu-end post-card-dropdown shadow-lg">
+        <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#profilModal">
             <i class="bi bi-person-circle me-2"></i>Profile
           </a></li>
-        <hr class="dropdown-divider border-light opacity-75">
+        <li><hr class="dropdown-divider"></li>
+        <li>
+          <a class="dropdown-item text-danger" href="<?= BASE_URL ?>/controllers/logout.php">
+            <i class="bi bi-trash me-2 text-danger"></i>Abmelden
+          </a>
         </li>
-        <li><a class="dropdown-item text-danger" href="<?= BASE_URL ?>/controllers/logout.php"><i class="bi bi-box-arrow-right text-danger me-2"></i>Logout</a></li>
       </ul>
     </div>
     <!-- Dark/Light Mode Toggle Button -->

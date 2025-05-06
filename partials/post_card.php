@@ -52,11 +52,11 @@ if (!isset($post) || empty($post["id"])) return;
         >
           <i class="bi bi-three-dots-vertical"></i><span class="d-none d-md-inline ms-1">Optionen</span>
         </button>
-        <ul class="dropdown-menu dropdown-menu-end bg-dark border-secondary">
+        <ul class="dropdown-menu dropdown-menu-end post-card-dropdown">
           <li>
             <a
               href="#"
-              class="dropdown-item text-light edit-post-btn"
+              class="dropdown-item edit-post-btn"
               data-post-id="<?= $post['id'] ?>"
               data-content="<?= htmlspecialchars($post['content'], ENT_QUOTES) ?>"
               data-image="<?= !empty($post['image_path'])
@@ -66,7 +66,7 @@ if (!isset($post) || empty($post["id"])) return;
               <i class="bi bi-pencil-square me-2"></i>Bearbeiten
             </a>
           </li>
-          <li><hr class="dropdown-divider border-light"></li>
+          <li><hr class="dropdown-divider"></li>
           <li>
             <button
               class="dropdown-item text-danger"
@@ -267,6 +267,69 @@ if (!isset($post) || empty($post["id"])) return;
 
 .share-post:focus + .share-options {
   display: block !important;
+}
+
+/* Dropdown-Menü für post_card - Light/Dark Mode Support */
+.post-card-dropdown {
+  background-color: var(--color-card) !important;
+  color: var(--color-text) !important;
+  border: 1px solid var(--color-border) !important;
+  border-radius: 16px !important;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.25), 0 1.5px 6px rgba(0,0,0,0.10);
+  transform-origin: top right;
+  animation: dropdown-fade 0.2s ease;
+}
+
+body:not(.dark-mode) .post-card-dropdown {
+  background-color: #f8f9fa !important;
+  color: #212529 !important;
+  border: 1px solid #dee2e6 !important;
+  backdrop-filter: blur(8px);
+}
+
+body.dark-mode .post-card-dropdown {
+  background-color: #1b2730 !important;
+  color: #f8f9fa !important;
+  border: 1px solid #2c3e50 !important;
+  backdrop-filter: blur(8px);
+}
+
+.post-card-dropdown .dropdown-item {
+  color: var(--color-text) !important;
+  border-radius: 10px;
+  margin: 0 0.5rem;
+  padding: 0.6rem 1.2rem;
+  transition: all 0.2s ease;
+}
+
+.post-card-dropdown .dropdown-divider {
+  border-color: var(--color-border) !important;
+  margin: 0.3rem 0;
+}
+
+.post-card-dropdown .dropdown-item:hover {
+  background-color: var(--color-dropdown-hover) !important;
+  transform: translateX(3px);
+}
+
+.post-card-dropdown .dropdown-item i {
+  width: 20px;
+  text-align: center;
+  opacity: 0.8;
+  transition: opacity 0.2s;
+}
+
+.post-card-dropdown .dropdown-item:hover i {
+  opacity: 1;
+}
+
+/* Spezielles Styling für den Löschen-Button im Dropdown */
+.post-card-dropdown .dropdown-item.text-danger {
+  color: var(--color-danger) !important;
+}
+
+.post-card-dropdown .dropdown-item.text-danger:hover {
+  background: rgba(220,53,69,0.12) !important;
 }
 
 @media (max-width: 576px) {

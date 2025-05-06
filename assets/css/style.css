@@ -287,10 +287,36 @@ body.dark-mode .btn-outline-dark:hover {
   border-color: #f8f9fa;
 }
 
+/* Weniger starker Hover-Effekt für Light-Mode Buttons */
 body:not(.dark-mode) .btn-outline-dark:hover {
   color: #fff;
-  background-color: #212529;
-  border-color: #212529;
+  background-color: #495057; /* Dunkelgrau statt Schwarz */
+  border-color: #495057;
+}
+
+/* ============================
+   Fixes für Buttons und Dropdowns
+============================ */
+
+/* Sicherstellen, dass der Text in Dropdown-Toggle-Buttons auch im aktiven Zustand sichtbar bleibt */
+.dropdown-toggle.show,
+.dropdown-toggle.active,
+.dropdown-toggle[aria-expanded="true"] {
+  color: var(--color-text) !important;
+}
+
+/* Im Light-Mode spezifische Anpassung */
+body:not(.dark-mode) .dropdown-toggle.show,
+body:not(.dark-mode) .dropdown-toggle.active,
+body:not(.dark-mode) .dropdown-toggle[aria-expanded="true"] {
+  color: #212529 !important;
+}
+
+/* Im Dark-Mode spezifische Anpassung */
+body.dark-mode .dropdown-toggle.show,
+body.dark-mode .dropdown-toggle.active,
+body.dark-mode .dropdown-toggle[aria-expanded="true"] {
+  color: #f8f9fa !important;
 }
 
 /* ============================
@@ -740,69 +766,132 @@ body:not(.dark-mode) .notification-badge, body:not(.dark-mode) .notification-bad
   transition: box-shadow 0.2s, background 0.2s;
 }
 
-.dropdown-menu .dropdown-header {
-  color: #b7c8d2;
-  font-weight: 600;
-  font-size: 1rem;
-  padding-bottom: 0.5rem;
-  border-bottom: 1px solid #28353e;
-  margin-bottom: 0.5rem;
+/* Einheitliches Styling für alle Dropdown-Menüs mit post-card-dropdown Klasse */
+.post-card-dropdown {
+  background-color: var(--color-card) !important;
+  color: var(--color-text) !important;
+  border: 1px solid var(--color-border) !important;
+  border-radius: 16px !important;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.25), 0 1.5px 6px rgba(0,0,0,0.10);
+  transform-origin: top right;
+  animation: dropdown-fade 0.2s ease;
 }
 
-.dropdown-menu .dropdown-item {
-  color: #b7c8d2 !important;
-  background: transparent !important;
+/* Light-Mode Styling für post-card-dropdown */
+body:not(.dark-mode) .post-card-dropdown {
+  background-color: #f8f9fa !important;
+  color: #212529 !important;
+  border: 1px solid #dee2e6 !important;
+  backdrop-filter: blur(8px);
+}
+
+/* Dark-Mode Styling für post-card-dropdown */
+body.dark-mode .post-card-dropdown {
+  background-color: #1b2730 !important;
+  color: #f8f9fa !important;
+  border: 1px solid #2c3e50 !important;
+  backdrop-filter: blur(8px);
+}
+
+/* Styling für alle Dropdown-Items in post-card-dropdown */
+.post-card-dropdown .dropdown-item {
+  color: var(--color-text) !important;
   border-radius: 10px;
   margin: 0 0.5rem;
   padding: 0.6rem 1.2rem;
-  transition: background 0.15s, color 0.15s;
-  font-size: 1rem;
+  transition: all 0.2s ease;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
 }
 
-.dropdown-menu .dropdown-item:hover, 
-.dropdown-menu .dropdown-item:focus {
-  background: rgba(52, 152, 219, 0.12) !important;
-  color: #fff !important;
-}
-
-.dropdown-menu .dropdown-item.active, 
-.dropdown-menu .dropdown-item:active {
-  background: rgba(52, 152, 219, 0.22) !important;
-  color: #fff !important;
-}
-
-.dropdown-menu .dropdown-divider {
-  border-top: 1px solid #28353e;
+.post-card-dropdown .dropdown-divider {
+  border-color: var(--color-border) !important;
   margin: 0.3rem 0;
 }
 
-.dropdown-menu .dropdown-item i {
-  font-size: 1.1em;
+.post-card-dropdown .dropdown-item:hover {
+  background-color: var(--color-dropdown-hover) !important;
+  transform: translateX(3px);
+}
+
+.post-card-dropdown .dropdown-item i {
+  width: 20px;
+  text-align: center;
   opacity: 0.8;
+  transition: opacity 0.2s;
+  margin-right: 0.5rem;
 }
 
-/* Navbar Dropdown: text-danger und Trash-Icons immer rot */
-.nav .dropdown-menu .dropdown-item.text-danger,
-.nav .dropdown-menu .dropdown-item.text-danger .bi,
-.nav .dropdown-menu .dropdown-item .bi-trash,
-.nav .dropdown-menu .dropdown-item .bi-trash-fill {
-  color: #dc3545 !important;
+.post-card-dropdown .dropdown-item:hover i {
+  opacity: 1;
 }
 
-.nav .dropdown-menu .dropdown-item.text-danger:hover,
-.nav .dropdown-menu .dropdown-item.text-danger:focus {
+/* Spezielles Styling für den Löschen-Button im Dropdown */
+.post-card-dropdown .dropdown-item.text-danger {
+  color: var(--color-danger) !important;
+}
+
+.post-card-dropdown .dropdown-item.text-danger:hover {
   background: rgba(220,53,69,0.12) !important;
-  color: #fff !important;
 }
 
-.nav .dropdown-menu .dropdown-item.text-danger:hover .bi,
-.nav .dropdown-menu .dropdown-item.text-danger:focus .bi,
-.nav .dropdown-menu .dropdown-item:hover .bi-trash,
-.nav .dropdown-menu .dropdown-item:focus .bi-trash {
-  color: #fff !important;
+/* Spezielles Styling für den Abmelden-Button im Dropdown - Text und Icon bleiben rot beim Hover */
+.post-card-dropdown .dropdown-item.text-danger:hover,
+.post-card-dropdown .dropdown-item.text-danger:hover i,
+.post-card-dropdown .dropdown-item.text-danger:active,
+.post-card-dropdown .dropdown-item.text-danger:active i {
+  color: var(--color-danger) !important;
+}
+
+/* Zusätzliche Regeln mit höchster Spezifität, um sicherzustellen, dass die Farbe immer rot bleibt */
+.dropdown .dropdown-menu.post-card-dropdown .dropdown-item.text-danger,
+.dropdown .dropdown-menu.post-card-dropdown .dropdown-item.text-danger i {
+  color: var(--color-danger) !important;
+}
+
+.dropdown .dropdown-menu.post-card-dropdown .dropdown-item.text-danger:hover,
+.dropdown .dropdown-menu.post-card-dropdown .dropdown-item.text-danger:hover i,
+.dropdown .dropdown-menu.post-card-dropdown .dropdown-item.text-danger:focus,
+.dropdown .dropdown-menu.post-card-dropdown .dropdown-item.text-danger:focus i,
+.dropdown .dropdown-menu.post-card-dropdown .dropdown-item.text-danger:active,
+.dropdown .dropdown-menu.post-card-dropdown .dropdown-item.text-danger:active i {
+  color: var(--color-danger) !important;
+}
+
+/* Verhindert dass globale Bootstrap Regeln die Farbe überschreiben */
+.dropdown-item.text-danger:hover,
+.dropdown-item.text-danger:focus,
+.dropdown-item.text-danger:active {
+  color: var(--color-danger) !important;
+}
+
+/* Dropdown-Animation definieren */
+@keyframes dropdown-fade {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.dropdown-menu .dropdown-header {
+  color: var(--color-text-secondary);
+  font-weight: 600;
+  font-size: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--color-border);
+  margin-bottom: 0.5rem;
+}
+
+/* Navbar Dropdown-Menü Farben */
+.nav .dropdown-menu {
+  background: var(--color-dropdown) !important;
+  color: var(--color-text) !important;
+  border: 1px solid var(--color-border) !important;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.12), 0 1.5px 6px rgba(0,0,0,0.06);
 }
 
 /* Sidebar Follower/Following Container im Light-Mode (fix: wirklich hell) */
