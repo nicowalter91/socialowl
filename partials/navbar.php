@@ -4,7 +4,7 @@
 -->
 
 <!-- Updated Navigation Bar with modern UI/UX design -->
-<div class="nav fixed-top d-flex justify-content-between align-items-center px-3 shadow-sm" style="background-color: #1c1f26;">
+<div class="nav fixed-top d-flex justify-content-between align-items-center px-3" style="background-color: #1c1f26;">
   <!-- Left Section: Logo + Title -->
   <div class="d-flex align-items-center gap-3" style="min-width: 200px;">
     <img class="logo" src="/Social_App/assets/img/Owl_logo.svg" alt="Owl Logo" style="width: 50px; height: 50px;">

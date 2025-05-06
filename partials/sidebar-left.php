@@ -16,7 +16,7 @@ $topHashtags = getTopHashtags($conn, 3);
        Sidebar links
   ============================ -->
 
-<div class="left-top-sidebar p-3 rounded-4 shadow-lg position-relative overflow-hidden" style="background-color: #1b2730; border-radius: 20px;">
+<div class="left-top-sidebar p-3 rounded-4 position-relative overflow-hidden" style="background-color: #1b2730; border-radius: 20px;">
   <div class="profile-top position-relative" style="background-image: url(/Social_App/assets/uploads/<?php echo $_SESSION["header_img"]; ?>); background-position: center; background-size: cover; background-repeat: no-repeat; min-height: 110px; border-radius: 20px 20px 0 0;">
     <div class="profile-image-wrapper position-absolute start-50 translate-middle-x rounded-circle border border-3 border-light bg-dark shadow" style="bottom: -45px; left: 50%; transform: translateX(-50%); width: 90px; height: 90px; overflow: hidden; z-index:2;">
       <img class="profile-image w-100 h-100 object-fit-cover" src="/Social_App/assets/uploads/<?php echo $_SESSION["profile_img"] ?>" alt="Profilbild">

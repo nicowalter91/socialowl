@@ -54,9 +54,9 @@ $suggestions = getSuggestions($conn, $currentUserId);
             </div>
             <form method="POST" action="/Social_App/controllers/unfollow_user.php" class="ms-2">
               <input type="hidden" name="user_id" value="<?= $user["id"] ?>">
-              <button class="btn btn-sm btn-outline-light rounded-pill d-flex align-items-center">
+                <button class="btn btn-sm btn-outline-danger rounded-pill d-flex align-items-center">
                 <i class="bi bi-person-x-fill"></i>
-              </button>
+                </button>
             </form>
           </div>
         <?php 
@@ -96,7 +96,7 @@ $suggestions = getSuggestions($conn, $currentUserId);
           </div>
           <form method="POST" action="/Social_App/controllers/follow_user.php" class="ms-2">
             <input type="hidden" name="user_id" value="<?= $user["id"] ?>">
-            <button class="btn btn-sm btn-outline-light rounded-pill d-flex align-items-center">
+            <button class="btn btn-sm btn-outline-success rounded-pill d-flex align-items-center">
               <i class="bi bi-person-plus-fill"></i>
             </button>
           </form>
