@@ -48,13 +48,13 @@
           
           <form id="chat-send-form" class="chat-input">
             <div class="input-group align-items-end chat-input-group">
-              <button type="button" id="emoji-btn" class="btn btn-emoji" title="Emoji einfügen">
+              <button type="button" id="emoji-btn" class="btn btn-sm btn-outline-light rounded-pill btn-emoji" title="Emoji einfügen">
                 <i class="bi bi-emoji-smile"></i>
               </button>
               <div class="emoji-picker d-none position-absolute"></div>
               <input type="text" id="chat-message-input" class="form-control chat-message-input" 
                 placeholder="Nachricht..." autocomplete="off" />
-              <button type="submit" class="btn btn-send">
+              <button type="submit" class="btn btn-sm btn-primary rounded-pill btn-send">
                 <i class="bi bi-send-fill"></i>
               </button>
             </div>

@@ -65,7 +65,7 @@ $suggestions = getSuggestions($conn, $currentUserId);
         ?>
       </div>
       <?php if (count($followedUsers) > 5): ?>
-        <button class="btn btn-link text-light w-100 mt-2 toggle-following">
+        <button class="btn btn-sm btn-outline-light rounded-pill w-100 mt-2 toggle-following">
           <span class="more-text">Mehr anzeigen</span>
           <span class="less-text" style="display: none;">Weniger anzeigen</span>
         </button>

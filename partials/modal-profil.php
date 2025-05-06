@@ -55,7 +55,7 @@ $headerImg = isset($_SESSION["header_img"]) && file_exists(UPLOADS . '/' . $_SES
             <div class="position-relative">
               <textarea name="bio" id="bio" class="form-control bg-dark text-light border-secondary pe-5" style="white-space: pre-wrap;" maxlength="150" rows="3"><?= htmlspecialchars($_SESSION["bio"] ?? '') ?></textarea>
               <div class="emoji-picker d-none position-absolute end-0 bottom-100 mb-2"></div>
-              <button type="button" class="btn btn-sm btn-outline-light position-absolute end-0 top-0 mt-2 me-2 emoji-bio-btn">
+              <button type="button" class="btn btn-sm btn-outline-light rounded-pill position-absolute end-0 top-0 mt-2 me-2 emoji-bio-btn">
                 <i class="bi bi-emoji-smile"></i>
               </button>
             </div>
@@ -66,8 +66,8 @@ $headerImg = isset($_SESSION["header_img"]) && file_exists(UPLOADS . '/' . $_SES
         </div>
 
         <div class="modal-footer border-0">
-          <button type="submit" class="btn btn-primary"><i class="bi bi-save me-1"></i>Speichern</button>
-          <button type="button" class="btn btn-outline-light" data-bs-dismiss="modal">Abbrechen</button>
+          <button type="submit" class="btn btn-sm btn-primary rounded-pill"><i class="bi bi-save me-1"></i>Speichern</button>
+          <button type="button" class="btn btn-sm btn-outline-light rounded-pill" data-bs-dismiss="modal">Abbrechen</button>
         </div>
       </form>
     </div>
