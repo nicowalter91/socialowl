@@ -44,7 +44,7 @@ if (!isset($post) || empty($post["id"])) return;
     <?php if ($post["user_id"] == $_SESSION["id"]): ?>
       <div class="dropdown">
         <button
-          class="btn btn-sm btn-outline-light rounded-pill"
+          class="btn btn-sm btn-outline-dark rounded-pill"
           type="button"
           data-bs-toggle="dropdown"
           aria-expanded="false"
@@ -157,7 +157,7 @@ if (!isset($post) || empty($post["id"])) return;
 
     <button
       type="button"
-      class="btn btn-sm btn-outline-light rounded-pill toggle-comment-form"
+      class="btn btn-sm btn-outline-dark rounded-pill toggle-comment-form"
       data-post-id="<?= $post['id'] ?>"
       title="Kommentar schreiben"
     >
@@ -170,7 +170,7 @@ if (!isset($post) || empty($post["id"])) return;
     
     <button 
       type="button" 
-      class="btn btn-sm btn-outline-light rounded-pill ms-auto share-post"
+      class="btn btn-sm btn-outline-dark rounded-pill ms-auto share-post"
       data-post-url="<?= BASE_URL ?>/views/feed.view.php?post=<?= $post['id'] ?>"
       title="Diesen Post teilen"
     >
@@ -213,7 +213,7 @@ if (!isset($post) || empty($post["id"])) return;
             <div class="position-relative">
               <button
                 type="button"
-                class="btn btn-sm btn-outline-light rounded-pill emoji-comment-btn"
+                class="btn btn-sm btn-outline-dark rounded-pill emoji-comment-btn"
                 title="Emoji einfügen"
               >
                 <i class="bi bi-emoji-smile me-1"></i><span class="d-none d-md-inline">Emoji</span>
@@ -333,7 +333,7 @@ document.addEventListener('DOMContentLoaded', function() {
       setTimeout(() => {
         button.innerHTML = originalHtml;
         button.classList.remove('btn-success');
-        button.classList.add('btn-outline-light');
+        button.classList.add('btn-outline-dark');
       }, 2000);
     }).catch(err => {
       console.error('Fehler beim Kopieren:', err);

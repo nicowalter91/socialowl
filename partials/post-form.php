@@ -75,14 +75,14 @@
   <div class="mt-1 d-flex justify-content-between align-items-center flex-wrap gap-2 pt-1 border-top border-secondary-subtle">
     <div class="d-flex gap-3 flex-wrap py-2">
       <!-- Bild Upload -->
-      <label for="file-upload-image" class="btn btn-sm btn-outline-light rounded-pill transition-all" tabindex="0" role="button" title="Bild hochladen">
+      <label for="file-upload-image" class="btn btn-sm btn-outline-dark rounded-pill transition-all" tabindex="0" role="button" title="Bild hochladen">
         <i class="bi bi-image-fill me-2"></i><span class="d-none d-md-inline">Bild</span>
         <span class="visually-hidden">Maximal 5MB, JPG/PNG/WEBP</span>
       </label>
       <input type="file" name="image" id="file-upload-image" style="display: none;" accept="image/jpeg,image/png,image/webp">
 
       <!-- Video Upload -->
-      <label for="file-upload-video" class="btn btn-sm btn-outline-light rounded-pill transition-all" tabindex="0" role="button" title="Video hochladen">
+      <label for="file-upload-video" class="btn btn-sm btn-outline-dark rounded-pill transition-all" tabindex="0" role="button" title="Video hochladen">
         <i class="bi bi-camera-reels me-2"></i><span class="d-none d-md-inline">Video</span>
         <span class="visually-hidden">Maximal 50MB, MP4</span>
       </label>
@@ -93,7 +93,7 @@
         <button
           type="button"
           id="emoji-picker-btn"
-          class="btn btn-sm btn-outline-light rounded-pill transition-all"
+          class="btn btn-sm btn-outline-dark rounded-pill transition-all"
           title="Emoji einfügen">
           <i class="bi bi-emoji-smile me-2"></i><span class="d-none d-md-inline">Emoji</span>
         </button>
@@ -120,7 +120,7 @@
       <button type="submit" class="btn btn-sm btn-primary rounded-pill">
         <i class="bi bi-check-lg me-2"></i><span class="d-none d-md-inline">Update</span>
       </button>
-      <button type="button" id="cancel-edit" class="btn btn-sm btn-outline-light rounded-pill">
+      <button type="button" id="cancel-edit" class="btn btn-sm btn-outline-dark rounded-pill">
         <i class="bi bi-x-lg me-2"></i><span class="d-none d-md-inline">Abbrechen</span>
       </button>
     </div>

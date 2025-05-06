@@ -267,6 +267,32 @@ body.dark-mode {
   background-color: #343a40;
 }
 
+/* Button styling for dark/light mode */
+/* In light mode, use dark outline buttons (from previous fix) */
+body:not(.dark-mode) .btn-outline-dark {
+  color: #212529;
+  border-color: #212529;
+}
+
+/* In dark mode, switch back to light outline buttons */
+body.dark-mode .btn-outline-dark {
+  color: #f8f9fa;
+  border-color: #f8f9fa;
+}
+
+/* Make sure hover states work properly in both modes */
+body.dark-mode .btn-outline-dark:hover {
+  color: #212529;
+  background-color: #f8f9fa;
+  border-color: #f8f9fa;
+}
+
+body:not(.dark-mode) .btn-outline-dark:hover {
+  color: #fff;
+  background-color: #212529;
+  border-color: #212529;
+}
+
 /* ============================
    User Info
 ============================ */

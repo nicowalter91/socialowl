@@ -38,7 +38,7 @@ if (!isset($comment)) return; ?>
     <?php if ($comment["user_id"] == $_SESSION["id"]): ?>
       <!-- Bearbeiten -->
       <button type="button"
-              class="btn btn-sm btn-outline-light rounded-pill edit-comment-btn"
+              class="btn btn-sm btn-outline-dark rounded-pill edit-comment-btn"
               data-comment-id="<?= $comment["id"] ?>"
               data-content="<?= htmlspecialchars($comment["content"], ENT_QUOTES) ?>">
         <i class="bi bi-pencil"></i>
@@ -52,7 +52,7 @@ if (!isset($comment)) return; ?>
     <?php endif; ?>
     <!-- Like (immer gleich) -->
     <button type="button"
-            class="btn btn-sm rounded-pill like-comment-btn <?= $comment["liked"] ? 'btn-light text-dark' : 'btn-outline-light' ?>"
+            class="btn btn-sm rounded-pill like-comment-btn <?= $comment["liked"] ? 'btn-light text-dark' : 'btn-outline-dark' ?>"
             data-comment-id="<?= $comment["id"] ?>">
       <i class="bi bi-hand-thumbs-up me-1"></i>
       <span class="like-count <?= $comment["liked"] ? 'text-dark' : '' ?>"><?= $comment["like_count"] ?></span>
