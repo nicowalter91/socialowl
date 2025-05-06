@@ -1038,4 +1038,55 @@ body:not(.dark-mode) .btn-outline-success .bi-person-plus-fill {
   }
 }
 
+/* Hover-Effekt für Suchergebnisse */
+.search-result-card {
+  transition: all 0.2s ease-in-out;
+  border-left: 3px solid transparent;
+}
+
+.search-result-card:hover {
+  transform: translateX(3px);
+  background-color: var(--color-dropdown-hover) !important;
+  border-left: 3px solid var(--color-primary);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Textfarbe für Suchergebnisse an das Theme anpassen */
+.search-result-card a {
+  color: var(--color-text) !important;
+  text-decoration: none;
+}
+
+/* Spezifischer Hover-Effekt für Post-Suchergebnisse */
+.search-result-card a:hover {
+  color: var(--color-primary) !important;
+}
+
+/* Spezifischer Hover-Effekt für Benutzer-Suchergebnisse */
+.search-result-card.d-flex:hover .rounded-circle {
+  transform: scale(1.05);
+  transition: transform 0.2s ease;
+  box-shadow: 0 0 0 2px var(--color-primary);
+}
+
+/* Allgemeiner Hover-Effekt für das Suchergebnis-Container */
+#search-results {
+  transition: all 0.2s ease;
+}
+
+#search-results:not(.d-none) {
+  animation: fadeInDown 0.3s ease;
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 
