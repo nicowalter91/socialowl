@@ -35,22 +35,22 @@ require_once __DIR__ . '/../includes/config.php';
 
         body {
             display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
+            justify-content: center;
             align-items: center;
-            min-height: 100vh;
+            height: 100vh;
             margin: 0;
-            padding: 0;
+            overflow: hidden;
             background: linear-gradient(135deg, var(--accent) 0%, #d4a5af 50%, var(--primary) 100%);
         }
 
         .page-wrapper {
+            height: auto;
             display: flex;
             justify-content: center;
             align-items: center;
             flex-grow: 1;
             width: 100%;
-            padding-top: 80px; /* Ensures the container is below the navbar */
+            padding-top: 0;
         }
 
         .login-container {
@@ -253,6 +253,11 @@ require_once __DIR__ . '/../includes/config.php';
                 <button type="submit" class="btn btn-login w-100">
                     <i class="bi bi-box-arrow-in-right me-1"></i>Anmelden
                 </button>
+
+                <div class="text-center my-4 position-relative">
+                    <hr class="border-top border-dark w-100">
+                    <span class="position-absolute top-50 start-50 translate-middle bg-white px-3 text-dark">oder</span>
+                </div>
 
                 <div class="login-link">
                     <p>Noch kein Konto? <a href="<?= BASE_URL ?>/views/register.view.php">Jetzt registrieren</a></p>
