@@ -137,16 +137,6 @@ require_once __DIR__ . '/../includes/config.php';
       position: relative;
       z-index: 1;
     }
-
-    /* Removed animation from the CTA button and added only a hover effect */
-    .btn {
-      animation: none;
-    }
-
-    .btn:hover {
-      transform: scale(1.05);
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-    }
   </style>
 </head>
 
@@ -189,7 +179,7 @@ require_once __DIR__ . '/../includes/config.php';
             <h2 class="mb-4 fw-light" style="color: #fff;">Dein soziales Netzwerk für kreative Köpfe</h2>
             <p class="lead mb-4" style="color: #f4f4f4;">Verbinde dich, teile deine Ideen und entdecke neue Inspirationen in einer Community von Gleichgesinnten.</p>
             <div class="d-flex flex-wrap justify-content-lg-start justify-content-center gap-3">
-              <a href="<?= BASE_URL ?>/views/register.view.php" class="btn btn-lg shadow" style="background: #eebbc3; color: #232946; font-weight: bold; border: none;">Jetzt kostenlos starten</a>
+              <a href="<?= BASE_URL ?>/views/register.view.php" class="btn btn-lg shadow animate__animated animate__pulse animate__infinite" style="background: #eebbc3; color: #232946; font-weight: bold; border: none;">Jetzt kostenlos starten</a>
               <a href="#preview" class="btn btn-lg btn-outline-light">App entdecken</a>
             </div>
           </div>
