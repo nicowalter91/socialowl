@@ -82,8 +82,8 @@ export class CommentHandler {
                     if (result.success) {
                         console.log("✅ Kommentar erfolgreich gesendet");
                         if (commentId) {
-                            // Kommentar aktualisieren
-                            const commentElement = document.querySelector(`.comment-item[data-comment-id="${commentId}"]`);
+                            // Kommentar aktualisieren - Klasse von comment-item zu comment korrigiert
+                            const commentElement = document.querySelector(`.comment[data-comment-id="${commentId}"]`);
                             if (commentElement && result.html) {
                                 const tempDiv = document.createElement("div");
                                 tempDiv.innerHTML = result.html;
@@ -157,7 +157,17 @@ export class CommentHandler {
 
                     const result = await res.json();
                     if (result.success) {
-                        deleteBtn.closest(".comment-item")?.remove();
+                        // Korrektur: Verwende die korrekte CSS-Klasse '.comment' anstatt '.comment-item'
+                        deleteBtn.closest(".comment")?.remove();
+                        
+                        // Optional: Benachrichtigung über die Löschung senden
+                        try {
+                            if (typeof notifyDeletion === 'function') {
+                                notifyDeletion("comment", deleteBtn.dataset.commentId);
+                            }
+                        } catch (e) {
+                            console.log("Benachrichtigung konnte nicht gesendet werden", e);
+                        }
                     } else {
                         alert("⚠️ Kommentar konnte nicht gelöscht werden.");
                     }
@@ -202,7 +212,7 @@ export class CommentHandler {
      */
     initCommentActions() {
         // Event-Listener für alle existierenden Kommentare
-        document.querySelectorAll(".comment-item").forEach(commentElement => {
+        document.querySelectorAll(".comment").forEach(commentElement => {
             this.initCommentActionsForElement(commentElement);
         });
     }
@@ -218,7 +228,7 @@ export class CommentHandler {
         const isOwn = comment.user_id === this.CURRENT_USER_ID;
 
         const commentElement = document.createElement("div");
-        commentElement.className = "comment-item px-2 py-2 mb-2 position-relative border-bottom border-secondary";
+        commentElement.className = "comment px-2 py-2 mb-2 position-relative border-bottom border-secondary";
         commentElement.id = `comment-${comment.id}`;
         commentElement.dataset.commentId = comment.id;
         commentElement.dataset.postId = comment.post_id;

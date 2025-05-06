@@ -183,6 +183,33 @@ export class EmojiHandler {
             });
         });
 
+        // Emoji-Button-Klicks
+        picker.querySelectorAll('.emoji-grid button').forEach(emojiBtn => {
+            emojiBtn.addEventListener('click', () => {
+                const emoji = emojiBtn.textContent;
+                // Cursor-Position ermitteln
+                const cursorPos = textarea.selectionStart;
+                // Text vor und nach Cursor
+                const textBefore = textarea.value.substring(0, cursorPos);
+                const textAfter = textarea.value.substring(cursorPos);
+                // Emoji einfügen
+                textarea.value = textBefore + emoji + textAfter;
+                
+                // Cursor nach dem Emoji positionieren
+                textarea.selectionStart = cursorPos + emoji.length;
+                textarea.selectionEnd = cursorPos + emoji.length;
+                
+                // Fokus zurück aufs Textfeld
+                textarea.focus();
+                
+                // Trigger input event für Zeichenzähler
+                textarea.dispatchEvent(new Event('input'));
+                
+                // Picker schließen
+                picker.classList.add('d-none');
+            });
+        });
+
         // Suche
         searchInput.addEventListener('input', () => {
             const query = searchInput.value.toLowerCase();
