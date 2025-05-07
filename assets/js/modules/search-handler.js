@@ -200,21 +200,18 @@ export class SearchHandler {
         const rightSection = document.createElement("div");
         rightSection.className = "d-flex align-items-center gap-2";
         
-        // Status-Badge für Follower-Anfragen
-        if (user.follow_request_status) {
+        // Ensure user is displayed but no follow/unfollow button for 'accepted' or 'pending' statuses
+        if (user.follow_request_status === 'accepted' || user.follow_request_status === 'pending') {
             const statusBadge = document.createElement("div");
-            
-            if (user.follow_request_status === 'accepted') {
-                statusBadge.className = "badge bg-success d-flex align-items-center";
-                statusBadge.innerHTML = '<i class="bi bi-check-circle me-1"></i> Akzeptiert';
-            } else if (user.follow_request_status === 'pending') {
-                statusBadge.className = "badge bg-warning text-dark d-flex align-items-center";
-                statusBadge.innerHTML = '<i class="bi bi-hourglass-split me-1"></i> Ausstehend';
-            }
-            
+            statusBadge.className = user.follow_request_status === 'accepted' ? "badge bg-success d-flex align-items-center" : "badge bg-warning text-dark d-flex align-items-center";
+            statusBadge.innerHTML = user.follow_request_status === 'accepted' ? '<i class="bi bi-check-circle me-1"></i> Akzeptiert' : '<i class="bi bi-hourglass-split me-1"></i> Ausstehend';
             rightSection.appendChild(statusBadge);
+            card.appendChild(userInfo);
+            card.appendChild(rightSection);
+            this.resultsContainer.appendChild(card);
+            return; // Skip adding follow/unfollow button
         }
-        
+
         // Follow/Unfollow Button
         const followButton = document.createElement("button");
         followButton.className = `btn btn-sm ${user.is_following ? 'btn-outline-danger' : 'btn-outline-success'} rounded-pill d-flex align-items-center`;
@@ -271,6 +268,7 @@ export class SearchHandler {
         });
         
         rightSection.appendChild(followButton);
+
         card.appendChild(userInfo);
         card.appendChild(rightSection);
         this.resultsContainer.appendChild(card);

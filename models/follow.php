@@ -37,7 +37,7 @@ function getSuggestions(PDO $conn, int $currentUserId): array {
       FROM users u
       WHERE u.id != :uid
         AND u.id NOT IN (
-          SELECT followed_id FROM followers WHERE follower_id = :uid2 AND status = 'accepted'
+          SELECT followed_id FROM followers WHERE follower_id = :uid2 AND (status = 'accepted' OR status = 'pending')
         )
       ORDER BY RAND()
       LIMIT 10
@@ -100,6 +100,22 @@ function isFollowing(PDO $conn, int $followerId, int $followedId): bool {
 function addFollow(PDO $conn, int $followerId, int $followedId): bool {
     $stmt = $conn->prepare("INSERT INTO followers (follower_id, followed_id, status, created_at) VALUES (?, ?, 'pending', NOW())");
     return $stmt->execute([$followerId, $followedId]);
+}
+
+/**
+ * Entfernt einen Nutzer aus der Vorschlagsliste, wenn eine Follow-Anfrage gesendet wurde.
+ *
+ * @param PDO $conn
+ * @param int $currentUserId
+ * @param int $followedUserId
+ * @return bool Erfolg
+ */
+function removeFromSuggestions(PDO $conn, int $currentUserId, int $followedUserId): bool {
+    $stmt = $conn->prepare("DELETE FROM suggestions WHERE user_id = :followedId AND suggested_to = :currentId");
+    return $stmt->execute([
+        ':followedId' => $followedUserId,
+        ':currentId' => $currentUserId
+    ]);
 }
 
 

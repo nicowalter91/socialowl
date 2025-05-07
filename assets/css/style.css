@@ -561,7 +561,7 @@ body.dark-mode .dropdown-toggle[aria-expanded="true"] {
 .emoji-category-tab.active::after {
   content: '';
   position: absolute;
-  bottom: -4px;
+    : -4px;
   left: 50%;
   transform: translateX(-50%);
   width: 20px;

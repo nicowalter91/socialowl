@@ -36,6 +36,10 @@ try {
     $content = "@{$follower['username']} möchte dir folgen";
     $stmt = $conn->prepare("INSERT INTO notifications (user_id, type, content) VALUES (?, 'follow_request', ?)");
     $stmt->execute([$followedId, $content]);
+
+    // Entferne den Nutzer aus der Vorschlagsliste
+    removeFromSuggestions($conn, $followerId, $followedId);
+
     header('Location: ' . $_SERVER['HTTP_REFERER']);
 } catch (Exception $e) {
     $_SESSION['error'] = $e->getMessage();
