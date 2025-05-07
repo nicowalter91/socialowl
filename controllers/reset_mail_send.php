@@ -1,7 +1,7 @@
 <?php
 /**
- * Controller: Passwort-Reset-Link anfordern
- * Erstellt einen Reset-Token und sendet ihn per E-Mail via Mailtrap.
+ * Controller: Passwort-Reset ohne Zwischenschritt
+ * Vereinfachter Prozess: PIN-Verifikation gefolgt von direkter Passwortänderung
  */
 
 require_once __DIR__ . '/../includes/config.php';
@@ -16,9 +16,80 @@ require_once __DIR__ . '/../vendor/autoload.php';
 $conn = getDatabaseConnection();
 $errorMessage = "";
 $successMessage = "";
+$showEmailForm = true;
+$showPinForm = false;
+$showPasswordForm = false;
+$userEmail = "";
+$username = "";
 
-if (isset($_POST["reset"])) {
+// Funktion zum Generieren eines 6-stelligen PINs
+function generatePin() {
+    return str_pad(rand(0, 999999), 6, '0', STR_PAD_LEFT);
+}
+
+// Schritt 3: Neues Passwort speichern
+if (isset($_POST["reset_password"])) {
+    $email = $_POST["email"];
+    $password = $_POST["password"];
+    $passwordRepeat = $_POST["passwordRepeat"];
+    $userEmail = $email;
+    
+    // Validierung
+    if ($password !== $passwordRepeat) {
+        $errorMessage = "Die Passwörter stimmen nicht überein.";
+        $showPasswordForm = true;
+    } elseif (strlen($password) < 8) {
+        $errorMessage = "Das Passwort muss mindestens 8 Zeichen lang sein.";
+        $showPasswordForm = true;
+    } else {
+        $passwordHash = password_hash($password, PASSWORD_DEFAULT);
+        
+        // Passwort aktualisieren und reset_pin zurücksetzen
+        $stmt = $conn->prepare("UPDATE users SET password = :password, reset_pin = NULL WHERE email = :email");
+        $stmt->bindParam(":password", $passwordHash);
+        $stmt->bindParam(":email", $email);
+        
+        if ($stmt->execute()) {
+            $successMessage = "Dein Passwort wurde erfolgreich zurückgesetzt! Du wirst in wenigen Sekunden zum Login weitergeleitet.";
+            $showEmailForm = false;
+            $showPinForm = false;
+            $showPasswordForm = false;
+        } else {
+            $errorMessage = "Fehler beim Zurücksetzen des Passworts. Bitte versuche es später noch einmal.";
+            $showPasswordForm = true;
+        }
+    }
+}
+
+// Schritt 2: PIN-Verifikation
+if (isset($_POST["verify_pin"])) {
+    $email = $_POST["email"];
+    $pin = $_POST["pin"];
+    $userEmail = $email;
+    
+    // Prüfen, ob die E-Mail existiert und der PIN korrekt ist
+    $checkStmt = $conn->prepare("SELECT reset_pin, username FROM users WHERE email = :email");
+    $checkStmt->bindParam(":email", $email);
+    $checkStmt->execute();
+    $user = $checkStmt->fetch(PDO::FETCH_ASSOC);
+    
+    if ($user && $user['reset_pin'] === $pin) {
+        // PIN ist korrekt, direkt zur Passwort-Änderung weiterleiten
+        $username = $user['username'];
+        $showEmailForm = false;
+        $showPinForm = false;
+        $showPasswordForm = true;
+        $successMessage = "PIN erfolgreich verifiziert. Du kannst jetzt ein neues Passwort setzen.";
+    } else {
+        $errorMessage = "Der eingegebene PIN ist nicht korrekt. Bitte versuche es erneut.";
+        $showPinForm = true;
+    }
+}
+
+// Schritt 1: E-Mail-Adresse prüfen und PIN generieren
+if (isset($_POST["send_pin"])) {
     $email = trim($_POST["email"]);
+    $userEmail = $email;
     
     if (empty($email)) {
         $errorMessage = "Bitte gib eine E-Mail-Adresse ein.";
@@ -32,41 +103,37 @@ if (isset($_POST["reset"])) {
         $user = $checkStmt->fetch(PDO::FETCH_ASSOC);
         
         if (!$user) {
-            // Aus Sicherheitsgründen keine Information darüber geben, ob die E-Mail existiert
-            $successMessage = "Falls ein Konto mit dieser E-Mail-Adresse existiert, wurde eine E-Mail mit Anweisungen zum Zurücksetzen des Passworts versendet. Bitte überprüfe dein Postfach (auch den Spam-Ordner).";
+            // Aus Sicherheitsgründen immer erfolgreich anzeigen, aber keine E-Mail senden
+            $successMessage = "Falls ein Konto mit dieser E-Mail-Adresse existiert, wurde ein PIN zur Verifikation an deine E-Mail-Adresse gesendet. Bitte überprüfe dein Postfach (auch den Spam-Ordner).";
+            $showEmailForm = false;
+            $showPinForm = true;
         } else {
-            $reset_token = md5(rand() . time());
-            $stmt = $conn->prepare("UPDATE users SET reset_token=:reset_token WHERE email=:email");
-            $stmt->bindParam(":reset_token", $reset_token);
+            // PIN generieren und in Datenbank speichern
+            $pin = generatePin();
+            $stmt = $conn->prepare("UPDATE users SET reset_pin = :pin WHERE email = :email");
+            $stmt->bindParam(":pin", $pin);
             $stmt->bindParam(":email", $email);
             
             if ($stmt->execute()) {
-                // Vollständigen Reset-Link mit localhost erstellen
-                $reset_link = "http://localhost/Social_App/controllers/reset_pwd.php";
-                $reset_link .= "?email=" . urlencode($email);
-                $reset_link .= "&reset_token=" . urlencode($reset_token);
-                
                 // E-Mail mit PHPMailer und Mailtrap senden
                 $mail = new PHPMailer(true);
                 
                 try {
-                    // Mailtrap-Konfiguration mit Ihren Zugangsdaten
+                    // Mailtrap-Konfiguration
+                    // Looking to send emails in production? Check out our Email API/SMTP product!
                     $mail->isSMTP();
                     $mail->Host = 'sandbox.smtp.mailtrap.io';
                     $mail->SMTPAuth = true;
+                    $mail->Port = 2525;
                     $mail->Username = 'af44a51e3bcdd5';
                     $mail->Password = '1edfab6a3a2e59';
                     $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-                    $mail->Port = 2525;
                     
                     // Absender und Empfänger
                     $mail->setFrom('noreply@socialowl.de', 'Social Owl');
                     $mail->addAddress($email, $user['username']);
                     
-                    // Absolute URL für den Server erstellen
-                    $server_url = "http://localhost/Social_App";
-                    
-                    // Das Logo als Anhang hinzufügen und mit CID im HTML referenzieren
+                    // Das Logo als Anhang hinzufügen
                     $logo_path = __DIR__ . '/../assets/img/Owl_logo.svg';
                     if (file_exists($logo_path)) {
                         $mail->addEmbeddedImage($logo_path, 'logo', 'Owl_logo.svg');
@@ -75,7 +142,7 @@ if (isset($_POST["reset"])) {
                     // E-Mail-Inhalt
                     $mail->isHTML(true);
                     $mail->CharSet = 'UTF-8';
-                    $mail->Subject = 'Dein Link zum Zurücksetzen des Passworts bei Social Owl';
+                    $mail->Subject = 'Dein Sicherheits-PIN zur Zurücksetzung des Passworts bei Social Owl';
                     $mail->Body = '
                         <html>
                         <head>
@@ -109,23 +176,19 @@ if (isset($_POST["reset"])) {
                                 .content {
                                     padding: 0 20px 20px;
                                 }
-                                .button {
-                                    display: inline-block;
-                                    padding: 12px 25px;
+                                .pin-container {
                                     margin: 20px 0;
-                                    background-color: #4F6D7A;
-                                    color: white;
-                                    text-decoration: none;
-                                    border-radius: 8px;
-                                    font-weight: bold;
                                     text-align: center;
                                 }
-                                .link-container {
-                                    margin: 15px 0;
-                                    padding: 10px;
+                                .pin {
+                                    font-size: 32px;
+                                    font-weight: bold;
+                                    letter-spacing: 6px;
                                     background-color: #f5f5f5;
-                                    border-radius: 5px;
-                                    word-break: break-all;
+                                    padding: 12px 20px;
+                                    border-radius: 8px;
+                                    display: inline-block;
+                                    border: 1px solid #ddd;
                                 }
                                 .footer {
                                     margin-top: 30px;
@@ -147,23 +210,19 @@ if (isset($_POST["reset"])) {
                         <body>
                             <div class="container">
                                 <div class="header">
-                                    <h2>Social Owl - Passwort zurücksetzen</h2>
+                                    <h2>Social Owl - Sicherheits-PIN</h2>
                                 </div>
                                 <div class="content">
                                     <p>Hallo ' . $user['username'] . ',</p>
-                                    <p>Du hast eine Anfrage zum Zurücksetzen deines Passworts gestellt. Klicke auf den folgenden Button, um ein neues Passwort zu erstellen:</p>
+                                    <p>Du hast eine Anfrage zum Zurücksetzen deines Passworts gestellt. Bitte verwende den folgenden 6-stelligen PIN, um deine Identität zu bestätigen:</p>
                                     
-                                    <div style="text-align: center;">
-                                        <a href="' . $reset_link . '" class="button">Passwort zurücksetzen</a>
-                                    </div>
-                                    
-                                    <p>Oder kopiere diese URL in deinen Browser:</p>
-                                    <div class="link-container">
-                                        <a href="' . $reset_link . '">' . $reset_link . '</a>
+                                    <div class="pin-container">
+                                        <div class="pin">' . $pin . '</div>
                                     </div>
                                     
                                     <div class="info">
-                                        <p><strong>Wichtig:</strong> Dieser Link ist 24 Stunden gültig.</p>
+                                        <p><strong>Wichtig:</strong> Dieser PIN ist aus Sicherheitsgründen nur für 30 Minuten gültig.</p>
+                                        <p>Nach erfolgreicher Eingabe des PINs kannst du direkt ein neues Passwort setzen.</p>
                                         <p>Wenn du keine Passwortzurücksetzung angefordert hast, kannst du diese E-Mail ignorieren.</p>
                                     </div>
                                 </div>
@@ -179,10 +238,12 @@ if (isset($_POST["reset"])) {
                     $mail->AltBody = 'Hallo ' . $user['username'] . ',
                     
 Du hast eine Anfrage zum Zurücksetzen deines Passworts bei Social Owl gestellt.
-Bitte klicke auf den folgenden Link oder kopiere ihn in deinen Browser, um ein neues Passwort zu erstellen:
-' . $reset_link . '
+Bitte verwende den folgenden 6-stelligen PIN, um deine Identität zu bestätigen:
 
-Dieser Link ist 24 Stunden gültig.
+' . $pin . '
+
+Dieser PIN ist aus Sicherheitsgründen nur für 30 Minuten gültig.
+Nach erfolgreicher Eingabe des PINs kannst du direkt ein neues Passwort setzen.
 
 Wenn du keine Passwortzurücksetzung angefordert hast, kannst du diese E-Mail ignorieren.
 
@@ -190,7 +251,9 @@ Mit freundlichen Grüßen,
 Das Social Owl Team';
                     
                     $mail->send();
-                    $successMessage = "Eine E-Mail mit dem Link zum Zurücksetzen des Passworts wurde an deine E-Mail-Adresse gesendet. Bitte überprüfe dein Postfach (auch den Spam-Ordner).";
+                    $showEmailForm = false;
+                    $showPinForm = true;
+                    $successMessage = "Ein 6-stelliger PIN wurde an deine E-Mail-Adresse gesendet. Bitte überprüfe dein Postfach (auch den Spam-Ordner) und gib den PIN unten ein.";
                 } catch (Exception $e) {
                     $errorMessage = "E-Mail konnte nicht gesendet werden. Bitte versuche es später noch einmal.";
                     if (DEBUG_MODE) {
@@ -198,7 +261,7 @@ Das Social Owl Team';
                     }
                 }
             } else {
-                $errorMessage = "Fehler beim Erstellen des Reset-Links. Bitte versuche es später noch einmal.";
+                $errorMessage = "Fehler beim Erstellen des PINs. Bitte versuche es später noch einmal.";
             }
         }
     }
@@ -266,10 +329,56 @@ Das Social Owl Team';
             background: var(--color-primary);
             color: white;
         }
+        .step.completed .step-number {
+            background: var(--color-primary);
+            color: white;
+        }
         .step.active .step-label {
             color: var(--color-text);
             font-weight: bold;
         }
+        .pin-input-container {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+        .pin-input {
+            width: 45px;
+            height: 55px;
+            text-align: center;
+            font-size: 24px;
+            border: 2px solid var(--color-border);
+            border-radius: 8px;
+            background: var(--color-input-bg);
+            color: var(--color-input-text);
+        }
+        .pin-input:focus {
+            border-color: var(--color-primary);
+            outline: none;
+        }
+        .password-strength-meter {
+            height: 5px;
+            background-color: #e0e0e0;
+            border-radius: 3px;
+            margin-top: 10px;
+            margin-bottom: 5px;
+            transition: all 0.3s;
+        }
+        .password-strength-meter div {
+            height: 100%;
+            border-radius: 3px;
+            transition: width 0.5s ease;
+        }
+        .password-strength-text {
+            font-size: 12px;
+            margin-bottom: 15px;
+        }
+        .very-weak { width: 20%; background-color: #f25f5c; }
+        .weak { width: 40%; background-color: #ffb400; }
+        .medium { width: 60%; background-color: #ffd000; }
+        .strong { width: 80%; background-color: #90be6d; }
+        .very-strong { width: 100%; background-color: #43aa8b; }
     </style>
 </head>
 <body class="d-flex align-items-center justify-content-center vh-100">
@@ -278,17 +387,17 @@ Das Social Owl Team';
         <h2 class="text-center mb-3">Passwort zurücksetzen</h2>
         
         <div class="progress-indicator mb-4">
-            <div class="step active">
-                <div class="step-number">1</div>
-                <div class="step-label">Link anfordern</div>
+            <div class="step <?= $showEmailForm ? 'active' : ($showPinForm || $showPasswordForm ? 'completed' : '') ?>">
+                <div class="step-number"><?= $showEmailForm ? '1' : '<i class="bi bi-check"></i>' ?></div>
+                <div class="step-label">E-Mail eingeben</div>
             </div>
-            <div class="step">
-                <div class="step-number">2</div>
-                <div class="step-label">Neues Passwort</div>
+            <div class="step <?= $showPinForm ? 'active' : ($showPasswordForm ? 'completed' : '') ?>">
+                <div class="step-number"><?= $showPinForm ? '2' : ($showPasswordForm ? '<i class="bi bi-check"></i>' : '2') ?></div>
+                <div class="step-label">PIN verifizieren</div>
             </div>
-            <div class="step">
+            <div class="step <?= $showPasswordForm ? 'active' : '' ?>">
                 <div class="step-number">3</div>
-                <div class="step-label">Fertig</div>
+                <div class="step-label">Neues Passwort</div>
             </div>
         </div>
         
@@ -298,24 +407,116 @@ Das Social Owl Team';
             </div>
         <?php endif; ?>
         
-        <?php if ($successMessage): ?>
+        <?php if ($successMessage && !$showPinForm && !$showPasswordForm): ?>
             <div class="alert alert-success border-0 rounded-3 mb-4" role="alert" aria-live="polite" style="background: var(--color-success); color: #fff;">
                 <i class="bi bi-check-circle me-2"></i> <?php echo $successMessage; ?>
             </div>
             
             <div class="text-center">
                 <img src="<?= BASE_URL ?>/assets/img/Owl_logo.svg" alt="Social Owl Logo" width="60" class="mb-3">
-                <p class="mb-4">Wir haben dir eine E-Mail mit weiteren Anweisungen gesendet.</p>
+                <p class="mb-4">Dein Passwort wurde erfolgreich zurückgesetzt.</p>
                 <div class="d-grid gap-2">
                     <a href="./login.php" class="btn btn-outline-primary rounded-3">Zurück zum Login</a>
-                    <button type="button" id="resendBtn" class="btn btn-outline-secondary rounded-3 mt-2" disabled>
-                        <span id="resendText">Erneut senden in <span id="countdown">60</span>s</span>
-                    </button>
+                    <div id="redirectNotice" class="mt-2 text-center">
+                        <small>Automatische Weiterleitung in <span id="countdown">5</span> Sekunden...</small>
+                    </div>
                 </div>
             </div>
+        <?php elseif ($showPinForm): ?>
+            <?php if ($successMessage): ?>
+                <div class="alert alert-info border-0 rounded-3 mb-3" style="background: var(--color-hover-bg); color: var(--color-text);">
+                    <i class="bi bi-info-circle me-2"></i> <?php echo $successMessage; ?>
+                </div>
+            <?php endif; ?>
+            
+            <form method="post" action="./reset_mail_send.php" id="pinForm">
+                <input type="hidden" name="email" value="<?= htmlspecialchars($userEmail) ?>">
+                
+                <div class="mb-4 text-center">
+                    <p>Bitte gib den 6-stelligen PIN ein, der an deine E-Mail gesendet wurde, um fortzufahren.</p>
+                </div>
+                
+                <div class="pin-input-container mb-3">
+                    <input type="text" maxlength="1" class="pin-input" data-index="0" inputmode="numeric">
+                    <input type="text" maxlength="1" class="pin-input" data-index="1" inputmode="numeric">
+                    <input type="text" maxlength="1" class="pin-input" data-index="2" inputmode="numeric">
+                    <input type="text" maxlength="1" class="pin-input" data-index="3" inputmode="numeric">
+                    <input type="text" maxlength="1" class="pin-input" data-index="4" inputmode="numeric">
+                    <input type="text" maxlength="1" class="pin-input" data-index="5" inputmode="numeric">
+                    <input type="hidden" name="pin" id="pinComplete">
+                </div>
+                
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-primary rounded-3 border-0" name="verify_pin" id="verifyBtn" disabled>
+                        <i class="bi bi-shield-check me-2"></i> PIN verifizieren
+                    </button>
+                </div>
+                
+                <div class="mt-3 text-center">
+                    <p>PIN nicht erhalten? <a href="./reset_mail_send.php" class="text-primary">Zurück</a></p>
+                </div>
+            </form>
+        <?php elseif ($showPasswordForm): ?>
+            <?php if ($successMessage): ?>
+                <div class="alert alert-info border-0 rounded-3 mb-3" style="background: var(--color-hover-bg); color: var(--color-text);">
+                    <i class="bi bi-info-circle me-2"></i> <?php echo $successMessage; ?>
+                </div>
+            <?php endif; ?>
+            
+            <?php if (isset($username)): ?>
+            <div class="alert alert-info rounded-3 border-0 mb-3" style="background: var(--color-hover-bg); color: var(--color-text);">
+                <p class="mb-0"><i class="bi bi-person-circle me-2"></i> Hallo <?= htmlspecialchars($username) ?>,</p>
+                <p class="mb-0">bitte wähle ein neues Passwort für dein Konto.</p>
+            </div>
+            <?php endif; ?>
+            
+            <form method="post" action="./reset_mail_send.php" id="passwordForm">
+                <input type="hidden" name="email" value="<?= htmlspecialchars($userEmail) ?>">
+                
+                <div class="mb-3">
+                    <label for="password" class="form-label">
+                        <i class="bi bi-shield-lock me-1"></i> Neues Passwort
+                    </label>
+                    <div class="input-group mb-2">
+                        <input type="password" class="form-control rounded-start border-0" 
+                            id="password" placeholder="Neues Passwort eingeben" name="password" 
+                            required oninput="checkPasswords(); checkPasswordStrength();" 
+                            style="background: var(--color-input-bg); color: var(--color-input-text);"
+                            aria-describedby="passwordHelp"
+                            autocomplete="new-password">
+                        <button class="btn border-0 rounded-end" type="button" id="togglePassword" 
+                            style="background: var(--color-input-bg);">
+                            <i class="bi bi-eye text-muted"></i>
+                        </button>
+                    </div>
+                    
+                    <!-- Passwort-Stärke Anzeige -->
+                    <div class="password-strength-meter">
+                        <div id="strengthBar"></div>
+                    </div>
+                    <div class="password-strength-text" id="strengthText">Wähle ein sicheres Passwort</div>
+                </div>
+                
+                <div class="mb-4">
+                    <label for="passwordRepeat" class="form-label">
+                        <i class="bi bi-shield-check me-1"></i> Passwort bestätigen
+                    </label>
+                    <input type="password" class="form-control border-0 rounded-3" 
+                        id="passwordRepeat" placeholder="Passwort bestätigen" name="passwordRepeat" 
+                        required oninput="checkPasswords();" 
+                        style="background: var(--color-input-bg); color: var(--color-input-text);"
+                        autocomplete="new-password">
+                </div>
+                
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-primary rounded-3 border-0" name="reset_password" id="resetBtn" disabled>
+                        <i class="bi bi-arrow-repeat me-2"></i> Passwort zurücksetzen
+                    </button>
+                </div>
+            </form>
         <?php else: ?>
             <div class="alert alert-info border-0 rounded-3 mb-3" style="background: var(--color-hover-bg); color: var(--color-text);">
-                <i class="bi bi-info-circle me-2"></i> Gib deine E-Mail-Adresse ein, um einen Link zum Zurücksetzen deines Passworts zu erhalten.
+                <i class="bi bi-info-circle me-2"></i> Gib deine E-Mail-Adresse ein, um einen PIN zur Verifikation zu erhalten.
             </div>
             
             <form method="post" action="./reset_mail_send.php" id="resetForm">
@@ -339,8 +540,8 @@ Das Social Owl Team';
                 </div>
                 
                 <div class="d-grid">
-                    <button type="submit" id="submitBtn" class="btn btn-primary rounded-3 border-0" name="reset">
-                        <i class="bi bi-envelope me-2"></i> Link zum Zurücksetzen senden
+                    <button type="submit" id="submitBtn" class="btn btn-primary rounded-3 border-0" name="send_pin">
+                        <i class="bi bi-shield-lock me-2"></i> PIN anfordern
                     </button>
                 </div>
                 
@@ -354,6 +555,7 @@ Das Social Owl Team';
     <script type="module" src="<?= BASE_URL ?>/assets/js/script.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // E-Mail-Validierung
             const emailInput = document.getElementById('email');
             const emailFeedback = document.getElementById('emailFeedback');
             const submitBtn = document.getElementById('submitBtn');
@@ -396,25 +598,218 @@ Das Social Owl Team';
                 }
             }
             
-            // Countdown für "Erneut senden" Button
-            const resendBtn = document.getElementById('resendBtn');
-            const countdownEl = document.getElementById('countdown');
+            // PIN-Eingabe Handling
+            const pinInputs = document.querySelectorAll('.pin-input');
+            const pinComplete = document.getElementById('pinComplete');
+            const verifyBtn = document.getElementById('verifyBtn');
             
-            if (resendBtn && countdownEl) {
-                let seconds = 60;
+            if (pinInputs.length > 0) {
+                // Fokus auf erstes PIN-Eingabefeld setzen
+                pinInputs[0].focus();
+                
+                pinInputs.forEach(input => {
+                    input.addEventListener('keyup', function(e) {
+                        // Nur Zahlen erlauben
+                        this.value = this.value.replace(/[^0-9]/g, '');
+                        
+                        // Wenn eine Zahl eingegeben wurde, zum nächsten Feld springen
+                        const index = parseInt(this.dataset.index);
+                        if (this.value && index < pinInputs.length - 1) {
+                            pinInputs[index + 1].focus();
+                        }
+                        
+                        // Vollständigen PIN zusammensetzen
+                        updateCompletePin();
+                    });
+                    
+                    input.addEventListener('keydown', function(e) {
+                        const index = parseInt(this.dataset.index);
+                        
+                        // Bei Backspace zum vorherigen Feld springen
+                        if (e.key === 'Backspace' && !this.value && index > 0) {
+                            pinInputs[index - 1].focus();
+                            pinInputs[index - 1].value = '';
+                            updateCompletePin();
+                        }
+                    });
+                    
+                    // Paste-Handling für den gesamten PIN
+                    input.addEventListener('paste', function(e) {
+                        e.preventDefault();
+                        const paste = (e.clipboardData || window.clipboardData).getData('text');
+                        const digits = paste.replace(/[^0-9]/g, '').slice(0, 6).split('');
+                        
+                        if (digits.length > 0) {
+                            pinInputs.forEach((input, i) => {
+                                if (i < digits.length) {
+                                    input.value = digits[i];
+                                }
+                            });
+                            
+                            if (digits.length > 0 && digits.length < 6) {
+                                pinInputs[digits.length].focus();
+                            }
+                            
+                            updateCompletePin();
+                        }
+                    });
+                });
+                
+                function updateCompletePin() {
+                    let pin = '';
+                    let isComplete = true;
+                    
+                    pinInputs.forEach(input => {
+                        pin += input.value;
+                        if (!input.value) {
+                            isComplete = false;
+                        }
+                    });
+                    
+                    if (pinComplete) pinComplete.value = pin;
+                    if (verifyBtn) verifyBtn.disabled = !isComplete;
+                }
+            }
+            
+            // Passwort-Funktionalität
+            const password = document.getElementById('password');
+            const passwordRepeat = document.getElementById('passwordRepeat');
+            const passwordMessage = document.getElementById('passwordMessage');
+            const resetBtn = document.getElementById('resetBtn');
+            const togglePassword = document.getElementById('togglePassword');
+            
+            if (password && passwordRepeat) {
+                // Fokus auf Passwort-Feld setzen
+                password.focus();
+                
+                // Passwort-Überprüfung
+                function checkPasswords() {
+                    if (password.value === '' || passwordRepeat.value === '') {
+                        if (passwordMessage) passwordMessage.style.display = 'none';
+                        if (resetBtn) resetBtn.disabled = true;
+                        return;
+                    }
+                    
+                    if (passwordMessage) passwordMessage.style.display = 'block';
+                    
+                    if (password.value !== passwordRepeat.value) {
+                        if (passwordMessage) {
+                            passwordMessage.textContent = 'Die Passwörter stimmen nicht überein.';
+                            passwordMessage.classList.add('text-danger');
+                            passwordMessage.classList.remove('text-success');
+                        }
+                        if (resetBtn) resetBtn.disabled = true;
+                    } else if (password.value.length < 8) {
+                        if (passwordMessage) {
+                            passwordMessage.textContent = 'Das Passwort muss mindestens 8 Zeichen lang sein.';
+                            passwordMessage.classList.add('text-danger');
+                            passwordMessage.classList.remove('text-success');
+                        }
+                        if (resetBtn) resetBtn.disabled = true;
+                    } else {
+                        if (passwordMessage) {
+                            passwordMessage.textContent = 'Die Passwörter stimmen überein.';
+                            passwordMessage.classList.add('text-success');
+                            passwordMessage.classList.remove('text-danger');
+                        }
+                        if (resetBtn) resetBtn.disabled = false;
+                    }
+                }
+                
+                // Passwort-Stärke Funktion
+                function checkPasswordStrength() {
+                    const strengthBar = document.getElementById('strengthBar');
+                    const strengthText = document.getElementById('strengthText');
+                    
+                    if (!password || !strengthBar || !strengthText) return;
+                    
+                    // Löscht alle Klassen
+                    strengthBar.className = '';
+                    
+                    if (password.value === '') {
+                        strengthBar.style.width = '0%';
+                        strengthText.textContent = 'Wähle ein sicheres Passwort';
+                        return;
+                    }
+                    
+                    let strength = 0;
+                    
+                    // Mindestlänge
+                    if (password.value.length >= 8) strength += 1;
+                    if (password.value.length >= 12) strength += 1;
+                    
+                    // Komplexität
+                    if (password.value.match(/[a-z]+/)) strength += 1;
+                    if (password.value.match(/[A-Z]+/)) strength += 1;
+                    if (password.value.match(/[0-9]+/)) strength += 1;
+                    if (password.value.match(/[^a-zA-Z0-9]+/)) strength += 1;
+                    
+                    // Bewertung und Anzeige
+                    switch(true) {
+                        case (strength === 0):
+                            strengthBar.classList.add('very-weak');
+                            strengthText.textContent = 'Sehr schwach';
+                            break;
+                        case (strength <= 2):
+                            strengthBar.classList.add('weak');
+                            strengthText.textContent = 'Schwach';
+                            break;
+                        case (strength <= 3):
+                            strengthBar.classList.add('medium');
+                            strengthText.textContent = 'Mittel';
+                            break;
+                        case (strength <= 5):
+                            strengthBar.classList.add('strong');
+                            strengthText.textContent = 'Stark';
+                            break;
+                        case (strength > 5):
+                            strengthBar.classList.add('very-strong');
+                            strengthText.textContent = 'Sehr stark';
+                            break;
+                    }
+                }
+                
+                // Event-Listener für Passwort-Felder
+                password.addEventListener('input', function() {
+                    checkPasswordStrength();
+                    checkPasswords();
+                });
+                
+                passwordRepeat.addEventListener('input', checkPasswords);
+                
+                // Initial auslösen
+                checkPasswordStrength();
+                
+                // Toggle Password Visibility
+                if (togglePassword) {
+                    togglePassword.addEventListener('click', function() {
+                        const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+                        password.setAttribute('type', type);
+                        
+                        // Icon ändern
+                        const icon = this.querySelector('i');
+                        if (type === 'password') {
+                            icon.classList.remove('bi-eye-slash');
+                            icon.classList.add('bi-eye');
+                        } else {
+                            icon.classList.remove('bi-eye');
+                            icon.classList.add('bi-eye-slash');
+                        }
+                    });
+                }
+            }
+            
+            // Countdown für automatische Weiterleitung
+            const countdownEl = document.getElementById('countdown');
+            if (countdownEl) {
+                let seconds = 5;
                 const countdown = setInterval(function() {
                     seconds--;
                     countdownEl.textContent = seconds;
                     
                     if (seconds <= 0) {
                         clearInterval(countdown);
-                        resendBtn.disabled = false;
-                        document.getElementById('resendText').textContent = "Erneut senden";
-                        
-                        // Event-Listener hinzufügen, um das Formular erneut anzuzeigen
-                        resendBtn.addEventListener('click', function() {
-                            window.location.href = './reset_mail_send.php';
-                        });
+                        window.location.href = './login.php';
                     }
                 }, 1000);
             }
