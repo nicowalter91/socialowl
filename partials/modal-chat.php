@@ -376,8 +376,6 @@
 
 /* Emoji Picker */
 .emoji-picker {
-  bottom: 76px;
-  left: 20px;
   width: 320px;
   z-index: 1050;
   border-radius: 16px;

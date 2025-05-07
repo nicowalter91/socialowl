@@ -220,7 +220,7 @@ if (!isset($post) || empty($post["id"])) return;
               </button>
               <div
                 class="emoji-picker d-none position-absolute top-100 end-0 mt-2 rounded-4 p-3 shadow-lg bg-dark text-light"
-                style="z-index: 1050; width: 250px;"
+                style="z-index: 1050; width: 320px;"
               ></div>
             </div>
 

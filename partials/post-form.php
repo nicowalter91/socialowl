@@ -97,7 +97,7 @@
           title="Emoji einfügen">
           <i class="bi bi-emoji-smile me-2"></i><span class="d-none d-md-inline">Emoji</span>
         </button>
-        <div class="emoji-picker d-none position-absolute p-3 shadow-lg rounded-4 bg-dark text-light" style="z-index: 100; min-width: 250px;">
+        <div class="emoji-picker d-none position-absolute p-3 shadow-lg rounded-4 bg-dark text-light" style="z-index: 100; width: 320px;">
           <!-- Hier wird der Emoji-Picker via JavaScript geladen -->
         </div>
       </div>
