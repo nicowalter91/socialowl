@@ -36,6 +36,7 @@ $posts = fetchAllPostsWithComments($conn, $_SESSION["id"]);
   <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/bootstrap.min.css">
   <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/bootstrap-icons.css">
   <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/style.css">
+  <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/cookie-banner.css">
   <link rel="icon" href="<?= BASE_URL ?>/assets/img/Owl_logo.svg" type="image/x-icon">
 </head>
 
@@ -65,7 +66,22 @@ $posts = fetchAllPostsWithComments($conn, $_SESSION["id"]);
   <script src="<?= BASE_URL ?>/assets/js/bootstrap.bundle.min.js"></script>
   <script type="module" src="<?= BASE_URL ?>/assets/js/script.js"></script>
   <script src="<?= BASE_URL ?>/assets/js/notifications.js" type="module"></script>
+  <script src="<?= BASE_URL ?>/assets/js/cookie-banner.js"></script>
 
+  <!-- Cookie Banner -->
+  <div id="cookie-banner" class="cookie-banner">
+    <div class="cookie-banner-header">
+      <i class="bi bi-cookie cookie-icon"></i>
+      <h3 class="cookie-banner-title">Cookies & Datenschutz</h3>
+    </div>
+    <p class="cookie-banner-text">
+      Wir verwenden Cookies, um Ihre Erfahrung auf unserer Website zu verbessern und Ihnen personalisierte Inhalte anzubieten.
+    </p>
+    <div class="cookie-banner-buttons">
+      <button id="cookie-accept" class="cookie-accept-btn">Akzeptieren</button>
+      <button id="cookie-close" class="cookie-close-btn">Schließen</button>
+    </div>
+  </div>
 
 </body>
 
