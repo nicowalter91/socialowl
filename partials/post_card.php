@@ -24,12 +24,20 @@ if (!isset($post) || empty($post["id"])) return;
           src="<?= BASE_URL ?>/assets/uploads/<?= htmlspecialchars($post["profile_img"]) ?>"
           alt="Profilbild von @<?= htmlspecialchars($post["username"]) ?>"
           width="48" height="48"
+          onerror="this.src='<?= BASE_URL ?>/assets/img/default-avatar.png';"
         >
       </a>
       <div>
         <a href="<?= BASE_URL ?>/views/profile.php?username=<?= htmlspecialchars($post['username']) ?>" 
            class="text-decoration-none">
-          <h6 class="text-light mb-0 hover-underline">@<?= htmlspecialchars($post["username"]) ?></h6>
+          <h6 class="color-text mb-0 hover-underline">
+            <?php if (!empty($post["display_name"])): ?>
+              <span class="fw-bold"><?= htmlspecialchars($post["display_name"]) ?></span>
+              <small class="text-muted">@<?= htmlspecialchars($post["username"]) ?></small>
+            <?php else: ?>
+              @<?= htmlspecialchars($post["username"]) ?>
+            <?php endif; ?>
+          </h6>
         </a>
         <small
           class="post-timestamp text-light opacity-75"
@@ -83,13 +91,26 @@ if (!isset($post) || empty($post["id"])) return;
 
   <!-- Inhalt -->
   <div class="mb-3 pb-3 border-bottom border-secondary">
-    <p class="post-text text-light mb-3 fs-6">
+    <p class="post-text color-text mb-3 fs-6 <?= mb_strlen($post["content"]) > 280 ? 'long-post collapsed' : '' ?>">
       <?php
         $content = htmlspecialchars($post["content"]);
+        // URLs automatisch verlinken
+        $urlPattern = '/(https?:\/\/[^\s]+)/';
+        $content = preg_replace($urlPattern, '<a href="$1" target="_blank" rel="noopener noreferrer" class="text-primary text-decoration-none">$1</a>', $content);
+        // Hashtags verlinken
         $content = preg_replace('/#(\w+)/', '<a href="'.BASE_URL.'/views/search.view.php?q=%23$1" class="hashtag text-primary text-decoration-none">#$1</a>', $content);
         echo nl2br($content);
       ?>
     </p>
+    
+    <?php if (mb_strlen($post["content"]) > 280): ?>
+      <div class="text-center mb-3">
+        <button class="btn btn-sm btn-outline-secondary toggle-post-length" data-post-id="<?= $post['id'] ?>">
+          <span class="more-text">Mehr anzeigen</span>
+          <span class="less-text d-none">Weniger anzeigen</span>
+        </button>
+      </div>
+    <?php endif; ?>
 
     <?php if (!empty($post["image_path"])): ?>
       <div class="tweet-media-wrapper mb-2 w-100">
@@ -101,10 +122,17 @@ if (!isset($post) || empty($post["id"])) return;
             alt="Bild zum Post von @<?= htmlspecialchars($post["username"]) ?>"
             class="tweet-media img-fluid rounded-4 shadow-sm"
             loading="lazy"
+            onerror="this.src='<?= BASE_URL ?>/assets/img/placeholder.png'; this.classList.add('image-error');"
           >
           <div class="position-absolute top-0 end-0 m-2 d-none d-md-block">
             <span class="badge bg-dark bg-opacity-75 p-2 rounded-pill">
               <i class="bi bi-arrows-fullscreen"></i>
+              <?php 
+                if (file_exists(BASE_URL . "/assets/posts/" . $post["image_path"])) {
+                  $filesize = filesize(BASE_URL . "/assets/posts/" . $post["image_path"]);
+                  echo human_filesize($filesize);
+                }
+              ?>
             </span>
           </div>
         </a>
@@ -125,6 +153,7 @@ if (!isset($post) || empty($post["id"])) return;
               src="<?= BASE_URL ?>/assets/posts/<?= htmlspecialchars($post["video_path"]) ?>?t=<?= time() ?>"
               type="video/mp4"
             >
+            <track kind="captions" src="" label="Deutsch">
             Dein Browser unterstützt dieses Video nicht.
           </video>
         </div>
@@ -137,21 +166,26 @@ if (!isset($post) || empty($post["id"])) return;
     <form
       action="<?= BASE_URL ?>/controllers/like_post.php"
       method="POST"
-      class="me-2 d-inline"
+      class="me-2 d-inline like-form"
+      data-post-id="<?= $post["id"] ?>"
     >
+      <?php if (function_exists('csrf_token')): ?>
+        <input type="hidden" name="csrf_token" value="<?= csrf_token() ?>">
+      <?php endif; ?>
       <input type="hidden" name="post_id" value="<?= $post["id"] ?>">
       <button
-        type="submit"
+        type="button"
         class="btn btn-sm <?= !empty($post["liked_by_me"])
           ? 'btn-light text-dark'
-          : 'btn-outline-primary' ?> rounded-pill transition-all"
+          : 'btn-outline-primary' ?> rounded-pill transition-all like-btn"
+        data-liked="<?= !empty($post["liked_by_me"]) ? '1' : '0' ?>"
         title="<?= !empty($post["liked_by_me"]) ? 'Dir gefällt dieser Beitrag' : 'Gefällt mir markieren' ?>"
       >
         <i class="bi <?= !empty($post["liked_by_me"]) ? 'bi-hand-thumbs-up-fill' : 'bi-hand-thumbs-up' ?> me-1"></i>
         <span class="d-none d-md-inline"><?= !empty($post["liked_by_me"]) ? 'Gefällt' : 'Gefällt mir' ?></span>
-        <?php if (!empty($post["like_count"])): ?>
-          <span class="badge bg-<?= !empty($post["liked_by_me"]) ? 'dark' : 'primary' ?> ms-1"><?= $post["like_count"] ?></span>
-        <?php endif; ?>
+        <span class="badge bg-<?= !empty($post["liked_by_me"]) ? 'dark' : 'primary' ?> ms-1 like-count">
+          <?= !empty($post["like_count"]) ? $post["like_count"] : '0' ?>
+        </span>
       </button>
     </form>
 
@@ -265,15 +299,48 @@ if (!isset($post) || empty($post["id"])) return;
   box-shadow: 0 6px 12px rgba(0,0,0,0.15) !important;
 }
 
-.share-post:focus + .share-options {
-  display: block !important;
+/* Darkmode-Kompatibilität */
+.color-text {
+  color: var(--bs-body-color) !important;
+}
+
+body.dark-mode .color-text {
+  color: #f8f9fa !important;
+}
+
+/* Lange Posts */
+.long-post.collapsed {
+  max-height: 300px;
+  overflow: hidden;
+  position: relative;
+}
+
+.long-post.collapsed::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 60px;
+  background: linear-gradient(transparent, var(--bs-body-bg));
+  pointer-events: none;
+}
+
+/* Image Error Styling */
+.image-error {
+  opacity: 0.7;
+  filter: grayscale(0.5);
 }
 
 /* Dropdown-Menü für post_card - Light/Dark Mode Support */
 .post-card-dropdown {
-  background-color: var(--color-card) !important;
-  color: var(--color-text) !important;
-  border: 1px solid var(--color-border) !important;
+  --bs-dropdown-bg: var(--bs-dark);
+  --bs-dropdown-color: var(--bs-light);
+  --bs-dropdown-border-color: var(--bs-gray-700);
+  --bs-dropdown-link-hover-bg: rgba(255,255,255,0.1);
+  background-color: var(--bs-dropdown-bg) !important;
+  color: var(--bs-dropdown-color) !important;
+  border: 1px solid var(--bs-dropdown-border-color) !important;
   border-radius: 16px !important;
   box-shadow: 0 8px 32px rgba(0,0,0,0.25), 0 1.5px 6px rgba(0,0,0,0.10);
   transform-origin: top right;
@@ -295,7 +362,7 @@ body.dark-mode .post-card-dropdown {
 }
 
 .post-card-dropdown .dropdown-item {
-  color: var(--color-text) !important;
+  color: inherit !important;
   border-radius: 10px;
   margin: 0 0.5rem;
   padding: 0.6rem 1.2rem;
@@ -303,12 +370,12 @@ body.dark-mode .post-card-dropdown {
 }
 
 .post-card-dropdown .dropdown-divider {
-  border-color: var(--color-border) !important;
+  border-color: var(--bs-dropdown-border-color) !important;
   margin: 0.3rem 0;
 }
 
 .post-card-dropdown .dropdown-item:hover {
-  background-color: var(--color-dropdown-hover) !important;
+  background-color: var(--bs-dropdown-link-hover-bg) !important;
   transform: translateX(3px);
 }
 
@@ -343,6 +410,117 @@ body.dark-mode .post-card-dropdown {
 <!-- JavaScript für die Share-Funktionalität -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+  // Verbesserte Zugänglichkeit für interaktive Elemente
+  document.querySelectorAll('.share-post, .toggle-comment-form, .edit-post-btn').forEach(btn => {
+    if (!btn.getAttribute('aria-label')) {
+      const iconText = btn.querySelector('.bi')?.nextSibling?.textContent?.trim() || 
+                      btn.textContent.trim();
+      btn.setAttribute('aria-label', iconText);
+    }
+  });
+
+  // Mehr/Weniger für lange Posts
+  document.querySelectorAll('.toggle-post-length').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const postId = this.dataset.postId;
+      const postElement = document.querySelector(`#post-${postId} .long-post`);
+      const moreText = this.querySelector('.more-text');
+      const lessText = this.querySelector('.less-text');
+      
+      postElement.classList.toggle('collapsed');
+      moreText.classList.toggle('d-none');
+      lessText.classList.toggle('d-none');
+    });
+  });
+
+  // AJAX Like Funktion
+  document.querySelectorAll('.like-btn').forEach(btn => {
+    btn.addEventListener('click', function(e) {
+      e.preventDefault();
+      const form = this.closest('.like-form');
+      const postId = form.dataset.postId;
+      const isLiked = this.dataset.liked === '1';
+      const likeCount = this.querySelector('.like-count');
+      const csrfToken = form.querySelector('[name="csrf_token"]')?.value;
+      
+      fetch(`${BASE_URL}/api/like_post.php`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': csrfToken || ''
+        },
+        body: JSON.stringify({
+          post_id: postId,
+          action: isLiked ? 'unlike' : 'like'
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          // Update like status
+          const newLikeCount = parseInt(data.like_count);
+          likeCount.textContent = newLikeCount;
+          
+          if (isLiked) {
+            // Unlike
+            this.classList.remove('btn-light', 'text-dark');
+            this.classList.add('btn-outline-primary');
+            this.querySelector('.bi').classList.remove('bi-hand-thumbs-up-fill');
+            this.querySelector('.bi').classList.add('bi-hand-thumbs-up');
+            likeCount.classList.remove('bg-dark');
+            likeCount.classList.add('bg-primary');
+            this.dataset.liked = '0';
+            this.title = 'Gefällt mir markieren';
+            
+            if (this.querySelector('.d-md-inline')) {
+              this.querySelector('.d-md-inline').textContent = 'Gefällt mir';
+            }
+          } else {
+            // Like
+            this.classList.remove('btn-outline-primary');
+            this.classList.add('btn-light', 'text-dark');
+            this.querySelector('.bi').classList.remove('bi-hand-thumbs-up');
+            this.querySelector('.bi').classList.add('bi-hand-thumbs-up-fill');
+            likeCount.classList.remove('bg-primary');
+            likeCount.classList.add('bg-dark');
+            this.dataset.liked = '1';
+            this.title = 'Dir gefällt dieser Beitrag';
+            
+            if (this.querySelector('.d-md-inline')) {
+              this.querySelector('.d-md-inline').textContent = 'Gefällt';
+            }
+          }
+        }
+      })
+      .catch(error => {
+        console.error('Fehler beim Like/Unlike:', error);
+      });
+    });
+  });
+
+  // Zeitstempel formatieren
+  document.querySelectorAll('.post-timestamp').forEach(timestamp => {
+    const dateStr = timestamp.dataset.timestamp;
+    if (dateStr) {
+      const postDate = new Date(dateStr);
+      const now = new Date();
+      const diffMs = now - postDate;
+      const diffMins = Math.floor(diffMs / (1000 * 60));
+      const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+      const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+      
+      // Relative Zeitangaben für bessere Nutzerfreundlichkeit
+      if (diffMins < 60) {
+        timestamp.textContent = `vor ${diffMins} ${diffMins === 1 ? 'Minute' : 'Minuten'}`;
+      } else if (diffHours < 24) {
+        timestamp.textContent = `vor ${diffHours} ${diffHours === 1 ? 'Stunde' : 'Stunden'}`;
+      } else if (diffDays < 7) {
+        timestamp.textContent = `vor ${diffDays} ${diffDays === 1 ? 'Tag' : 'Tagen'}`;
+      }
+      // Bei älteren Posts das vorhandene Format beibehalten
+    }
+  });
+
   // Zeichenzähler für Kommentare
   document.querySelectorAll('.tweet-comment-box').forEach(textarea => {
     textarea.addEventListener('input', function() {
@@ -402,5 +580,37 @@ document.addEventListener('DOMContentLoaded', function() {
       console.error('Fehler beim Kopieren:', err);
     });
   }
+
+  // Error-Handling für Bilder verbessern
+  document.querySelectorAll('.tweet-media').forEach(img => {
+    img.addEventListener('error', function() {
+      this.src = BASE_URL + '/assets/img/placeholder.png';
+      this.classList.add('image-error');
+    });
+  });
 });
+
+// Hilfsfunktion für menschenlesbare Dateigrößen
+function human_filesize(bytes, decimals = 1) {
+  if (bytes === 0) return '0 B';
+  const k = 1024;
+  const dm = decimals < 0 ? 0 : decimals;
+  const sizes = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+}
 </script>
+
+<?php
+// Hilfsfunktion für menschenlesbare Dateigrößen (PHP-Variante)
+if (!function_exists('human_filesize')) {
+  function human_filesize($bytes, $decimals = 1) {
+    if ($bytes === 0) return '0 B';
+    $k = 1024;
+    $dm = $decimals < 0 ? 0 : $decimals;
+    $sizes = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+    $i = floor(log($bytes) / log($k));
+    return round($bytes / pow($k, $i), $dm) . ' ' . $sizes[$i];
+  }
+}
+?>
