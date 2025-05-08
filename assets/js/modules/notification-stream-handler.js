@@ -150,7 +150,7 @@ export class NotificationStreamHandler {
               <div>
                 ${notificationContent}
               </div>
-              <button type=\"button\" class=\"btn btn-link btn-sm delete-notification ps-4\" title=\"Benachrichtigung löschen\" style=\"color: #b7c8d2; font-size: 1.2rem; padding-left: 1.5rem !important; padding-right: 0; margin-left: 12px;\">
+              <button type=\"button\" class=\"delete-notification\" title=\"Benachrichtigung löschen\" style=\"color: #ff0000; font-size: 1.2rem; padding: 0; border: none; background: none;\">
                 <i class=\"bi bi-x\"></i>
               </button>
             </div>
