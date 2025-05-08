@@ -176,11 +176,12 @@ if (!isset($post) || empty($post["id"])) return;
       <input type="hidden" name="post_id" value="<?= $post["id"] ?>">
       <button
         type="button"
-        class="btn btn-sm <?= !empty($post["liked_by_me"])
-          ? 'btn-light text-dark'
+        class="btn btn-sm theme-aware-btn <?= !empty($post["liked_by_me"])
+          ? 'btn-light text-primary'
           : 'btn-outline-primary' ?> btn-rounded transition-all like-btn"
         data-liked="<?= !empty($post["liked_by_me"]) ? '1' : '0' ?>"
         title="<?= !empty($post["liked_by_me"]) ? 'Dir gefällt dieser Beitrag' : 'Gefällt mir markieren' ?>"
+        aria-label="<?= !empty($post["liked_by_me"]) ? 'Dir gefällt dieser Beitrag' : 'Gefällt mir markieren' ?>"
       >
         <i class="bi <?= !empty($post["liked_by_me"]) ? 'bi-hand-thumbs-up-fill' : 'bi-hand-thumbs-up' ?> me-1"></i>
         <span class="d-none d-md-inline"><?= !empty($post["liked_by_me"]) ? 'Gefällt' : 'Gefällt mir' ?></span>
@@ -195,6 +196,7 @@ if (!isset($post) || empty($post["id"])) return;
       class="btn btn-sm btn-outline-dark btn-rounded toggle-comment-form"
       data-post-id="<?= $post['id'] ?>"
       title="Kommentar schreiben"
+      aria-label="Kommentar schreiben"
     >
       <i class="bi bi-chat-left-text me-1"></i>
       <span class="d-none d-md-inline">Kommentieren</span>
@@ -208,6 +210,7 @@ if (!isset($post) || empty($post["id"])) return;
       class="btn btn-sm btn-outline-dark btn-rounded ms-auto share-post"
       data-post-url="<?= BASE_URL ?>/views/feed.view.php?post=<?= $post['id'] ?>"
       title="Diesen Post teilen"
+      aria-label="Diesen Post teilen"
     >
       <i class="bi bi-share me-1"></i>
       <span class="d-none d-md-inline">Teilen</span>
@@ -309,6 +312,29 @@ body.dark-mode {
 body:not(.dark-mode) {
   --color-text: #212529;
   --color-border: #dee2e6;
+}
+
+/* Theme-aware Button Styles für konsistente Light/Dark-Mode Darstellung */
+body.dark-mode .btn-outline-dark {
+  color: #f8f9fa;
+  border-color: #6c757d;
+}
+
+body.dark-mode .btn-outline-dark:hover {
+  background-color: #343a40;
+  color: white;
+}
+
+/* Spezielle Stile für Like-Button im Dark Mode */
+body.dark-mode .like-btn[data-liked="1"] {
+  background-color: #0d6efd !important;
+  color: white !important;
+  border-color: #0d6efd !important;
+}
+
+body.dark-mode .like-btn[data-liked="0"] {
+  color: #0d6efd !important;
+  border-color: #0d6efd !important;
 }
 
 /* Lange Posts */
@@ -413,7 +439,6 @@ body.dark-mode .post-card-dropdown {
 }
 </style>
 
-<!-- JavaScript für die Share-Funktionalität -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
   // Verbesserte Zugänglichkeit für interaktive Elemente
@@ -436,71 +461,6 @@ document.addEventListener('DOMContentLoaded', function() {
       postElement.classList.toggle('collapsed');
       moreText.classList.toggle('d-none');
       lessText.classList.toggle('d-none');
-    });
-  });
-
-  // AJAX Like Funktion
-  document.querySelectorAll('.like-btn').forEach(btn => {
-    btn.addEventListener('click', function(e) {
-      e.preventDefault();
-      const form = this.closest('.like-form');
-      const postId = form.dataset.postId;
-      const isLiked = this.dataset.liked === '1';
-      const likeCount = this.querySelector('.like-count');
-      const csrfToken = form.querySelector('[name="csrf_token"]')?.value;
-      
-      fetch(`${BASE_URL}/api/like_post.php`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-CSRF-TOKEN': csrfToken || ''
-        },
-        body: JSON.stringify({
-          post_id: postId,
-          action: isLiked ? 'unlike' : 'like'
-        })
-      })
-      .then(response => response.json())
-      .then(data => {
-        if (data.success) {
-          // Update like status
-          const newLikeCount = parseInt(data.like_count);
-          likeCount.textContent = newLikeCount;
-          
-          if (isLiked) {
-            // Unlike
-            this.classList.remove('btn-light', 'text-dark');
-            this.classList.add('btn-outline-primary');
-            this.querySelector('.bi').classList.remove('bi-hand-thumbs-up-fill');
-            this.querySelector('.bi').classList.add('bi-hand-thumbs-up');
-            likeCount.classList.remove('bg-dark');
-            likeCount.classList.add('bg-primary');
-            this.dataset.liked = '0';
-            this.title = 'Gefällt mir markieren';
-            
-            if (this.querySelector('.d-md-inline')) {
-              this.querySelector('.d-md-inline').textContent = 'Gefällt mir';
-            }
-          } else {
-            // Like
-            this.classList.remove('btn-outline-primary');
-            this.classList.add('btn-light', 'text-dark');
-            this.querySelector('.bi').classList.remove('bi-hand-thumbs-up');
-            this.querySelector('.bi').classList.add('bi-hand-thumbs-up-fill');
-            likeCount.classList.remove('bg-primary');
-            likeCount.classList.add('bg-dark');
-            this.dataset.liked = '1';
-            this.title = 'Dir gefällt dieser Beitrag';
-            
-            if (this.querySelector('.d-md-inline')) {
-              this.querySelector('.d-md-inline').textContent = 'Gefällt';
-            }
-          }
-        }
-      })
-      .catch(error => {
-        console.error('Fehler beim Like/Unlike:', error);
-      });
     });
   });
 

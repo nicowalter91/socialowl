@@ -69,6 +69,14 @@ export class ThemeHandler {
         el.classList.remove('bg-dark');
       }
     });
+    
+    // Event auslösen, damit andere Komponenten auf Themeänderungen reagieren können
+    const themeEvent = new CustomEvent('themeChanged', {
+      detail: {
+        theme: mode
+      }
+    });
+    document.dispatchEvent(themeEvent);
   }
   
   getPreferredTheme() {

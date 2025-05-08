@@ -22,7 +22,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       chatHandlerModule,
       postEditHandlerModule,
       mediaPreviewHandlerModule,
-      notificationHandlerModule
+      notificationHandlerModule,
+      likeHandlerModule
     ] = await Promise.all([
       import('./modules/live-updates.js'),
       import('./modules/post-handler.js'),
@@ -32,7 +33,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       import('./modules/chat-handler.js'),
       import('./modules/post-edit-handler.js'),
       import('./modules/media-preview-handler.js'),
-      import('./modules/notification-handler.js')
+      import('./modules/notification-handler.js'),
+      import('./modules/like-handler.js')
     ]);
 
     // Module initialisieren und global verfügbar machen
@@ -45,6 +47,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     window.postEditHandler = new postEditHandlerModule.PostEditHandler();
     window.mediaPreviewHandler = new mediaPreviewHandlerModule.MediaPreviewHandler();
     window.notificationHandler = new notificationHandlerModule.NotificationHandler();
+    window.likeHandler = new likeHandlerModule.LikeHandler();
 
     // Timestamps für Live-Updates
     let lastPostTimestamp = null;
@@ -53,6 +56,15 @@ document.addEventListener("DOMContentLoaded", async () => {
     initLastPostTimestamp();
 
     console.log("✅ Alle Module erfolgreich initialisiert");
+
+    // Theme-Wechsel Event-System erstellen
+    // Event-Übermittlung zwischen Theme-Handler und anderen Komponenten
+    document.addEventListener('DOMNodeInserted', function() {
+      // Bei DOM-Änderungen prüfen, ob neue Like-Buttons hinzugefügt wurden
+      if (window.likeHandler) {
+        window.likeHandler.updateLikeButtonsForTheme();
+      }
+    });
 
     // ============================
     // Last Comment Timestamp automatisch setzen
