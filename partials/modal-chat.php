@@ -111,7 +111,7 @@
   border-right: 1px solid var(--color-border);
   display: flex;
   flex-direction: column;
-  background-color: var(--color-bg-secondary);
+  background-color: var(--color-card);
 }
 
 .chat-content {
@@ -123,11 +123,11 @@
 
 /* Suche Styling */
 .chat-search-container {
-  background-color: var(--color-bg-secondary);
+  background-color: var(--color-card);
 }
 
 .search-wrapper {
-  background-color: var(--color-input-bg);
+  background-color: var(--color-bg-secondary);
   border: 1px solid var(--color-border);
   transition: all 0.2s;
   padding: 4px;
@@ -261,7 +261,7 @@
   flex: 1;
   overflow-y: auto;
   padding: 24px;
-  background-color: var(--color-bg);
+  background-color: var(--color-card);
   display: flex;
   flex-direction: column;
 }
@@ -331,7 +331,7 @@
 }
 
 .chat-input-group {
-  background-color: var(--color-bg);
+  background-color: var(--color-bg-secondary);
   border-radius: 24px;
   padding: 10px 12px;
 }
