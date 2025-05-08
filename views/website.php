@@ -760,8 +760,8 @@ require_once __DIR__ . '/../includes/config.php';
           <small>© 2025 Social Owl. Alle Rechte vorbehalten.</small>
         </div>
         <div class="col-md-6 text-center text-md-end mt-3 mt-md-0">
-          <a href="<?= BASE_URL ?>/privacy.php" class="text-white text-decoration-none me-3"><small>Datenschutz</small></a>
-          <a href="<?= BASE_URL ?>/impressum.php" class="text-white text-decoration-none me-3"><small>Impressum</small></a>
+          <a href="datenschutz.php" class="text-white text-decoration-none me-3"><small>Datenschutz</small></a>
+          <a href="impressum.php" class="text-white text-decoration-none me-3"><small>Impressum</small></a>
           <a href="#" class="text-white text-decoration-none"><small>AGB</small></a>
         </div>
       </div>
