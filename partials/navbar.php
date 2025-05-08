@@ -69,7 +69,7 @@
       </a>
       <ul class="dropdown-menu dropdown-menu-end post-card-dropdown shadow-lg">
         <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#profilModal">
-            <i class="bi bi-person-circle me-2"></i>Profile
+            <i class="bi bi-person-circle me-2"></i>Profil bearbeiten
           </a></li>
         <li><hr class="dropdown-divider"></li>
         <li>

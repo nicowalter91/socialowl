@@ -65,7 +65,7 @@ if (!isset($post) || empty($post["id"])) return;
           <li>
             <a
               href="#"
-              class="dropdown-item edit-post-btn"
+              class="dropdown-item"
               data-post-id="<?= $post['id'] ?>"
               data-content="<?= htmlspecialchars($post['content'], ENT_QUOTES) ?>"
               data-image="<?= !empty($post['image_path'])
@@ -364,32 +364,36 @@ body.dark-mode .post-card-dropdown {
   backdrop-filter: blur(8px);
 }
 
+/* Anpassung der Dropdown-Items in post-card-dropdown für einheitliches Design */
 .post-card-dropdown .dropdown-item {
-  color: inherit !important;
-  border-radius: 10px;
-  margin: 0 0.5rem;
-  padding: 0.6rem 1.2rem;
+  color: var(--color-text-secondary) !important; /* Wie in .nav .dropdown-menu .dropdown-item */
+  background: transparent !important;
+  border-radius: 8px;
+  margin: 0.1rem 0.5rem;
+  padding: 0.6rem 1rem;
   transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
 }
 
-.post-card-dropdown .dropdown-divider {
-  border-color: var(--bs-dropdown-border-color) !important;
-  margin: 0.3rem 0;
-}
-
-.post-card-dropdown .dropdown-item:hover {
-  background-color: var(--bs-dropdown-link-hover-bg) !important;
+.post-card-dropdown .dropdown-item:hover,
+.post-card-dropdown .dropdown-item:focus {
+  background: var(--color-dropdown-hover) !important;
+  color: var(--color-text) !important;
   transform: translateX(3px);
 }
 
-.post-card-dropdown .dropdown-item i {
+.post-card-dropdown .dropdown-item i,
+.post-card-dropdown .dropdown-item .bi {
+  margin-right: 0.5rem;
   width: 20px;
   text-align: center;
   opacity: 0.8;
   transition: opacity 0.2s;
 }
 
-.post-card-dropdown .dropdown-item:hover i {
+.post-card-dropdown .dropdown-item:hover i,
+.post-card-dropdown .dropdown-item:hover .bi {
   opacity: 1;
 }
 
@@ -400,13 +404,12 @@ body.dark-mode .post-card-dropdown {
 
 .post-card-dropdown .dropdown-item.text-danger:hover {
   background: rgba(220,53,69,0.12) !important;
+  color: var(--color-danger) !important;
 }
 
-@media (max-width: 576px) {
-  .tweet-profile-image {
-    width: 40px;
-    height: 40px;
-  }
+.post-card-dropdown .dropdown-divider {
+  border-color: var(--bs-dropdown-border-color) !important;
+  margin: 0.3rem 0;
 }
 </style>
 
