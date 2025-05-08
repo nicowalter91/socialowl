@@ -598,7 +598,7 @@ body.dark-mode .dropdown-toggle[aria-expanded="true"] {
 .emoji-category-tab.active::after {
   content: '';
   position: absolute;
-    : -4px;
+  bottom: -4px;
   left: 50%;
   transform: translateX(-50%);
   width: 20px;
@@ -1087,6 +1087,64 @@ body:not(.dark-mode) .emoji-category-tab.active::after {
 body:not(.dark-mode) .emoji-category-title {
   color: #495057 !important;
   border-bottom: 1px solid #dee2e6;
+}
+
+/* ============================
+   Post-Options Button
+============================ */
+/* Spezialregeln für den Optionen-Button - active Status deaktivieren */
+.btn-outline-dark.btn-rounded[aria-label="Post-Optionen"],
+.btn-outline-dark.btn-rounded[data-bs-toggle="dropdown"] {
+  /* Aktiven Zustand überschreiben */
+  --bs-btn-active-color: var(--bs-btn-color) !important;
+  --bs-btn-active-bg: transparent !important;
+  --bs-btn-active-border-color: var(--bs-btn-border-color) !important;
+  --bs-btn-active-shadow: none !important;
+}
+
+/* Hover-Zustand an das allgemeine Button-System anpassen */
+.btn-outline-dark.btn-rounded[aria-label="Post-Optionen"]:hover,
+.btn-outline-dark.btn-rounded[data-bs-toggle="dropdown"]:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: var(--btn-box-shadow) !important;
+}
+
+/* Light-Mode Farben beibehalten */
+body:not(.dark-mode) .btn-outline-dark.btn-rounded[aria-label="Post-Optionen"]:hover,
+body:not(.dark-mode) .btn-outline-dark.btn-rounded[data-bs-toggle="dropdown"]:hover {
+  color: #fff !important;
+  background-color: #495057 !important; /* Dunkelgrau statt Schwarz */
+  border-color: #495057 !important;
+}
+
+/* Dark-Mode Farben beibehalten */
+body.dark-mode .btn-outline-dark.btn-rounded[aria-label="Post-Optionen"]:hover,
+body.dark-mode .btn-outline-dark.btn-rounded[data-bs-toggle="dropdown"]:hover {
+  color: #212529 !important;
+  background-color: #f8f9fa !important;
+  border-color: #f8f9fa !important;
+}
+
+/* Fokus-Zustand verbessern */
+.btn-outline-dark.btn-rounded[aria-label="Post-Optionen"]:focus,
+.btn-outline-dark.btn-rounded[data-bs-toggle="dropdown"]:focus {
+  box-shadow: 0 0 0 0.25rem rgba(var(--bs-primary-rgb), 0.25);
+}
+
+/* Spezifischer für Light Mode */
+body:not(.dark-mode) .btn-outline-dark.btn-rounded[aria-label="Post-Optionen"]:active,
+body:not(.dark-mode) .btn-outline-dark.btn-rounded[data-bs-toggle="dropdown"]:active {
+  background-color: transparent !important;
+  color: #212529 !important;
+  border-color: #212529 !important;
+}
+
+/* Spezifischer für Dark Mode */
+body.dark-mode .btn-outline-dark.btn-rounded[aria-label="Post-Optionen"]:active,
+body.dark-mode .btn-outline-dark.btn-rounded[data-bs-toggle="dropdown"]:active {
+  background-color: transparent !important;
+  color: #f8f9fa !important;
+  border-color: #f8f9fa !important;
 }
 
 /* ============================

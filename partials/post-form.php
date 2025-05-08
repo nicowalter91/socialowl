@@ -24,7 +24,7 @@
 
     <div class="flex-grow-1 d-flex flex-column">
       <textarea name="content" class="form-control tweet-input-box text-light border-0 rounded-4 px-3 py-2 flex-grow-1"
-        rows="2" placeholder="Was passiert gerade?" style="min-height: 70px;" required></textarea>
+        rows="2" placeholder="Was machst du gerade?" style="min-height: 70px;" required></textarea>
       <div class="mt-1 text-end">
         <small id="char-counter" class="text-muted">0/280</small>
       </div>
