@@ -83,13 +83,15 @@ body, .parent {
   color: var(--color-text);
 }
 
-.nav, .tweet-card, .feed, .right-top-sidebar, .left-top-sidebar, .tweet-box, .profile, .follow, .suggestions {
-  background-color: var(--color-bg-secondary) !important;
+.nav, .tweet-card, .feed, .right-top-sidebar, .left-top-sidebar, .tweet-box, .profile, .follow, .suggestions,
+.trending-hashtags, .left-stats, .right-stats, .chat-sidebar, .chat-content {
+  background-color: var(--color-card) !important;
   color: var(--color-text);
+  border-radius: 16px;
 }
 
 .tweet-input-box, .tweet-comment-box, .emoji-picker, .emoji-search-container input, .emoji-container, .emoji-category-tab, .emoji-category-tab.active, .emoji-category-tab:hover {
-  background-color: var(--color-card) !important;
+  background-color: var(--color-bg-secondary) !important;
   color: var(--color-text);
 }
 
