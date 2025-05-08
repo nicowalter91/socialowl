@@ -819,6 +819,15 @@ require_once __DIR__ . '/../includes/config.php';
       }, 1000);
     }, 3000);
   </script>
+
+  <!-- Cookie Banner -->
+  <div id="cookie-banner" class="cookie-banner">
+    <!-- Der Inhalt wird dynamisch durch JavaScript geladen -->
+  </div>
+
+  <!-- Cookie Banner CSS und JS einbinden -->
+  <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/cookie-banner.css">
+  <script src="<?= BASE_URL ?>/assets/js/cookie-banner.js"></script>
 </body>
 
 </html>

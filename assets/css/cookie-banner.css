@@ -2,7 +2,7 @@
   position: fixed;
   bottom: 20px;
   right: 20px;
-  width: 300px;
+  width: 500px;
   background-color: #fff;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
   border-radius: 12px;
@@ -88,4 +88,120 @@
     transform: translateY(0);
     opacity: 1;
   }
+}
+
+/* Neue Stile für detaillierte Cookie-Einstellungen */
+.cookie-settings-toggle {
+  color: #0d6efd;
+  text-decoration: underline;
+  cursor: pointer;
+  display: inline-block;
+  margin-bottom: 10px;
+  font-size: 0.85rem;
+  margin-top: 10px;
+}
+
+.cookie-settings-toggle:hover {
+  color: #0b5ed7;
+}
+
+.cookie-settings {
+  display: none;
+  margin-top: 10px;
+  border-top: 1px solid #eee;
+  padding-top: 10px;
+}
+
+.cookie-settings.show {
+  display: block;
+}
+
+.cookie-category {
+  margin-bottom: 12px;
+}
+
+.cookie-category-title {
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.cookie-category-description {
+  font-size: 0.8rem;
+  color: #777;
+  margin-bottom: 5px;
+}
+
+.cookie-switch {
+  position: relative;
+  display: inline-block;
+  width: 36px;
+  height: 20px;
+}
+
+.cookie-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.cookie-switch-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: .3s;
+  border-radius: 20px;
+}
+
+.cookie-switch-slider:before {
+  position: absolute;
+  content: "";
+  height: 16px;
+  width: 16px;
+  left: 2px;
+  bottom: 2px;
+  background-color: white;
+  transition: .3s;
+  border-radius: 50%;
+}
+
+input:checked + .cookie-switch-slider {
+  background-color: #0d6efd;
+}
+
+input:disabled + .cookie-switch-slider {
+  background-color: #e0e0e0;
+  cursor: not-allowed;
+}
+
+input:checked + .cookie-switch-slider:before {
+  transform: translateX(16px);
+}
+
+.cookie-buttons-group {
+  display: flex;
+  gap: 8px;
+  margin-top: 15px;
+}
+
+.cookie-save-btn {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  flex-grow: 1;
+  transition: background-color 0.2s;
+}
+
+.cookie-save-btn:hover {
+  background-color: #218838;
 }
