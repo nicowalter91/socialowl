@@ -65,6 +65,24 @@ document.addEventListener("DOMContentLoaded", async () => {
         window.likeHandler.updateLikeButtonsForTheme();
       }
     });
+    
+    // Spezieller Event-Listener für Theme-Änderungen, der alle Like-Buttons anpasst
+    document.addEventListener('themeChanged', function(event) {
+      console.log('Theme geändert zu:', event.detail.theme);
+      
+      // Like-Buttons in Live-Updates konsistent halten
+      if (window.likeHandler) {
+        window.likeHandler.updateLikeButtonsForTheme(event.detail.theme);
+      }
+      
+      // Live-Updates über Themenänderung informieren, damit neue Elemente angepasst werden können
+      if (window.liveUpdates) {
+        // Alle aktuell sichtbaren Posts und Kommentare an das neue Theme anpassen
+        document.querySelectorAll('.tweet-card, .comment').forEach(element => {
+          window.liveUpdates.applyThemeToElement(element);
+        });
+      }
+    });
 
     // ============================
     // Last Comment Timestamp automatisch setzen

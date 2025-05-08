@@ -226,6 +226,7 @@ export class CommentHandler {
         if (!commentsContainer || document.getElementById(`comment-${comment.id}`)) return;
 
         const isOwn = comment.user_id === this.CURRENT_USER_ID;
+        const isDarkMode = document.body.classList.contains('dark-mode');
 
         const commentElement = document.createElement("div");
         commentElement.className = "comment px-2 py-2 mb-2 position-relative border-bottom border-secondary";
@@ -261,7 +262,7 @@ export class CommentHandler {
                 <div class="d-flex gap-2 align-items-center">
                     ${isOwn ? `
                         <button type="button"
-                                class="btn btn-sm btn-outline-light rounded-pill transition-all edit-comment-btn"
+                                class="btn btn-sm ${isDarkMode ? 'btn-outline-light' : 'btn-outline-dark'} rounded-pill transition-all edit-comment-btn"
                                 data-comment-id="${comment.id}"
                                 data-content="${this.escapeHTML(comment.content)}">
                             <i class="bi bi-pencil"></i>
@@ -273,7 +274,7 @@ export class CommentHandler {
                         </button>
                     ` : ""}
                     <button type="button"
-                            class="btn btn-sm rounded-pill transition-all like-comment-btn ${comment.liked ? "btn-light text-dark" : "btn-outline-light"}"
+                            class="btn btn-sm rounded-pill transition-all like-comment-btn ${comment.liked ? "btn-light text-dark" : (isDarkMode ? "btn-outline-light" : "btn-outline-primary")}"
                             data-comment-id="${comment.id}">
                         <i class="bi ${comment.liked ? 'bi-hand-thumbs-up-fill' : 'bi-hand-thumbs-up'}"></i>
                         <span class="like-count ${comment.liked ? 'text-dark' : ''}">${comment.like_count || 0}</span>

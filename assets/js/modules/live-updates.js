@@ -8,6 +8,7 @@ export class LiveUpdates {
     constructor() {
         this.lastPostTimestamp = null;
         this.lastCommentTimestamp = null;
+        this.lastLikeTimestamp = null;
         this.eventSource = null;
         this.pollingInterval = null;
         this.updateQueue = new Map(); // Queue für Updates
@@ -20,8 +21,16 @@ export class LiveUpdates {
     init() {
         this.initLastCommentTimestamp();
         this.initLastPostTimestamp();
+        this.initLastLikeTimestamp();
         this.initLiveUpdateListeners();
         this.startPolling();
+    }
+
+    // Neu hinzugefügt: Initialisierung des lastLikeTimestamp
+    initLastLikeTimestamp() {
+        // Aktuelle Zeit als Startpunkt für Like-Updates
+        const now = new Date();
+        this.lastLikeTimestamp = this.formatTimestamp(now);
     }
 
     initLastCommentTimestamp() {
@@ -72,6 +81,8 @@ export class LiveUpdates {
         
         this.eventSource.onmessage = (event) => {
             try {
+                if (event.data === "heartbeat") return;
+                
                 const data = JSON.parse(event.data);
                 if (data.type === 'heartbeat') return;
                 this.addToUpdateQueue(data);
@@ -132,6 +143,15 @@ export class LiveUpdates {
             this.reconnectAttempts = 0;
             console.log("Event-Stream verbunden");
         };
+        
+        // Spezieller Event-Listener für Likes
+        document.addEventListener('postLikeToggled', (event) => {
+            // Bei lokalen Like-Aktionen nicht duplizieren
+            if (event.detail.isLocalAction) return;
+            
+            const { postId, isLiked, likeCount } = event.detail;
+            this.updateLikeUI(postId, isLiked, likeCount);
+        });
     }
 
     // Queue für Updates
@@ -163,11 +183,13 @@ export class LiveUpdates {
             const deletions = updates.filter(u => u.action === 'delete');
             const edits = updates.filter(u => u.action === 'edit');
             const newItems = updates.filter(u => u.action === 'new');
+            const likes = updates.filter(u => u.action === 'like' || u.action === 'unlike');
 
             // Verarbeite Updates in der richtigen Reihenfolge
             await this.processDeletions(deletions);
             await this.processEdits(edits);
             await this.processNewItems(newItems);
+            await this.processLikes(likes);
         } finally {
             this.isProcessingQueue = false;
             
@@ -209,12 +231,16 @@ export class LiveUpdates {
                     const updatedPost = tempDiv.querySelector(`.tweet-card[data-post-id="${data.id}"]`);
                     const existingPost = document.querySelector(`.tweet-card[data-post-id="${data.id}"]`);
                     if (existingPost && updatedPost) {
+                        // Theme auf den aktualisierten Post anwenden
+                        this.applyThemeToElement(updatedPost);
                         existingPost.replaceWith(updatedPost);
                     }
                 } else if (data.type === 'comment') {
                     const updatedComment = tempDiv.querySelector(`.comment[data-comment-id="${data.id}"]`);
                     const existingComment = document.querySelector(`.comment[data-comment-id="${data.id}"]`);
                     if (existingComment && updatedComment) {
+                        // Theme auf den aktualisierten Kommentar anwenden
+                        this.applyThemeToElement(updatedComment);
                         existingComment.replaceWith(updatedComment);
                     }
                 }
@@ -222,8 +248,206 @@ export class LiveUpdates {
         });
     }
 
+    // Implementierung für neue Items vervollständigt
     async processNewItems(newItems) {
-        // Implementierung für neue Items
+        if (newItems.length === 0) return;
+        
+        const postItems = newItems.filter(item => item.type === 'post');
+        const commentItems = newItems.filter(item => item.type === 'comment');
+        
+        // Verarbeitung neuer Posts
+        if (postItems.length > 0) {
+            try {
+                const postIds = postItems.map(item => item.id).join(',');
+                const response = await fetch(`/Social_App/controllers/api/get_new_posts.php?ids=${postIds}`);
+                if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+                
+                const data = await response.json();
+                if (data.success && data.html) {
+                    const feedContainer = document.querySelector('.tweet-list');
+                    if (feedContainer) {
+                        const tempDiv = document.createElement('div');
+                        tempDiv.innerHTML = data.html;
+                        
+                        // Füge neue Posts am Anfang des Feeds ein
+                        const newPosts = Array.from(tempDiv.children);
+                        newPosts.reverse().forEach(post => {
+                            // Prüfe ob der Post bereits existiert
+                            const postId = post.dataset.postId;
+                            if (!document.querySelector(`.tweet-card[data-post-id="${postId}"]`)) {
+                                feedContainer.insertBefore(post, feedContainer.firstChild);
+                                
+                                // Wende Theme auf neue Like-Buttons an
+                                this.applyThemeToElement(post);
+                            }
+                        });
+                        
+                        // Zeige Benachrichtigung für neue Posts
+                        if (newPosts.length > 0) {
+                            this.showNotification(`${newPosts.length} neue Beiträge wurden geladen`, 'info');
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error('Fehler beim Laden neuer Posts:', error);
+            }
+        }
+        
+        // Verarbeitung neuer Kommentare
+        if (commentItems.length > 0) {
+            try {
+                const commentIds = commentItems.map(item => item.id).join(',');
+                const response = await fetch(`/Social_App/controllers/api/get_new_comments.php?ids=${commentIds}`);
+                if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+                
+                const data = await response.json();
+                if (data.success && data.comments) {
+                    data.comments.forEach(comment => {
+                        const commentContainer = document.querySelector(`.comments-container[data-post-id="${comment.post_id}"]`);
+                        if (commentContainer) {
+                            const tempDiv = document.createElement('div');
+                            tempDiv.innerHTML = comment.html;
+                            
+                            // Prüfe ob der Kommentar bereits existiert
+                            const commentId = tempDiv.querySelector('.comment').dataset.commentId;
+                            if (!document.querySelector(`.comment[data-comment-id="${commentId}"]`)) {
+                                const commentElement = tempDiv.firstChild;
+                                commentContainer.appendChild(commentElement);
+                                
+                                // Wende Theme auf neue Elemente im Kommentar an
+                                this.applyThemeToElement(commentElement);
+                                
+                                // Aktualisiere den Kommentarzähler
+                                const countElement = document.querySelector(`.comment-count[data-post-id="${comment.post_id}"]`);
+                                if (countElement) {
+                                    const currentCount = parseInt(countElement.textContent);
+                                    countElement.textContent = currentCount + 1;
+                                }
+                            }
+                        }
+                    });
+                }
+            } catch (error) {
+                console.error('Fehler beim Laden neuer Kommentare:', error);
+            }
+        }
+    }
+    
+    // Neu hinzugefügt: Hilfsfunktion zur Anwendung des aktuellen Themes auf neue Elemente
+    applyThemeToElement(element) {
+        const isDarkMode = document.body.classList.contains('dark-mode');
+        
+        // Like-Buttons im Element finden und entsprechend formatieren
+        const likeButtons = element.querySelectorAll('.like-btn');
+        likeButtons.forEach(btn => {
+            const isLiked = btn.dataset.liked === '1';
+            
+            if (isLiked) {
+                btn.classList.remove('btn-outline-primary');
+                
+                if (isDarkMode) {
+                    btn.classList.remove('btn-light', 'text-primary');
+                    btn.classList.add('btn-primary');
+                } else {
+                    btn.classList.remove('btn-primary');
+                    btn.classList.add('btn-light', 'text-primary');
+                }
+                
+                // Auch den Counter anpassen
+                const counter = btn.querySelector('.like-count');
+                if (counter) {
+                    counter.classList.remove('bg-primary');
+                    counter.classList.add('bg-dark');
+                }
+            } else {
+                btn.classList.remove('btn-primary', 'btn-light', 'text-primary');
+                btn.classList.add('btn-outline-primary');
+                
+                // Auch den Counter anpassen
+                const counter = btn.querySelector('.like-count');
+                if (counter) {
+                    counter.classList.remove('bg-dark');
+                    counter.classList.add('bg-primary');
+                }
+            }
+        });
+        
+        // Kommentar-Buttons stylen (Neu hinzugefügt)
+        const editCommentButtons = element.querySelectorAll('.edit-comment-btn');
+        const deleteCommentButtons = element.querySelectorAll('.delete-comment-btn');
+        const likeCommentButtons = element.querySelectorAll('.like-comment-btn');
+        
+        // Edit-Buttons für Kommentare
+        editCommentButtons.forEach(btn => {
+            if (isDarkMode) {
+                btn.classList.remove('btn-outline-dark');
+                btn.classList.add('btn-outline-light');
+            } else {
+                btn.classList.remove('btn-outline-light');
+                btn.classList.add('btn-outline-dark');
+            }
+        });
+        
+        // Delete-Buttons für Kommentare (bleiben immer btn-outline-danger)
+        
+        // Like-Buttons für Kommentare
+        likeCommentButtons.forEach(btn => {
+            const isLiked = btn.classList.contains('btn-light');
+            
+            if (isLiked) {
+                // Like-Status bleibt gleich (btn-light text-dark)
+            } else {
+                // Unlike-Status anpassen
+                if (isDarkMode) {
+                    btn.classList.remove('btn-outline-primary');
+                    btn.classList.add('btn-outline-light');
+                } else {
+                    btn.classList.remove('btn-outline-light');
+                    btn.classList.add('btn-outline-primary');
+                }
+            }
+        });
+        
+        // Weitere theme-spezifische Anpassungen hier...
+    }
+    
+    // Neu hinzugefügt: Verarbeitung von Like-Updates
+    async processLikes(likes) {
+        for (const data of likes) {
+            if (data.type === 'post') {
+                this.updateLikeUI(data.id, data.action === 'like', data.count);
+            }
+        }
+    }
+    
+    // Neu hinzugefügt: UI-Aktualisierung für Likes
+    updateLikeUI(postId, isLiked, likeCount) {
+        const likeBtn = document.querySelector(`.like-btn[data-post-id="${postId}"]`);
+        if (!likeBtn) return;
+        
+        // Nur UI-Update durchführen ohne Server-Anfrage
+        if (window.likeHandler) {
+            const isDarkMode = document.body.classList.contains('dark-mode');
+            // Theme-Information mit übergeben
+            window.likeHandler.updateButtonUI(likeBtn, isLiked, true);
+            
+            // Zusätzliche theme-spezifische Anpassungen
+            if (isLiked) {
+                if (isDarkMode) {
+                    likeBtn.classList.remove('btn-light', 'text-primary');
+                    likeBtn.classList.add('btn-primary');
+                } else {
+                    likeBtn.classList.remove('btn-primary');
+                    likeBtn.classList.add('btn-light', 'text-primary');
+                }
+            }
+            
+            // Aktualisiere den Like-Zähler
+            const countElement = likeBtn.querySelector('.like-count');
+            if (countElement && likeCount !== undefined) {
+                countElement.textContent = likeCount;
+            }
+        }
     }
 
     startPolling() {
@@ -238,7 +462,13 @@ export class LiveUpdates {
 
     async fetchUpdates() {
         try {
-            const response = await fetch(`/Social_App/controllers/api/updates_since.php?since=${this.lastPostTimestamp}`);
+            const params = new URLSearchParams({
+                sincePosts: this.lastPostTimestamp,
+                sinceComments: this.lastCommentTimestamp,
+                sinceLikes: this.lastLikeTimestamp
+            });
+            
+            const response = await fetch(`/Social_App/controllers/api/updates_since.php?${params}`);
             if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
             const data = await response.json();
             
@@ -253,6 +483,10 @@ export class LiveUpdates {
                             data: post
                         });
                     });
+                    
+                    if (data.postTimestamp) {
+                        this.lastPostTimestamp = data.postTimestamp;
+                    }
                 }
 
                 // Verarbeite neue Kommentare
@@ -265,11 +499,26 @@ export class LiveUpdates {
                             data: comment
                         });
                     });
+                    
+                    if (data.commentTimestamp) {
+                        this.lastCommentTimestamp = data.commentTimestamp;
+                    }
                 }
-
-                // Aktualisiere Timestamp
-                if (data.timestamp) {
-                    this.lastPostTimestamp = data.timestamp;
+                
+                // Verarbeite neue Likes
+                if (data.likes && data.likes.length > 0) {
+                    data.likes.forEach(like => {
+                        this.addToUpdateQueue({
+                            type: 'post',
+                            action: like.action, // 'like' oder 'unlike'
+                            id: like.post_id,
+                            count: like.like_count
+                        });
+                    });
+                    
+                    if (data.likeTimestamp) {
+                        this.lastLikeTimestamp = data.likeTimestamp;
+                    }
                 }
             }
         } catch (error) {

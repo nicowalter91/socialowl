@@ -80,7 +80,8 @@ export class LikeHandler {
           detail: {
             postId: postId,
             isLiked: shouldBeLiked,
-            likeCount: newLikeCount
+            likeCount: newLikeCount,
+            isLocalAction: true // Markieren als lokale Aktion, damit Live-Updates nicht duplizieren
           }
         });
         document.dispatchEvent(likeEvent);
@@ -101,8 +102,9 @@ export class LikeHandler {
    * Aktualisiert die UI des Like-Buttons basierend auf dem Like-Status
    * @param {HTMLElement} btn - Der Like-Button
    * @param {boolean} isLiked - Ob der Post geliked ist
+   * @param {boolean} skipServerUpdate - Optional: Wenn true, wird keine Event ausgelöst (für Live-Updates)
    */
-  updateButtonUI(btn, isLiked) {
+  updateButtonUI(btn, isLiked, skipServerUpdate = false) {
     const likeCount = btn.querySelector('.like-count');
     const isDarkMode = document.body.classList.contains('dark-mode');
     
@@ -113,9 +115,11 @@ export class LikeHandler {
       if (isDarkMode) {
         // Dark Theme Like-Button
         btn.classList.add('btn-primary');
+        btn.classList.remove('btn-light', 'text-primary');
       } else {
         // Light Theme Like-Button
         btn.classList.add('btn-light', 'text-primary');
+        btn.classList.remove('btn-primary');
       }
       
       btn.querySelector('.bi').classList.remove('bi-hand-thumbs-up');

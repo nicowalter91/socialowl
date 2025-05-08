@@ -1,10 +1,14 @@
 <?php
-require_once '../config/config.php';
-require_once HELPERS . '/auth.helper.php';
-require_once MODELS . '/post.model.php';
+require_once '../includes/config.php';
+require_once INCLUDES . '/connection.php';
+require_once MODELS . '/like.php';
+
+// Session starten und Verbindung herstellen
+session_start();
+$conn = getDatabaseConnection();
 
 // Verifiziere, dass der Benutzer eingeloggt ist
-if (!isLoggedIn()) {
+if (!isset($_SESSION['id'])) {
     echo json_encode([
         'success' => false,
         'message' => 'Nicht autorisiert'
@@ -38,28 +42,26 @@ $post_id = intval($data['post_id']);
 $action = $data['action'];
 $user_id = $_SESSION['id'];
 
-$post_model = new PostModel();
+// Like-Status umschalten mit der vorhandenen togglePostLike-Funktion
+$isNowLiked = togglePostLike($conn, $user_id, $post_id);
 
-if ($action === 'like') {
-    // Like hinzufügen
-    $result = $post_model->likePost($post_id, $user_id);
-} else if ($action === 'unlike') {
-    // Like entfernen
-    $result = $post_model->unlikePost($post_id, $user_id);
+// Aktuelle Like-Daten abrufen
+$likeData = getPostLikeData($conn, $post_id, $user_id);
+$likeCount = isset($likeData['like_count']) ? (int)$likeData['like_count'] : 0;
+
+// Rückgabe je nach Aktion
+if (($action === 'like' && $isNowLiked) || ($action === 'unlike' && !$isNowLiked)) {
+    echo json_encode([
+        'success' => true,
+        'like_count' => $likeCount,
+        'action' => $isNowLiked ? 'like' : 'unlike'
+    ]);
 } else {
     echo json_encode([
         'success' => false,
-        'message' => 'Ungültige Aktion'
+        'message' => 'Aktion konnte nicht durchgeführt werden',
+        'like_count' => $likeCount,
+        'action' => $isNowLiked ? 'like' : 'unlike'
     ]);
-    exit;
 }
-
-// Anzahl der Likes für diesen Post abrufen
-$like_count = $post_model->getPostLikesCount($post_id);
-
-echo json_encode([
-    'success' => $result,
-    'like_count' => $like_count,
-    'action' => $action
-]);
 ?>
