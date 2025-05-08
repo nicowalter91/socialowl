@@ -20,7 +20,8 @@ if (!isset($post) || empty($post["id"])) return;
       <a href="<?= BASE_URL ?>/views/profile.php?username=<?= htmlspecialchars($post['username']) ?>" 
          class="text-decoration-none">
         <img
-          class="tweet-profile-image me-3 rounded-circle border border-2 border-secondary"
+          class="tweet-profile-image me-3 rounded-circle border border-2"
+          style="border-color: var(--color-border) !important;"
           src="<?= BASE_URL ?>/assets/uploads/<?= htmlspecialchars($post["profile_img"]) ?>"
           alt="Profilbild von @<?= htmlspecialchars($post["username"]) ?>"
           width="48" height="48"
@@ -30,7 +31,7 @@ if (!isset($post) || empty($post["id"])) return;
       <div>
         <a href="<?= BASE_URL ?>/views/profile.php?username=<?= htmlspecialchars($post['username']) ?>" 
            class="text-decoration-none">
-          <h6 class="color-text mb-0 hover-underline">
+          <h6 class="mb-0 hover-underline" style="color: var(--color-text) !important;">
             <?php if (!empty($post["display_name"])): ?>
               <span class="fw-bold"><?= htmlspecialchars($post["display_name"]) ?></span>
               <small class="text-muted">@<?= htmlspecialchars($post["username"]) ?></small>
@@ -52,7 +53,7 @@ if (!isset($post) || empty($post["id"])) return;
     <?php if ($post["user_id"] == $_SESSION["id"]): ?>
       <div class="dropdown">
         <button
-          class="btn btn-sm btn-outline-dark rounded-pill"
+          class="btn btn-sm btn-outline-dark btn-rounded"
           type="button"
           data-bs-toggle="dropdown"
           aria-expanded="false"
@@ -177,7 +178,7 @@ if (!isset($post) || empty($post["id"])) return;
         type="button"
         class="btn btn-sm <?= !empty($post["liked_by_me"])
           ? 'btn-light text-dark'
-          : 'btn-outline-primary' ?> rounded-pill transition-all like-btn"
+          : 'btn-outline-primary' ?> btn-rounded transition-all like-btn"
         data-liked="<?= !empty($post["liked_by_me"]) ? '1' : '0' ?>"
         title="<?= !empty($post["liked_by_me"]) ? 'Dir gefällt dieser Beitrag' : 'Gefällt mir markieren' ?>"
       >
@@ -191,7 +192,7 @@ if (!isset($post) || empty($post["id"])) return;
 
     <button
       type="button"
-      class="btn btn-sm btn-outline-dark rounded-pill toggle-comment-form"
+      class="btn btn-sm btn-outline-dark btn-rounded toggle-comment-form"
       data-post-id="<?= $post['id'] ?>"
       title="Kommentar schreiben"
     >
@@ -204,7 +205,7 @@ if (!isset($post) || empty($post["id"])) return;
     
     <button 
       type="button" 
-      class="btn btn-sm btn-outline-dark rounded-pill ms-auto share-post"
+      class="btn btn-sm btn-outline-dark btn-rounded ms-auto share-post"
       data-post-url="<?= BASE_URL ?>/views/feed.view.php?post=<?= $post['id'] ?>"
       title="Diesen Post teilen"
     >
@@ -247,7 +248,7 @@ if (!isset($post) || empty($post["id"])) return;
             <div class="position-relative">
               <button
                 type="button"
-                class="btn btn-sm btn-outline-dark rounded-pill emoji-comment-btn"
+                class="btn btn-sm btn-outline-dark btn-rounded emoji-comment-btn"
                 title="Emoji einfügen"
               >
                 <i class="bi bi-emoji-smile me-1"></i><span class="d-none d-md-inline">Emoji</span>
@@ -259,7 +260,7 @@ if (!isset($post) || empty($post["id"])) return;
             </div>
 
             <!-- Senden-Button -->
-            <button type="submit" class="btn btn-sm btn-primary px-3 rounded-pill">
+            <button type="submit" class="btn btn-sm btn-primary btn-rounded">
               <i class="bi bi-send me-1"></i><span class="d-none d-md-inline">Senden</span>
             </button>
           </div>
@@ -300,12 +301,14 @@ if (!isset($post) || empty($post["id"])) return;
 }
 
 /* Darkmode-Kompatibilität */
-.color-text {
-  color: var(--bs-body-color) !important;
+body.dark-mode {
+  --color-text: #f8f9fa;
+  --color-border: #2c3e50;
 }
 
-body.dark-mode .color-text {
-  color: #f8f9fa !important;
+body:not(.dark-mode) {
+  --color-text: #212529;
+  --color-border: #dee2e6;
 }
 
 /* Lange Posts */

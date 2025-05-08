@@ -1,10 +1,11 @@
 /* Modern Style for Social Owl */
 
 :root {
-  --primary-color: #1E90FF; /* Dodger Blue */
-  --secondary-color: #4682B4; /* Steel Blue */
-  --background-color: #F0F8FF; /* Alice Blue */
-  --text-color: #333;
+  /* Verwende die Hauptvariablen aus style.css */
+  --primary-color: var(--website-primary-color, #1E90FF);       /* Dodger Blue */
+  --secondary-color: var(--website-secondary-color, #4682B4);  /* Steel Blue */
+  --background-color: var(--color-bg, #F0F8FF);                /* Background */
+  --text-color: var(--color-text, #333);                       /* Text-Farbe */
   --light-color: #FFFFFF;
   --dark-color: #232946;
 }
@@ -15,6 +16,13 @@ body {
   font-family: 'Arial', sans-serif;
   margin: 0;
   padding: 0;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* Optimierungen für Dark Mode */
+body.dark-mode {
+  --background-color: var(--color-bg, #05141c);
+  --text-color: var(--color-text, #f8f9fa);
 }
 
 .navbar {
@@ -66,11 +74,29 @@ body {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   padding: 2rem;
   text-align: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Dark Mode Anpassungen für Feature-Cards */
+body.dark-mode .features .feature {
+  background-color: var(--color-card, #28353e);
+  color: var(--text-color);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.features .feature:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
 }
 
 .gallery img {
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease;
+}
+
+.gallery img:hover {
+  transform: scale(1.03);
 }
 
 footer {
@@ -78,4 +104,24 @@ footer {
   color: var(--light-color);
   padding: 2rem 0;
   text-align: center;
+}
+
+/* Dark Mode Spezifisch */
+body.dark-mode .navbar {
+  background-color: var(--color-bg-secondary, #1b2730);
+  border-bottom: 1px solid var(--color-border, #2c3e50);
+}
+
+body.dark-mode footer {
+  background-color: var(--color-bg-secondary, #1b2730);
+  border-top: 1px solid var(--color-border, #2c3e50);
+}
+
+body.dark-mode .btn-primary {
+  background-color: var(--color-primary, #0d6efd);
+  border-color: transparent;
+}
+
+body.dark-mode .btn-primary:hover {
+  background-color: var(--color-accent, #1da1f2);
 }

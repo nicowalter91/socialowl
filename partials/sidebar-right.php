@@ -32,10 +32,10 @@ $suggestions = getSuggestions($conn, $currentUserId);
 
 <div class="right-top-sidebar p-3 d-flex flex-column gap-4">
   <div class="following p-3 follow rounded shadow-sm">
-    <h6 class="text-light border-bottom pb-2 mb-3">Du folgst (<?= $followingCount ?>)</h6>
+    <h6 class="border-bottom pb-2 mb-3" style="color: var(--color-text);">Du folgst (<?= $followingCount ?>)</h6>
     
     <?php if (empty($followedUsers)): ?>
-      <p class="text-light small">Noch keine Nutzer gefolgt.</p>
+      <p class="small" style="color: var(--color-text-secondary);">Noch keine Nutzer gefolgt.</p>
     <?php else: ?>
       <div class="following-container">
         <?php 
@@ -46,10 +46,10 @@ $suggestions = getSuggestions($conn, $currentUserId);
           <div class="user-item <?= $visibleClass ?> align-items-center justify-content-between mb-3">
             <div class="d-flex align-items-center">
               <img src="<?= BASE_URL ?>/assets/uploads/<?= htmlspecialchars($user["profile_img"]) ?>"
-                   class="rounded-circle me-2 border border-secondary" width="40" height="40" alt="<?= $user["username"] ?>">
+                   class="rounded-circle me-2" style="border: 2px solid var(--color-border);" width="40" height="40" alt="<?= $user["username"] ?>">
               <div>
-                <strong class="text-light">@<?= htmlspecialchars($user["username"]) ?></strong>
-                <p class="mb-0 text-light small"><?= htmlspecialchars($user["bio"]) ?></p>
+                <strong style="color: var(--color-text);">@<?= htmlspecialchars($user["username"]) ?></strong>
+                <p class="mb-0 small" style="color: var(--color-text-secondary);"><?= htmlspecialchars($user["bio"]) ?></p>
               </div>
             </div>
             <form method="POST" action="/Social_App/controllers/unfollow_user.php" class="ms-2">
@@ -65,7 +65,7 @@ $suggestions = getSuggestions($conn, $currentUserId);
         ?>
       </div>
       <?php if (count($followedUsers) > 5): ?>
-        <button class="btn btn-sm btn-outline-light rounded-pill w-100 mt-2 toggle-following">
+        <button class="btn btn-sm btn-outline-dark rounded-pill w-100 mt-2 toggle-following">
           <span class="more-text">Mehr anzeigen</span>
           <span class="less-text" style="display: none;">Weniger anzeigen</span>
         </button>
@@ -75,10 +75,10 @@ $suggestions = getSuggestions($conn, $currentUserId);
 
   <!-- Vorschläge -->
   <div class="suggestions p-3 follow rounded shadow-sm">
-    <h6 class="text-light border-bottom pb-2 mb-3">Vorschläge</h6>
+    <h6 class="border-bottom pb-2 mb-3" style="color: var(--color-text);">Vorschläge</h6>
 
     <?php if (empty($suggestions)): ?>
-      <p class="text-light small">Keine Vorschläge verfügbar.</p>
+      <p class="small" style="color: var(--color-text-secondary);">Keine Vorschläge verfügbar.</p>
     <?php else: ?>
       <?php 
       $counter = 0;
@@ -88,10 +88,10 @@ $suggestions = getSuggestions($conn, $currentUserId);
         <div class="d-flex align-items-center justify-content-between mb-3">
           <div class="d-flex align-items-center">
             <img src="<?= BASE_URL ?>/assets/uploads/<?= htmlspecialchars($user["profile_img"]) ?>"
-                 class="rounded-circle me-2 border border-secondary" width="40" height="40" alt="<?= $user["username"] ?>">
+                 class="rounded-circle me-2" style="border: 2px solid var(--color-border);" width="40" height="40" alt="<?= $user["username"] ?>">
             <div>
-              <strong class="text-light">@<?= htmlspecialchars($user["username"]) ?></strong>
-              <p class="mb-0 text-light small"><?= htmlspecialchars($user["bio"]) ?></p>
+              <strong style="color: var(--color-text);">@<?= htmlspecialchars($user["username"]) ?></strong>
+              <p class="mb-0 small" style="color: var(--color-text-secondary);"><?= htmlspecialchars($user["bio"]) ?></p>
             </div>
           </div>
           <form method="POST" action="/Social_App/controllers/follow_user.php" class="ms-2">

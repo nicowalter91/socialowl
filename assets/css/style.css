@@ -2,43 +2,80 @@
    Farbvariablen für Light/Dark Mode
 ============================ */
 :root {
-  --color-bg: #f8f9fa;
-  --color-bg-secondary: #e9ecef;
-  --color-card: #fff;
-  --color-text: #212529;
-  --color-text-secondary: #495057;
-  --color-border: #dee2e6;
-  --color-primary: #0d6efd;
-  --color-accent: #1da1f2;
-  --color-danger: #dc3545;
-  --color-sidebar: #f4f6f8;
-  --color-dropdown: #fff;
-  --color-dropdown-hover: #e9ecef;
-  --color-input-bg: #fff;
-  --color-input-text: #212529;
-  --color-placeholder: #adb5bd;
-  --color-icon: #495057;
-  --color-icon-active: #0d6efd;
+  /* Primäre Farbpalette */
+  --color-bg: #f8f9fa;                /* Primärer Hintergrund */
+  --color-bg-secondary: #e9ecef;      /* Sekundärer Hintergrund */
+  --color-card: #fff;                 /* Kartenelemente */
+  --color-text: #212529;              /* Primärer Text */
+  --color-text-secondary: #495057;    /* Sekundärer Text */
+  --color-border: #dee2e6;            /* Rahmen */
+
+  /* Akzentfarben */
+  --color-primary: #0d6efd;           /* Primärfarbe für Hervorhebungen */
+  --color-accent: #1da1f2;            /* Akzentfarbe (z.B. für Hashtags) */
+  --color-danger: #dc3545;            /* Warnfarbe (z.B. für Löschen-Aktionen) */
+  --color-success: #28a745;           /* Erfolgsfarbe */
+
+  /* Spezifische UI-Elemente */
+  --color-sidebar: #f4f6f8;           /* Sidebar-Hintergrund */
+  --color-dropdown: #fff;             /* Dropdown-Menü-Hintergrund */
+  --color-dropdown-hover: #e9ecef;    /* Hover-Effekt für Dropdown-Items */
+  --color-input-bg: #fff;             /* Eingabefeld-Hintergrund */
+  --color-input-text: #212529;        /* Eingabefeld-Text */
+  --color-placeholder: #adb5bd;       /* Placeholder-Text */
+  --color-icon: #495057;              /* Icons */
+  --color-icon-active: #0d6efd;       /* Aktive Icons */
+  
+  /* Bootstrap-Kompatibilität */
+  --bs-primary: 13, 110, 253;         /* RGB-Werte für Primary-Farbe */
+  --bs-body-color: var(--color-text); /* Bootstrap-Body-Textfarbe */
+  --bs-body-bg: var(--color-bg);      /* Bootstrap-Body-Hintergrund */
+  
+  /* Website-spezifische Farben (aus website-style.css) */
+  --website-primary-color: #1E90FF;   /* Dodger Blue */
+  --website-secondary-color: #4682B4; /* Steel Blue */
+
+  /* Button-Schatten und Animation */
+  --btn-box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --btn-transition: all 0.2s ease;
 }
 
+/* Dark Mode spezifische Variablen */
 body.dark-mode {
-  --color-bg: #05141c;
-  --color-bg-secondary: #1b2730;
-  --color-card: #28353e;
-  --color-text: #f8f9fa;
-  --color-text-secondary: #b7c8d2;
-  --color-border: #2c3e50;
-  --color-primary: #0d6efd;
-  --color-accent: #1da1f2;
-  --color-danger: #ff4d4f;
-  --color-sidebar: #1b2730;
-  --color-dropdown: #1b2730;
-  --color-dropdown-hover: #28353e;
-  --color-input-bg: #28353e;
-  --color-input-text: #f8f9fa;
-  --color-placeholder: #b7c8d2;
-  --color-icon: #b7c8d2;
-  --color-icon-active: #0d6efd;
+  /* Primäre Farbpalette */
+  --color-bg: #05141c;                /* Primärer Hintergrund */
+  --color-bg-secondary: #1b2730;      /* Sekundärer Hintergrund */
+  --color-card: #28353e;              /* Kartenelemente */
+  --color-text: #f8f9fa;              /* Primärer Text */
+  --color-text-secondary: #b7c8d2;    /* Sekundärer Text */
+  --color-border: #2c3e50;            /* Rahmen */
+
+  /* Akzentfarben bleiben weitgehend gleich */
+  --color-primary: #0d6efd;           /* Primärfarbe für Hervorhebungen */
+  --color-accent: #1da1f2;            /* Akzentfarbe */
+  --color-danger: #ff4d4f;            /* Warnfarbe (etwas heller im Dark Mode) */
+  --color-success: #39c25d;           /* Erfolgsfarbe (etwas heller im Dark Mode) */
+
+  /* Spezifische UI-Elemente */
+  --color-sidebar: #1b2730;           /* Sidebar-Hintergrund */
+  --color-dropdown: #1b2730;          /* Dropdown-Menü-Hintergrund */
+  --color-dropdown-hover: #28353e;    /* Hover-Effekt für Dropdown-Items */
+  --color-input-bg: #28353e;          /* Eingabefeld-Hintergrund */
+  --color-input-text: #f8f9fa;        /* Eingabefeld-Text */
+  --color-placeholder: #b7c8d2;       /* Placeholder-Text */
+  --color-icon: #b7c8d2;              /* Icons */
+  --color-icon-active: #0d6efd;       /* Aktive Icons */
+  
+  /* Bootstrap-Kompatibilität */
+  --bs-body-color: var(--color-text); /* Bootstrap-Body-Textfarbe */
+  --bs-body-bg: var(--color-bg);      /* Bootstrap-Body-Hintergrund */
+  
+  /* Website-spezifische Farben */
+  --website-primary-color: #0d6efd;   /* Primärfarbe im Dark Mode */
+  --website-secondary-color: #1da1f2; /* Sekundärfarbe im Dark Mode */
+
+  /* Button-Schatten im Dark-Mode */
+  --btn-box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
 }
 
 body, .parent {
@@ -1118,6 +1155,103 @@ body:not(.dark-mode) .btn-outline-success .bi-person-plus-fill {
   color: var(--color-success, #28a745) !important;
 }
 
+/* Verbesserte Focus-States für Barrierefreiheit */
+.btn:focus, .btn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(var(--bs-primary-rgb), 0.25);
+}
+
+/* Primäre Aktions-Buttons: konsistente Farbgebung und Hover */
+.btn-primary {
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background-color: var(--color-primary);
+  filter: brightness(1.1);
+  border-color: var(--color-primary);
+}
+
+/* Einheitliches Dropdown-Styling */
+.dropdown-menu {
+  border-radius: 12px;
+  border: 1px solid var(--color-border) !important;
+  background: var(--color-card) !important;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+  animation: dropdown-fade 0.2s ease;
+  padding: 0.5rem;
+}
+
+/* Dropdown-Items */
+.dropdown-menu .dropdown-item {
+  color: var(--color-text-secondary) !important;
+  border-radius: 8px;
+  margin: 0.1rem 0;
+  padding: 0.6rem 1rem;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+}
+
+.dropdown-menu .dropdown-item:hover {
+  background-color: var(--color-dropdown-hover) !important;
+  color: var(--color-text) !important;
+  transform: translateX(3px);
+}
+
+/* Icons in Dropdown-Items */
+.dropdown-menu .dropdown-item i,
+.dropdown-menu .dropdown-item .bi {
+  margin-right: 0.75rem;
+  width: 20px;
+  text-align: center;
+  font-size: 1rem;
+  opacity: 0.8;
+  transition: opacity 0.2s;
+}
+
+.dropdown-menu .dropdown-item:hover i,
+.dropdown-menu .dropdown-item:hover .bi {
+  opacity: 1;
+}
+
+/* Button-Gruppen mit einheitlichen Abständen */
+.btn-group {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.btn-group-sm {
+  gap: 0.25rem;
+}
+
+.btn-group-lg {
+  gap: 0.75rem;
+}
+
+/* Success Button mit besserem Kontrast */
+.btn-success {
+  background-color: var(--color-success);
+  border-color: var(--color-success);
+}
+
+.btn-success:hover {
+  filter: brightness(1.1);
+}
+
+.btn-outline-success {
+  color: var(--color-success);
+  border-color: var(--color-success);
+}
+
+.btn-outline-success:hover {
+  background-color: var(--color-success);
+  color: #fff;
+}
+
 /* Anpassungen für Mobilgeräte */
 @media (max-width: 767px) {
   .modal-dialog.modal-lg {
@@ -1204,4 +1338,84 @@ body:not(.dark-mode) .btn-outline-success .bi-person-plus-fill {
   }
 }
 
+/* ============================
+   Einheitliches Button-System
+============================ */
+.btn {
+  border-radius: 8px;
+  transition: var(--btn-transition);
+  padding: 0.5rem 1rem;
+  font-weight: 500;
+  position: relative;
+  overflow: hidden;
+}
 
+/* Hover-Effekte für alle Buttons */
+.btn:hover:not([disabled]) {
+  transform: translateY(-2px);
+  box-shadow: var(--btn-box-shadow);
+}
+
+.btn:active:not([disabled]) {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Einheitliche runde Buttons */
+.btn-rounded, .btn.rounded-pill {
+  border-radius: 50px !important;
+}
+
+/* Button-Größen */
+.btn-xs {
+  padding: 0.2rem 0.5rem;
+  font-size: 0.75rem;
+}
+
+.btn-sm {
+  padding: 0.35rem 0.7rem;
+  font-size: 0.875rem;
+}
+
+.btn-lg {
+  padding: 0.7rem 1.5rem;
+  font-size: 1.1rem;
+}
+
+/* Icon-Buttons */
+.btn-icon {
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+.btn-icon-sm {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  font-size: 0.875rem;
+}
+
+.btn-icon-lg {
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  font-size: 1.25rem;
+}
+
+/* Verbesserte Icon-Ausrichtung in Buttons */
+.btn i, .btn .bi {
+  vertical-align: middle;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s;
+}
+
+.btn:hover i, .btn:hover .bi {
+  transform: scale(1.1);
+}
