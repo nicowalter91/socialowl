@@ -65,7 +65,7 @@ if (!isset($post) || empty($post["id"])) return;
           <li>
             <a
               href="#"
-              class="dropdown-item"
+              class="dropdown-item edit-post-btn"
               data-post-id="<?= $post['id'] ?>"
               data-content="<?= htmlspecialchars($post['content'], ENT_QUOTES) ?>"
               data-image="<?= !empty($post['image_path'])

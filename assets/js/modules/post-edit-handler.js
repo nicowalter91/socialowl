@@ -55,15 +55,17 @@ export class PostEditHandler {
    * Ermöglicht das Bearbeiten von Posts
    */
   initPostCardEvents() {
-    document.querySelectorAll(".edit-post-btn").forEach((button) => {
-      button.addEventListener("click", () => {
-        this.tweetInput.value = button.dataset.content;
-        this.editPostIdInput.value = button.dataset.postId;
-        this.originalImagePathInput.value = button.dataset.image;
-        this.postBtnWrapper.classList.add("d-none");
-        this.editBtnWrapper.classList.remove("d-none");
-        window.scrollTo({ top: 100, behavior: "smooth" });
-      });
+    // Delegation des Event-Listeners auf Dokumentebene für dynamisch hinzugefügte Elemente
+    document.addEventListener("click", (event) => {
+      const editButton = event.target.closest(".edit-post-btn");
+      if (!editButton) return;
+      
+      this.tweetInput.value = editButton.dataset.content;
+      this.editPostIdInput.value = editButton.dataset.postId;
+      this.originalImagePathInput.value = editButton.dataset.image;
+      this.postBtnWrapper.classList.add("d-none");
+      this.editBtnWrapper.classList.remove("d-none");
+      window.scrollTo({ top: 100, behavior: "smooth" });
     });
   }
   
