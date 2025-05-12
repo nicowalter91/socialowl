@@ -26,7 +26,7 @@
       <textarea name="content" class="form-control tweet-input-box text-light border-0 rounded-4 px-3 py-2 flex-grow-1"
         rows="2" placeholder="Was machst du gerade?" style="min-height: 70px;" required></textarea>
       <div class="mt-1 text-end">
-        <small id="char-counter" class="text-muted">0/280</small>
+        <small id="char-counter" class="text-light">0/280</small>
       </div>
     </div>
   </div>
@@ -86,9 +86,7 @@
         <i class="bi bi-camera-reels me-2"></i><span class="d-none d-md-inline">Video</span>
         <span class="visually-hidden">Maximal 50MB, MP4</span>
       </label>
-      <input type="file" name="video" id="file-upload-video" style="display: none;" accept="video/mp4">
-
-      <!-- Emoji Button + Picker -->
+      <input type="file" name="video" id="file-upload-video" style="display: none;" accept="video/mp4">      <!-- Emoji Button + Picker -->
       <div class="position-relative">
         <button
           type="button"
@@ -103,7 +101,7 @@
       </div>
       
       <!-- File Info -->
-      <small class="text-muted d-none d-md-inline align-self-center">
+      <small class="file-info d-none d-md-inline align-self-center">
         <i class="bi bi-info-circle me-1"></i>Max: Bild 5MB, Video 50MB
       </small>
     </div>
@@ -144,6 +142,15 @@
 
 .tweet-input-box {
   min-height: 70px !important;
+}
+
+/* File info styles for dark/light mode compatibility */
+.file-info {
+  color: #6c757d; /* Default color (same as text-muted) */
+}
+
+body.dark-mode .file-info {
+  color: rgba(255, 255, 255, 0.6); /* Lighter color for dark mode */
 }
 
 @media (max-width: 576px) {

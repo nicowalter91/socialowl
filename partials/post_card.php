@@ -240,7 +240,7 @@ if (!isset($post) || empty($post["id"])) return;
         ></textarea>
         
         <div class="d-flex justify-content-between align-items-center mt-2">
-          <small class="text-muted char-counter">0/200 Zeichen</small>
+          <small class="text-light char-counter">0/200 Zeichen</small>
           
           <div class="d-flex gap-2 align-items-center">
             <!-- Emoji-Container -->

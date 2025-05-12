@@ -26,7 +26,7 @@
       <div class="modal-footer border-0 pt-0 d-flex">
         <input type="hidden" id="delete-post-id">
 
-        <button type="button" class="btn btn-sm btn-outline-light rounded-pill px-4" data-bs-dismiss="modal">
+        <button type="button" class="btn btn-sm btn-outline-dark rounded-pill px-4" data-bs-dismiss="modal">
           Abbrechen
         </button>
 
