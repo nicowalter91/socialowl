@@ -11,35 +11,31 @@ if (!isset($post) || empty($post["id"])) return;
 <div
   class="tweet-card mb-4 p-3 rounded shadow-sm"
   id="post-<?= $post['id'] ?>"
+  data-username="<?= htmlspecialchars($post['username']) ?>"
   data-post-id="<?= $post['id'] ?>"
   data-username="@<?= htmlspecialchars($post['username']) ?>"
->
-  <!-- Kopfbereich -->
+>  <!-- Kopfbereich -->
   <div class="d-flex justify-content-between align-items-start mb-3">
     <div class="d-flex align-items-start">
-      <a href="<?= BASE_URL ?>/views/profile.php?username=<?= htmlspecialchars($post['username']) ?>" 
-         class="text-decoration-none">
+      <div class="me-3">
         <img
-          class="tweet-profile-image me-3 rounded-circle border border-2"
+          class="tweet-profile-image rounded-circle border border-2"
           style="border-color: var(--color-border) !important;"
           src="<?= BASE_URL ?>/assets/uploads/<?= htmlspecialchars($post["profile_img"]) ?>"
           alt="Profilbild von @<?= htmlspecialchars($post["username"]) ?>"
           width="48" height="48"
           onerror="this.src='<?= BASE_URL ?>/assets/img/default-avatar.png';"
         >
-      </a>
+      </div>
       <div>
-        <a href="<?= BASE_URL ?>/views/profile.php?username=<?= htmlspecialchars($post['username']) ?>" 
-           class="text-decoration-none">
-          <h6 class="mb-0 hover-underline" style="color: var(--color-text) !important;">
-            <?php if (!empty($post["display_name"])): ?>
-              <span class="fw-bold"><?= htmlspecialchars($post["display_name"]) ?></span>
-              <small class="text-muted">@<?= htmlspecialchars($post["username"]) ?></small>
-            <?php else: ?>
-              @<?= htmlspecialchars($post["username"]) ?>
-            <?php endif; ?>
-          </h6>
-        </a>
+        <h6 class="mb-0" style="color: var(--color-text) !important;">
+          <?php if (!empty($post["display_name"])): ?>
+            <span class="fw-bold"><?= htmlspecialchars($post["display_name"]) ?></span>
+            <small class="text-muted">@<?= htmlspecialchars($post["username"]) ?></small>
+          <?php else: ?>
+            @<?= htmlspecialchars($post["username"]) ?>
+          <?php endif; ?>
+        </h6>
         <small
           class="post-timestamp text-light opacity-75"
           data-timestamp="<?= htmlspecialchars($post['created_at'], ENT_QUOTES) ?>"

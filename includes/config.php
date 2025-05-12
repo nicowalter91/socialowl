@@ -1,6 +1,7 @@
 <?php
 // Sicherheitskonfiguration und Konstanten für DB
-define('DB_HOST', 'localhost');
+define('DB_HOST', '127.0.0.1');
+define('DB_PORT', '3306');  // Standard MySQL Port
 define('DB_NAME', 'social_owl');
 define('DB_USER', 'root');
 define('DB_PASS', '');
