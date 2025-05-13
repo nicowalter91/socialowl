@@ -15,6 +15,7 @@ export class LiveUpdates {
         this.isProcessingQueue = false;
         this.reconnectAttempts = 0;
         this.maxReconnectAttempts = 3; // Reduziert von 5 auf 3
+        this.processedEditIds = new Set(); // Speichert IDs der bereits verarbeiteten Bearbeitungen
         this.init();
     }
 
@@ -152,9 +153,7 @@ export class LiveUpdates {
             const { postId, isLiked, likeCount } = event.detail;
             this.updateLikeUI(postId, isLiked, likeCount);
         });
-    }
-
-    // Queue für Updates
+    }    // Queue für Updates
     addToUpdateQueue(data) {
         if (!data || !data.type || !data.action) {
             console.error("Ungültige Daten für Update-Queue:", data);
@@ -162,6 +161,18 @@ export class LiveUpdates {
         }
 
         const key = `${data.type}_${data.id}`;
+        
+        // Bei bearbeiteten Posts: überprüfen und in processedEditIds speichern
+        if (data.action === 'edit') {
+            this.processedEditIds.add(data.id);
+        }
+        
+        // Bei neuen Posts: überprüfen, ob sie kürzlich bearbeitet wurden
+        if (data.action === 'new' && this.processedEditIds.has(data.id)) {
+            console.log(`Post ${data.id} wurde bereits bearbeitet, überspringe "neu"-Update`);
+            return; // Nicht zur Queue hinzufügen, wenn bereits bearbeitet
+        }
+        
         this.updateQueue.set(key, data);
         
         if (!this.isProcessingQueue) {
@@ -210,9 +221,7 @@ export class LiveUpdates {
                 if (commentElement) commentElement.remove();
             }
         }
-    }
-
-    async processEdits(edits) {
+    }    async processEdits(edits) {
         // Batch-Anfrage für alle Änderungen
         const editPromises = edits.map(data => 
             fetch(`/Social_App/controllers/api/notify_edit.php?type=${data.type}&id=${data.id}`)
@@ -228,64 +237,113 @@ export class LiveUpdates {
                 tempDiv.innerHTML = data.html;
 
                 if (data.type === 'post') {
+                    // Finde alle Instanzen des Posts und ersetze sie
                     const updatedPost = tempDiv.querySelector(`.tweet-card[data-post-id="${data.id}"]`);
-                    const existingPost = document.querySelector(`.tweet-card[data-post-id="${data.id}"]`);
-                    if (existingPost && updatedPost) {
+                    const existingPosts = document.querySelectorAll(`.tweet-card[data-post-id="${data.id}"]`);
+                    
+                    if (existingPosts.length > 0 && updatedPost) {
                         // Theme auf den aktualisierten Post anwenden
                         this.applyThemeToElement(updatedPost);
-                        existingPost.replaceWith(updatedPost);
+                        
+                        // Ersetze das erste Vorkommen und entferne alle weiteren Duplikate
+                        existingPosts[0].replaceWith(updatedPost);
+                        
+                        // Entferne eventuell vorhandene Duplikate
+                        for (let i = 1; i < existingPosts.length; i++) {
+                            existingPosts[i].remove();
+                        }
+                        
+                        // Speichere die ID als bearbeitet, damit sie nicht als "neu" behandelt wird
+                        this.processedEditIds.add(data.id);
+                        
+                        // Aufräumen - Entfernen Sie veraltete Einträge nach einer Weile
+                        setTimeout(() => {
+                            this.processedEditIds.delete(data.id);
+                        }, 60000); // Nach einer Minute wieder freigeben
                     }
                 } else if (data.type === 'comment') {
                     const updatedComment = tempDiv.querySelector(`.comment[data-comment-id="${data.id}"]`);
-                    const existingComment = document.querySelector(`.comment[data-comment-id="${data.id}"]`);
-                    if (existingComment && updatedComment) {
+                    const existingComments = document.querySelectorAll(`.comment[data-comment-id="${data.id}"]`);
+                    
+                    if (existingComments.length > 0 && updatedComment) {
                         // Theme auf den aktualisierten Kommentar anwenden
                         this.applyThemeToElement(updatedComment);
-                        existingComment.replaceWith(updatedComment);
+                        
+                        // Ersetze das erste Vorkommen und entferne alle weiteren Duplikate
+                        existingComments[0].replaceWith(updatedComment);
+                        
+                        // Entferne eventuell vorhandene Duplikate
+                        for (let i = 1; i < existingComments.length; i++) {
+                            existingComments[i].remove();
+                        }
                     }
                 }
             }
         });
-    }
-
-    // Implementierung für neue Items vervollständigt
+    }    // Implementierung für neue Items vervollständigt
     async processNewItems(newItems) {
         if (newItems.length === 0) return;
         
-        const postItems = newItems.filter(item => item.type === 'post');
+        // Filtere Posts aus, die kürzlich bearbeitet wurden
+        const postItems = newItems.filter(item => 
+            item.type === 'post' && !this.processedEditIds.has(item.id)
+        );
         const commentItems = newItems.filter(item => item.type === 'comment');
         
         // Verarbeitung neuer Posts
         if (postItems.length > 0) {
             try {
-                const postIds = postItems.map(item => item.id).join(',');
-                const response = await fetch(`/Social_App/controllers/api/get_new_posts.php?ids=${postIds}`);
+                // URL für den API-Aufruf konstruieren
+                // Verwende posts_since.php falls get_new_posts.php nicht vorhanden ist
+                const apiEndpoint = '/Social_App/controllers/api/posts_since.php';
+                const timestamp = this.lastPostTimestamp || '';
+                
+                // Bereite eine Liste von Post-IDs vor, die wir abrufen möchten
+                const postIds = postItems.map(item => item.id);
+                
+                // Abruf der neuen Posts 
+                const queryParams = new URLSearchParams({
+                    since: timestamp
+                });
+                
+                const response = await fetch(`${apiEndpoint}?${queryParams.toString()}`);
                 if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
                 
                 const data = await response.json();
-                if (data.success && data.html) {
-                    const feedContainer = document.querySelector('.tweet-list');
-                    if (feedContainer) {
-                        const tempDiv = document.createElement('div');
-                        tempDiv.innerHTML = data.html;
+                if (data.success && Array.isArray(data.html)) {
+                    const feedContainer = document.querySelector('#feed');
+                    if (!feedContainer) return;
+                    
+                    // Filtere Posts, die kürzlich bearbeitet wurden
+                    const filteredPostIds = postIds.filter(id => !this.processedEditIds.has(id));
+                    
+                    let actualNewPosts = 0;
+                    
+                    // Füge die HTML-Snippets in den DOM ein
+                    data.html.forEach((html, index) => {
+                        const postData = data.posts[index];
                         
-                        // Füge neue Posts am Anfang des Feeds ein
-                        const newPosts = Array.from(tempDiv.children);
-                        newPosts.reverse().forEach(post => {
-                            // Prüfe ob der Post bereits existiert
-                            const postId = post.dataset.postId;
-                            if (!document.querySelector(`.tweet-card[data-post-id="${postId}"]`)) {
+                        // Nur verarbeiten, wenn der Post in unserer gefilterten Liste ist
+                        if (filteredPostIds.includes(postData.id)) {
+                            const tempDiv = document.createElement('div');
+                            tempDiv.innerHTML = html;
+                            const post = tempDiv.firstElementChild;
+                            
+                            // Prüfe, ob der Post bereits im DOM existiert
+                            if (post && !document.querySelector(`.tweet-card[data-post-id="${postData.id}"]`)) {
+                                // Füge den Post am Anfang des Feeds ein
                                 feedContainer.insertBefore(post, feedContainer.firstChild);
                                 
-                                // Wende Theme auf neue Like-Buttons an
+                                // Theme auf den neuen Post anwenden
                                 this.applyThemeToElement(post);
+                                actualNewPosts++;
                             }
-                        });
-                        
-                        // Zeige Benachrichtigung für neue Posts
-                        if (newPosts.length > 0) {
-                            this.showNotification(`${newPosts.length} neue Beiträge wurden geladen`, 'info');
                         }
+                    });
+                    
+                    // Zeige Benachrichtigung NUR für wirklich neue Posts
+                    if (actualNewPosts > 0) {
+                        this.showNotification(`${actualNewPosts} neue Beiträge wurden geladen`, 'info');
                     }
                 }
             } catch (error) {
