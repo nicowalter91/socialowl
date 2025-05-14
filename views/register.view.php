@@ -20,10 +20,10 @@ require_once __DIR__ . '/../includes/config.php';
     </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Registrieren | Social Owl</title>
-    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/bootstrap.min.css" />
+    <title>Registrieren | Social Owl</title>    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/bootstrap.min.css" />
     <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/bootstrap-icons.css" />
     <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/style.css" />
+    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/profile-image-fix.css" />
     <style>
         :root {
             --primary: #0d6efd;

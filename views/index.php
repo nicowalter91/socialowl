@@ -32,11 +32,11 @@ $posts = fetchAllPostsWithComments($conn, $_SESSION["id"]);
   <meta name="description" content="Willkommen bei Social Owl - deinem sozialen Netzwerk für kreative Köpfe.">
   <meta name="theme-color" content="#0d6efd" />
 
-  <!-- CSS -->
-  <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/bootstrap.min.css">
+  <!-- CSS -->  <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/bootstrap.min.css">
   <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/bootstrap-icons.css">
   <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/style.css">
   <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/cookie-banner.css">
+  <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/profile-image-fix.css">
   <link rel="icon" href="<?= BASE_URL ?>/assets/img/Owl_logo.svg" type="image/x-icon">
 </head>
 

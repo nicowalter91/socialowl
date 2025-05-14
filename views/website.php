@@ -12,10 +12,10 @@ require_once __DIR__ . '/../includes/config.php';
   <meta name="description" content="Social Owl - das innovative soziale Netzwerk für kreative Köpfe und Networking. Teile deine Ideen, vernetze dich und entdecke neue Inspirationen.">
   <meta name="theme-color" content="#232946" />
 
-  <!-- CSS -->
-  <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/bootstrap.min.css">
+  <!-- CSS -->  <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/bootstrap.min.css">
   <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/bootstrap-icons.css">
   <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/style.css">
+  <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/profile-image-fix.css">
   <link rel="icon" href="<?= BASE_URL ?>/assets/img/Owl_logo.svg" type="image/x-icon">
   <style>
     /* Zusätzliche Website-Styles */

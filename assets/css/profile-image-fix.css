@@ -1,0 +1,36 @@
+/**
+ * Profile Image Fix
+ * Diese CSS-Datei sorgt dafür, dass alle Profilbilder korrekt angezeigt werden,
+ * ohne verzerrt oder gestreckt zu werden.
+ */
+
+/* Generelle Regel für alle Profilbilder */
+img.profile-image,
+img.tweet-profile-image,
+.profile-image img,
+.tweet-profile-image img,
+img[alt*="Profilbild"],
+img[alt*="profilbild"] {
+    object-fit: cover !important; /* Bilder werden zugeschnitten statt gestreckt */
+    aspect-ratio: 1 / 1;          /* Garantiert ein gleichmäßiges Seitenverhältnis */
+}
+
+/* Spezifische Selektoren für bekannte Elemente */
+.tweet-card img.tweet-profile-image,
+.comment img.rounded-circle[style*="width: 32px; height: 32px"],
+.tweet-box img.tweet-profile-image,
+#postFormModal img.tweet-profile-image {
+    object-fit: cover !important;
+}
+
+/* Stellt sicher, dass Bilder in Containern mit fester Höhe und Breite richtig angezeigt werden */
+.profile-image-wrapper img,
+.rounded-circle[width][height],
+img.rounded-circle[style*="width"][style*="height"] {
+    object-fit: cover !important;
+}
+
+/* Stellt sicher, dass alle Profilbilder im Modalprofil richtig angezeigt werden */
+#profilePreview {
+    object-fit: cover !important;
+}

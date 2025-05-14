@@ -18,10 +18,10 @@ $user = fetchUserInfo($_SESSION["username"]);
 
 <head>
   <meta charset="UTF-8">
-  <title>Mein Profil – Social Owl</title>
-  <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/bootstrap.min.css">
+  <title>Mein Profil – Social Owl</title>  <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/bootstrap.min.css">
   <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/bootstrap-icons.css">
   <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/style.css">
+  <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/profile-image-fix.css">
   <link rel="icon" href="<?= BASE_URL ?>/assets/img/Owl_logo.svg" type="image/x-icon">
 </head>
 
