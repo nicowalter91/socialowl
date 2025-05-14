@@ -22,7 +22,7 @@ $topHashtags = getTopHashtags($conn, 3);
       <img class="profile-image w-100 h-100 object-fit-cover" src="/Social_App/assets/uploads/<?php echo $_SESSION["profile_img"] ?>" alt="Profilbild">
     </div>
   </div>
-  <div class="profile pt-5 pb-3 d-flex flex-column align-items-center px-3 shadow-sm" style="padding-top:70px!important; border-radius: 0 0 16px 16px;">
+  <div class="profile pt-2 pb-3 d-flex flex-column align-items-center px-3 shadow-sm" style="padding-top:70px!important; border-radius: 0 0 16px 16px;">
     <h3 class="mt-4 mb-0 fw-semibold" style="font-size:1.3em; letter-spacing:0.5px; color: var(--color-text);"> <?php echo $_SESSION["firstname"] . " " . $_SESSION["lastname"] ?> </h3>
     <p class="username mb-1 small" style="color: var(--color-text-secondary);">@<?php echo $_SESSION["username"] ?></p>
     <div class="bio-container w-100 mb-2">
