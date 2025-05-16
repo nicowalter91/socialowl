@@ -3,43 +3,48 @@
 ==================================================
 
 📦 Projektname:   Social Owl  
-📁 Version:       1.3.1 (May 6, 2025)  
-👤 Entwickler:    Nico Walter,
-                  Georg Diesendorf,
-                  Andreas Wiegand,
-                  Florian Prottengeier,
-                  Alexander Rahn
+📁 Version:       1.3.1 (May 15, 2025)  
+👤 Entwickler:    Nico Walter
+                  
 ==================================================
 
 📌 Projektübersicht
 --------------------------------------------------
-Social Owl ist eine moderne, schlanke Social-Media-Plattform mit Fokus auf 
+Social Owl ist eine moderne, schlanke Social-Media-Plattform mit Fokus auf:
 Benutzerfreundlichkeit, saubere Struktur (MVC) und vielen Social Features.  
 Nutzer können Inhalte posten, liken, kommentieren, folgen, chatten und ihr Profil pflegen.
 
 ✅ Features
 --------------------------------------------------
+
+🔸 Benutzerverwaltung
 ✔️ Registrierung & Login inkl. "Angemeldet bleiben"-Token  
 ✔️ Passwort-Reset per "E-Mail" (Token-gesichert)  
+✔️ Benutzerprofil mit Profil- & Headerbild  
+✔️ Folgen/Entfolgen von anderen Usern inkl. Follow-Requests  
+
+🔸 Inhalte & Interaktion
 ✔️ Beiträge mit Text, Bildern & Videos (Upload inkl. Vorschau)  
 ✔️ Kommentare mit Bearbeiten, Löschen & Likes  
 ✔️ Like-System für Beiträge und Kommentare  
-✔️ Benutzerprofil mit Profil- & Headerbild  
-✔️ Folgen/Entfolgen von anderen Usern inkl. Follow-Requests  
-✔️ Live-Feed für neue Posts und Kommentare (SSE & Polling)  
-✔️ Responsives Dark-Theme (Bootstrap 5)  
 ✔️ Emoji-Picker für Posts, Kommentare & Chat  
-✔️ Sidebar mit Follow-Vorschlägen & Trends  
-✔️ Scrollbarer Feed mit unsichtbarem Scrollbalken  
+
+🔸 Social Experience
+✔️ Live-Feed für neue Posts und Kommentare (SSE & Polling)  
 ✔️ Kommentare & Beiträge nur sichtbar von gefolgten Usern  
-✔️ Sidebar zeigt aktuelle Follower- & Following-Anzahl  
-✔️ Modal-Interface für Beitrag löschen & Profil bearbeiten  
-✔️ Live-Kommentar- und Postanzeige  
-✔️ Saubere UI-Komponenten & Layout mit Bootstrap  
-✔️ Datenbank vollständig in 3. Normalform
-✔️ Suchleiste für Posts, Hashtags und Usern
-✔️ Notification-System für Likes, Kommentare, Follows & Follow-Requests (inkl. Live-Update)
+✔️ Sidebar mit Follow-Vorschlägen & Trends  
+✔️ Notification-System für Likes, Kommentare, Follows &       Follow-Requests (inkl. Live-Update)
 ✔️ Integriertes 1:1-Chat-System 
+
+🔸 Benutzeroberfläche
+✔️ Responsives Dark-Theme (Bootstrap 5) 
+✔️ Scrollbarer Feed mit unsichtbarem Scrollbalken  
+✔️ Modal-Interface für Beitrag löschen & Profil bearbeiten  
+✔️ Saubere UI-Komponenten & Layout mit Bootstrap  
+✔️ Suchleiste für Posts, Hashtags und Usern
+
+🔸 Technische Features
+✔️ Datenbank vollständig in 3. Normalform
 ✔️ API-Endpunkte für Live-Updates, Chat, Notifications, Follows
 ✔️ Automatisierte Tests für Kernfunktionen (PHP)
 ✔️ Erweiterte Suche
@@ -56,21 +61,13 @@ Nutzer können Inhalte posten, liken, kommentieren, folgen, chatten und ihr Prof
 
 📁 Projektstruktur (nach MVC)
 --------------------------------------------------
-├── controllers/      → Business-Logik & API (z. B. create_post.php, api/)
-├── models/           → Datenbankabfragen (z. B. user.php, follow.php)
-├── views/            → Hauptseiten wie index.php, login.view.php
-├── partials/         → Wiederverwendbare UI-Elemente (Sidebar, Modals)
+├── controllers/      → Business-Logik & API
+├── models/           → Datenbankabfragen
+├── views/            → Hauptseiten
+├── partials/         → Wiederverwendbare UI-Elemente
 ├── includes/         → Konfiguration, Auth, DB-Verbindung, Chat-Logik
-├── assets/
-│   ├── css/          → style.css, bootstrap.min.css, website-style.css
-│   ├── fonts/        → Bootstrap Icons (woff-Dateien)
-│   ├── js/           → script.js (App-Logik), notifications.js 
-│   │   └── modules/  → JS-Handler für comments, emoji, live, post, search
-│   ├── img/          → Logos & Default-Bilder
-│   ├── posts/        → Medien aus Beiträgen
-│   └── uploads/      → Profil- und Headerbilder
-├── trash/            → Alte/temporäre Dateien (nicht produktiv)
-├── tests/            → PHP Skripte für automatisierte Tests
+├── assets/           → CSS, JavaScript, Bilder, Uploads
+├── tests/            → Automatisierte Test-Skripte
 ├── sql/              → SQL-Dumps & Migrationen
 ├── src/              → Zusätzliche Quellcode-Dateien
 ├── vendor/           → Abhängigkeiten (Composer)
@@ -93,7 +90,7 @@ Nutzer können Inhalte posten, liken, kommentieren, folgen, chatten und ihr Prof
 - BASE_URL    = '/Social_App'  
 - DEBUG_MODE  = true (nur für DEV!)
 
-🗃 Datenbank-Tabellen (Kurzüberblick)
+🗃 Datenbank-Struktur
 --------------------------------------------------
 - `users`          → Benutzerkonto, Token, Medien
 - `posts`          → Beiträge mit Content, Bild, Video
@@ -104,13 +101,13 @@ Nutzer können Inhalte posten, liken, kommentieren, folgen, chatten und ihr Prof
 - `notifications`  → System-Benachrichtigungen
 - `chats` & `messages` → Chat-System
 
-📚 Features Backlog
+📚 Zukünftige Entwicklung
 ---------------------------------------------------
-- API-Erweiterung für externe Anwendungen
-- Beitragsbewertungen (Sterne/Punktesystem)
-- Benachrichtigungen per E-Mail
-- Themenwechsel (Light/Dark Mode Toggle)
-- Story-Funktion (temporäre Posts)
+- Profilansicht aller Usern
+- Toastmessages für alle Events
+- Mobile App mit passender UX und UI
+- Erweiterung der Kommentarfunktion mit Comment of comments
 
-📅 Letzter Stand: 6. Mai 2025
+
+📅 Letzter Stand: 15. Mai 2025
 ==================================================
