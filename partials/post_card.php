@@ -94,8 +94,8 @@ if (!isset($post) || empty($post["id"])) return;
         // URLs automatisch verlinken
         $urlPattern = '/(https?:\/\/[^\s]+)/';
         $content = preg_replace($urlPattern, '<a href="$1" target="_blank" rel="noopener noreferrer" class="text-primary text-decoration-none">$1</a>', $content);
-        // Hashtags verlinken
-        $content = preg_replace('/#(\w+)/', '<a href="'.BASE_URL.'/views/search.view.php?q=%23$1" class="hashtag text-primary text-decoration-none">#$1</a>', $content);
+        // Hashtags verlinken (Unicode-fähig, z.B. für Umlaute)
+        $content = preg_replace('/#([\p{L}\p{N}_]+)/u', '<a href="'.BASE_URL.'/views/search.view.php?q=%23$1" class="hashtag text-primary text-decoration-none">#$1</a>', $content);
         echo nl2br($content);
       ?>
     </p>
